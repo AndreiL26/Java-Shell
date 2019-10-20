@@ -19,6 +19,9 @@ public class JshTest {
         Jsh.eval("echo foo", out);
         Scanner scn = new Scanner(in);
         assertEquals(scn.next(),"foo");
+
+        Jsh.eval("echo test", out);
+        assertEquals(scn.next(), "test");
     }
 
 }
