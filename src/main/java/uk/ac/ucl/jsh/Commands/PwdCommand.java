@@ -1,6 +1,9 @@
-package uk.ac.ucl.jsh;
+package uk.ac.ucl.jsh.Commands;
+
+import uk.ac.ucl.jsh.Utilities.FileSystem;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 public class PwdCommand extends Command {
 
@@ -10,12 +13,12 @@ public class PwdCommand extends Command {
     }
 
     @Override
-    public void runCommand() throws IOException {
+    public void runCommand(ArrayList<String> commandArguments) throws IOException {
        writer.write(fileSystem.getWorkingDirectoryPath() + System.getProperty("line.separator"));
        writer.flush();
     }
     
-    public void checkArguments() {
+    public void checkArguments(ArrayList<String> commandArguments) {
 
     }
   

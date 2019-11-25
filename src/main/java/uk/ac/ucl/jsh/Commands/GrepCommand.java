@@ -1,4 +1,6 @@
-package uk.ac.ucl.jsh;
+package uk.ac.ucl.jsh.Commands;
+
+import uk.ac.ucl.jsh.Utilities.FileSystem;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
@@ -9,6 +11,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 public class GrepCommand extends Command {
    
@@ -17,8 +20,8 @@ public class GrepCommand extends Command {
     }
 
     @Override
-    public void runCommand() {
-        checkArguments();
+    public void runCommand(ArrayList<String> commandArguments) {
+        checkArguments(commandArguments);
         Pattern grepPattern = Pattern.compile(commandArguments.get(0));
         int numOfFiles = commandArguments.size() - 1;
         Path filePath;
@@ -49,7 +52,7 @@ public class GrepCommand extends Command {
         }
     }
 
-    public void checkArguments() {
+    public void checkArguments(ArrayList<String> commandArguments) {
         if (commandArguments.size() < 2) {
             throw new RuntimeException("grep: wrong number of arguments");
         }

@@ -1,15 +1,15 @@
-package uk.ac.ucl.jsh;
+package uk.ac.ucl.jsh.Utilities;
+
+import uk.ac.ucl.jsh.Commands.*;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-
 public class CommandManager {
     private HashMap<String, Command> commandMap;
     private FileSystem fileSystem;
     OutputStreamWriter writer;
-
 
     public CommandManager(FileSystem fileSystem, OutputStreamWriter writer) {
         commandMap = new HashMap<>();
@@ -18,14 +18,17 @@ public class CommandManager {
         createCommands();
     }
 
+    public FileSystem getFileSystem() {
+        return fileSystem;
+    }
+
     public void executeCommand(ArrayList<String> tokens) {
         String commandName = tokens.get(0);
         ArrayList<String> commandArguments = new ArrayList<String>(tokens.subList(1, tokens.size()));
         try {
             if(commandMap.containsKey(commandName)) {
                 Command currentCommand = commandMap.get(commandName);
-                currentCommand.setCommandArguments(commandArguments);
-                currentCommand.runCommand();
+                currentCommand.runCommand(commandArguments);
             } else {
                 throw new RuntimeException(commandName + ": unknown application");
             }
@@ -44,8 +47,4 @@ public class CommandManager {
         commandMap.put("tail", new TailCommand(fileSystem, writer));
         commandMap.put("grep", new GrepCommand(fileSystem, writer));
     }
-
-
-
-
 }
