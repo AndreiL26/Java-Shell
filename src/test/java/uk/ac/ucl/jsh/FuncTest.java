@@ -15,5 +15,4 @@ abstract class FuncTest {
         scn = new Scanner(in);
     }
 
-    public abstract void test() throws Exception;
 }

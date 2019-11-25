@@ -8,7 +8,6 @@ public class JshTest {
 
     @Test
     public void testJsh() throws Exception {
-        //new EchoTest().test();
     }
 
 }

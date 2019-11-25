@@ -1,29 +1,26 @@
 package uk.ac.ucl.jsh;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Jsh {
+    private static FileSystem fileSystem = new FileSystem();
     private static String currentDirectory = System.getProperty("user.dir");
+    private static CommandManager commandManager;
+    
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
         cmdline = "a; a | b | c; a b cseds";
         OutputStreamWriter writer = new OutputStreamWriter(output);
-        
         Node cmdTree = Parser.getCmdTree(cmdline);
         cmdTree.accept(new EvalVisitor());
     }
@@ -43,6 +40,7 @@ public class Jsh {
                 System.out.println("jsh: " + e.getMessage());
             }
         } else {
+            System.out.println("Hello World!");
             Scanner input = new Scanner(System.in);
             try {
                 while (true) {
