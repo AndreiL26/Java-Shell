@@ -1,4 +1,6 @@
-package uk.ac.ucl.jsh;
+package uk.ac.ucl.jsh.Commands;
+
+import uk.ac.ucl.jsh.Utilities.FileSystem;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.io.File;
@@ -8,7 +10,7 @@ import java.nio.file.Paths;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-
+import java.util.ArrayList;
 
 public class CatCommand extends Command{
     
@@ -17,8 +19,8 @@ public class CatCommand extends Command{
     }
 
     @Override
-    public void runCommand() {
-        checkArguments();
+    public void runCommand(ArrayList<String> commandArguments) {
+        checkArguments(commandArguments);
         String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
 
         for (String arg : commandArguments) {
@@ -43,7 +45,7 @@ public class CatCommand extends Command{
     }
     
 
-    public void checkArguments() {
+    public void checkArguments(ArrayList<String> commandArguments) {
         if(commandArguments.isEmpty())
             throw new RuntimeException("cat: missing arguments");
     }

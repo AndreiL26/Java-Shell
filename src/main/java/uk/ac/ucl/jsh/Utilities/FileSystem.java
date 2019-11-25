@@ -1,4 +1,4 @@
-package uk.ac.ucl.jsh;
+package uk.ac.ucl.jsh.Utilities;
 
 public class FileSystem {
     private String workingDirectoryPath;

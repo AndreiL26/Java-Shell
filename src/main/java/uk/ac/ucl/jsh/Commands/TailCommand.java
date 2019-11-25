@@ -1,4 +1,6 @@
-package uk.ac.ucl.jsh;
+package uk.ac.ucl.jsh.Commands;
+
+import uk.ac.ucl.jsh.Utilities.FileSystem;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.io.File;
@@ -10,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.io.OutputStreamWriter;
 
-
 public class TailCommand extends Command {
 
     public TailCommand(FileSystem fileSystem, OutputStreamWriter writer) {
@@ -18,8 +19,8 @@ public class TailCommand extends Command {
     }
     
     @Override
-    public void runCommand() {
-        checkArguments();
+    public void runCommand(ArrayList<String> commandArguments) {
+        checkArguments(commandArguments);
         int tailLines = 10;
         String tailArg;
         if (commandArguments.size() == 3) {
@@ -60,7 +61,7 @@ public class TailCommand extends Command {
         }
     }
     
-    public void checkArguments() {
+    public void checkArguments(ArrayList<String> commandArguments) {
         if (commandArguments.isEmpty()) {
             throw new RuntimeException("tail: missing arguments");
         }

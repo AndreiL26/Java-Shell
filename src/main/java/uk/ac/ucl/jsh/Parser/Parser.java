@@ -1,4 +1,4 @@
-package uk.ac.ucl.jsh;
+package uk.ac.ucl.jsh.Parser;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +30,7 @@ public class Parser {
     }
 
     private static boolean hasDelimiter(StringBuilder cmdStringBuilder, char delimiter) {
-        int closingPairIndex, prevDelimiterIndex = 0, splitIndex = 0;
+        int closingPairIndex, splitIndex = 0;
 		for (splitIndex = 0; splitIndex < cmdStringBuilder.length(); splitIndex++) {
             char ch = cmdStringBuilder.charAt(splitIndex);
 			if (ch == delimiter) {
@@ -86,7 +85,6 @@ public class Parser {
                 nonQuote = regexMatcher.group().trim();
                 ArrayList<String> globbingResult = new ArrayList<String>();
                 Path dir = Paths.get(currentDirectory);
-                System.out.println(nonQuote);
                 DirectoryStream<Path> stream = Files.newDirectoryStream(dir, nonQuote);
                 for (Path entry : stream) {
                     globbingResult.add(entry.getFileName().toString());

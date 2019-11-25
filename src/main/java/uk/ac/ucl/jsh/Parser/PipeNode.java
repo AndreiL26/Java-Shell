@@ -1,4 +1,6 @@
-package uk.ac.ucl.jsh;
+package uk.ac.ucl.jsh.Parser;
+
+import uk.ac.ucl.jsh.Utilities.TreeVisitor;
 
 public class PipeNode implements Node {
     private Node left;

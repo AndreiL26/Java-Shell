@@ -1,28 +1,23 @@
 package uk.ac.ucl.jsh;
 
+import uk.ac.ucl.jsh.Parser.Node;
+import uk.ac.ucl.jsh.Utilities.*;
+import uk.ac.ucl.jsh.Parser.Parser;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Jsh {
     private static FileSystem fileSystem = new FileSystem();
     private static String currentDirectory = System.getProperty("user.dir");
     private static CommandManager commandManager;
-    
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
-        cmdline = "a; a | b | c; a b cseds";
         OutputStreamWriter writer = new OutputStreamWriter(output);
+        commandManager = new CommandManager(fileSystem, writer);
         Node cmdTree = Parser.getCmdTree(cmdline);
-        cmdTree.accept(new EvalVisitor());
+        cmdTree.accept(new EvalVisitor(commandManager));
     }
 
     public static void main(String[] args) {
