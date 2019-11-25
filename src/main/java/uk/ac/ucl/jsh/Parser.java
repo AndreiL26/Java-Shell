@@ -11,34 +11,67 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
-    public static ArrayList<String> getRawCommands(String cmdline) {
-        ArrayList<String> rawCommands = new ArrayList<String>();
-		int closingPairIndex, prevDelimiterIndex = 0, splitIndex = 0;
-		for (splitIndex = 0; splitIndex < cmdline.length(); splitIndex++) {
-			char ch = cmdline.charAt(splitIndex);
-			if (ch == ';') {
-				String command = cmdline.substring(prevDelimiterIndex, splitIndex).trim();
-				rawCommands.add(command);
-				prevDelimiterIndex = splitIndex + 1;
+    public static Node getCmdTree(String cmdline) {
+        Node cmdTreeRoot = buildCmdTree(new StringBuilder(cmdline));
+        return cmdTreeRoot;
+    }
+
+    private static Node buildCmdTree(StringBuilder stringBuilder) {
+         if (hasDelimiter(stringBuilder, ';')) {
+            StringBuilder firstPart = extractFirstPart(stringBuilder, ';');
+            return new SeqNode(buildCmdTree(firstPart), buildCmdTree(stringBuilder));
+         }
+
+         if (hasDelimiter(stringBuilder, '|')) {
+            StringBuilder firstPart = extractFirstPart(stringBuilder, '|');
+            return new PipeNode(buildCmdTree(firstPart), buildCmdTree(stringBuilder));
+         }
+        
+         return new CallNode(stringBuilder.toString());
+    }
+
+    private static boolean hasDelimiter(StringBuilder cmdStringBuilder, char delimiter) {
+        int closingPairIndex, prevDelimiterIndex = 0, splitIndex = 0;
+		for (splitIndex = 0; splitIndex < cmdStringBuilder.length(); splitIndex++) {
+            char ch = cmdStringBuilder.charAt(splitIndex);
+			if (ch == delimiter) {
+				return true;
 			} else if (ch == '\'' || ch == '\"') {
-				closingPairIndex = cmdline.indexOf(ch, splitIndex + 1);
+				closingPairIndex = cmdStringBuilder.indexOf(String.valueOf(ch), splitIndex + 1);
 				if (closingPairIndex == -1) {
 					continue;
 				} else {
 					splitIndex = closingPairIndex;
 				}
 			}
-		}
-		if (!cmdline.isEmpty() && prevDelimiterIndex != splitIndex) {
-			String command = cmdline.substring(prevDelimiterIndex).trim();
-			if (!command.isEmpty()) {
-				rawCommands.add(command);
+        }
+
+        return false;
+    }
+
+    private static StringBuilder extractFirstPart(StringBuilder cmdStringBuilder, char delimiter) {
+        int closingPairIndex, prevDelimiterIndex = 0, splitIndex = 0;
+		for (splitIndex = 0; splitIndex < cmdStringBuilder.length(); splitIndex++) {
+            char ch = cmdStringBuilder.charAt(splitIndex);
+			if (ch == delimiter) {
+                String command = cmdStringBuilder.substring(prevDelimiterIndex, splitIndex).trim();
+                cmdStringBuilder.delete(0, splitIndex + 1);
+				return new StringBuilder(command);
+			} else if (ch == '\'' || ch == '\"') {
+				closingPairIndex = cmdStringBuilder.indexOf(String.valueOf(ch), splitIndex + 1);
+				if (closingPairIndex == -1) {
+					continue;
+				} else {
+					splitIndex = closingPairIndex;
+				}
 			}
         }
         
-        return rawCommands;
+        String command = cmdStringBuilder.toString();
+        cmdStringBuilder = null;
+        return new StringBuilder(command);
     }
-    
+
     public static ArrayList<String> getTokens(String rawCommand, String currentDirectory) throws IOException {
         String spaceRegex = "[^\\s\"']+|\"([^\"]*)\"|'([^']*)'";
         ArrayList<String> tokens = new ArrayList<String>();
@@ -53,6 +86,7 @@ public class Parser {
                 nonQuote = regexMatcher.group().trim();
                 ArrayList<String> globbingResult = new ArrayList<String>();
                 Path dir = Paths.get(currentDirectory);
+                System.out.println(nonQuote);
                 DirectoryStream<Path> stream = Files.newDirectoryStream(dir, nonQuote);
                 for (Path entry : stream) {
                     globbingResult.add(entry.getFileName().toString());
