@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 public class Jsh {
     private static FileSystem fileSystem = new FileSystem();
-    private static String currentDirectory = System.getProperty("user.dir");
     private static CommandManager commandManager;
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
@@ -39,7 +38,7 @@ public class Jsh {
             Scanner input = new Scanner(System.in);
             try {
                 while (true) {
-                    String prompt = currentDirectory + "> ";
+                    String prompt = fileSystem.getWorkingDirectoryPath() + "> ";
                     System.out.print(prompt);
                     try {
                         String cmdline = input.nextLine();
