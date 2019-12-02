@@ -12,9 +12,9 @@ public class EvalVisitor implements TreeVisitor {
     }
 
     public void visit(CallNode callNode) {
-        //System.out.println(callNode.getCmdString());
         try {
-            ArrayList<String> tokens = Parser.getTokens(callNode.getCmdString(), commandManager.getFileSystem().getWorkingDirectoryPath());
+            ArrayList<String> tokens = Parser.getTokens(callNode.getCmdString(), 
+                                                        commandManager.getFileSystem().getWorkingDirectoryPath());
             commandManager.executeCommand(tokens);
         }
         catch (IOException ioException) {
