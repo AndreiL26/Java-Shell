@@ -46,5 +46,6 @@ public class CommandManager {
         commandMap.put("head", new HeadCommand(fileSystem, writer));
         commandMap.put("tail", new TailCommand(fileSystem, writer));
         commandMap.put("grep", new GrepCommand(fileSystem, writer));
+        commandMap.put("sed", new SedCommand(fileSystem, writer));
     }
 }
