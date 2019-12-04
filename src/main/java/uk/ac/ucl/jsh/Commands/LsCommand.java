@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class LsCommand extends Command {
     private File currDir;
+    
 
     public LsCommand(FileSystem fileSystem, OutputStreamWriter writer) {
         super(fileSystem, writer);

@@ -9,8 +9,8 @@ import java.io.OutputStreamWriter;
 import java.util.Scanner;
 
 public class Jsh {
-    private static FileSystem fileSystem = new FileSystem();
-    private static CommandManager commandManager;
+    private static final FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));;
+    private static CommandManager commandManager;   // Might want to make this final as well if Outputstream will always remain System.out
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
