@@ -3,6 +3,7 @@ package uk.ac.ucl.jsh;
 import uk.ac.ucl.jsh.Commands.SedCommand;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,21 +32,33 @@ public class SedCommandTest {
     }
 
     @Before
-    // Create the Test
+    // Create the File Hierarchy
     public void createHierarchy() throws IOException {
        fileSystem.createTestFileHierarchy();
-       fileSystem.deleteTestFileHierarchy();
+    }
+
+    @After
+    // Delete the File Hierarchy
+    public void deleteHierarchy() throws IOException {
+        fileSystem.deleteTestFileHierarchy();
     }
 
 
     @Test
     public void test() throws IOException{
-        /*
         ArrayList<String> commandArguments = new ArrayList<>();
-        commandArguments.add("s/ha/ha/");
+        commandArguments.add("s/test/repl/g");
+        commandArguments.add("Soft");
         sedCommand.runCommand(commandArguments);
-        assertEquals("/tmp" + System.getProperty("line.separator"), outputStream.toString());
-        */
+        String resultString = new String();
+        resultString += "This is a repl\n";
+        resultString += "This is a repl of another repl\n";
+        resultString += "\n";
+        resultString += "Have more lines inside this file!\n";
+        resultString += "Anoter strange line!\n";
+        
+        assertEquals(resultString, outputStream.toString());
+        
     }
     
     

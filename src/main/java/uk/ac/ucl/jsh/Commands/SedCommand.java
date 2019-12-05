@@ -61,6 +61,7 @@ public class SedCommand extends Command {
         return replacement;
     }
 
+
     @Override
     public void runCommand(ArrayList<String> commandArguments) throws IOException {
         checkArguments(commandArguments);

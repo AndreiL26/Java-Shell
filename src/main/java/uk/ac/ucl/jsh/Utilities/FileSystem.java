@@ -1,13 +1,38 @@
 package uk.ac.ucl.jsh.Utilities;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 
 public class FileSystem {
     private String workingDirectoryPath;
+
+
+    private void deleteDirectory(File crtDirectory) {
+        File[] files = crtDirectory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                deleteDirectory(file);
+            }
+         }
+        crtDirectory.delete();
+    }
+
+    private String generateFileText () {
+        String resultString = new String();
+        
+        resultString += "This is a test\n";
+        resultString += "This is a test of another test\n";
+        resultString += "\n";
+        resultString += "Have more lines inside this file!\n";
+        resultString += "Anoter strange line!\n";
+
+        return resultString;
+    }
 
     public FileSystem(String workingDirectoryPath) {
         this.setWorkingDirectory(workingDirectoryPath);
@@ -30,48 +55,34 @@ public class FileSystem {
          // Create tmp's children
          Path documentsPath = Files.createDirectory(Paths.get(tmpPath + fileSeparator + "Documents"));
          Path otherPath = Files.createDirectory(Paths.get(tmpPath + fileSeparator + "Other"));
-         Files.createFile(Paths.get(tmpPath + fileSeparator + "Soft"));
+         Path softFilePath = Files.createFile(Paths.get(tmpPath + fileSeparator + "Soft"));
 
          // Create Documents's children
          Path engPath = Files.createDirectory(Paths.get(documentsPath + fileSeparator + "Eng"));
-         Files.createFile(Paths.get(documentsPath + fileSeparator + "Ware"));
-         Files.createFile(Paths.get(documentsPath + fileSeparator + "Proj"));
+         Path wareFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Ware"));
+         Path projFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Proj"));
          
          // Create Eng's children
-         Files.createFile(Paths.get(engPath + fileSeparator + "Test"));
-         Files.createFile(Paths.get(engPath + fileSeparator + "Code"));
-         Files.createFile(Paths.get(engPath + fileSeparator + "Plan"));
+         Path testFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Test"));
+         Path codeFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Code"));
+         Path planFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Plan"));
  
          // Create Other's children
-         Files.createFile(Paths.get(otherPath + fileSeparator + "Oth1"));
-         Files.createFile(Paths.get(otherPath + fileSeparator + "Oth2"));
+         Path oth1FilePath = Files.createFile(Paths.get(otherPath + fileSeparator + "Oth1"));
+         Path oth2FilePath = Files.createFile(Paths.get(otherPath + fileSeparator + "Oth2"));
+
+         // Write to the created files
+         Files.write(softFilePath, generateFileText().getBytes(), StandardOpenOption.APPEND);
+         Files.write(wareFilePath, generateFileText().getBytes(), StandardOpenOption.APPEND);
     }
 
     public void deleteTestFileHierarchy() throws IOException {
-
-        /// REFACTORING -> ADD A RECURSIVE METHOD TO DELETE A DIRECTORY PLEASE!
-
+        // Or should we have a function called deleteAddedFiles that removes all the files in tmp except the one that is already there
         String tmpPath = System.getProperty("java.io.tmpdir");
         String fileSeparator = System.getProperty("file.separator");
 
-        Path documentsPath = Paths.get(tmpPath + fileSeparator + "Documents");
-        Path otherPath = Paths.get(tmpPath + fileSeparator + "Other");
-        Path engPath = Paths.get(documentsPath + fileSeparator + "Eng");
-
+        deleteDirectory(new File(tmpPath+fileSeparator+"Documents"));
+        deleteDirectory(new File(tmpPath+fileSeparator+"Other"));
         Files.deleteIfExists(Paths.get(tmpPath + fileSeparator + "Soft"));
-
-        Files.deleteIfExists(Paths.get(otherPath + fileSeparator + "Oth1"));
-        Files.deleteIfExists(Paths.get(otherPath + fileSeparator + "Oth2"));
-        Files.deleteIfExists(otherPath);
-
-        Files.deleteIfExists(Paths.get(engPath + fileSeparator + "Test"));
-        Files.deleteIfExists(Paths.get(engPath + fileSeparator + "Code"));
-        Files.deleteIfExists(Paths.get(engPath + fileSeparator + "Plan"));
-        Files.deleteIfExists(engPath);
-
-
-        Files.deleteIfExists(Paths.get(documentsPath + fileSeparator + "Ware"));
-        Files.deleteIfExists(Paths.get(documentsPath + fileSeparator + "Proj"));
-        Files.deleteIfExists(documentsPath);
     }
 }
