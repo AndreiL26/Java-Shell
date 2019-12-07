@@ -24,13 +24,10 @@ public class FileSystem {
 
     private String generateFileText () {
         String resultString = new String();
-        
-        resultString += "This is a test\n";
-        resultString += "This is a test of another test\n";
-        resultString += "\n";
-        resultString += "Have more lines inside this file!\n";
-        resultString += "Anoter strange line!\n";
-
+        String lineSeparator = System.getProperty("line.separator");
+        resultString += "This is a test" + lineSeparator;
+        resultString += "This is a test of another test" + lineSeparator;
+        resultString += lineSeparator;
         return resultString;
     }
 
@@ -44,6 +41,7 @@ public class FileSystem {
     }
 
     public void setWorkingDirectory(String workingDirectoryPath) {
+        // The workingDirectoryPath must be an absolute Path, change the function to reflect this fact!
         this.workingDirectoryPath = workingDirectoryPath;
     }
 
@@ -60,7 +58,7 @@ public class FileSystem {
          // Create Documents's children
          Path engPath = Files.createDirectory(Paths.get(documentsPath + fileSeparator + "Eng"));
          Path wareFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Ware"));
-         Path projFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Proj"));
+         Path projFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Proj.txt"));
          
          // Create Eng's children
          Path testFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Test"));
@@ -70,6 +68,8 @@ public class FileSystem {
          // Create Other's children
          Path oth1FilePath = Files.createFile(Paths.get(otherPath + fileSeparator + "Oth1"));
          Path oth2FilePath = Files.createFile(Paths.get(otherPath + fileSeparator + "Oth2"));
+         Path dotFilePath = Files.createFile(Paths.get(otherPath + fileSeparator + ".test"));
+         Path emptyDirPath = Files.createDirectory(Paths.get(otherPath + fileSeparator + "Empty"));
 
          // Write to the created files
          Files.write(softFilePath, generateFileText().getBytes(), StandardOpenOption.APPEND);
