@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Commands.PwdCommand;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.CommandManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +25,6 @@ public class PwdCommandTest {
     private static OutputStreamWriter writer;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> commandArguments;
-    private String fileSeparator = System.getProperty("file.separator");
     private String lineSeparator = System.getProperty("line.separator");
     
     @BeforeClass
@@ -68,17 +68,17 @@ public class PwdCommandTest {
 
     @Test
     public void testRootDirectory() throws IOException {
-        fileSystem.setWorkingDirectory(fileSeparator);
+        fileSystem.setWorkingDirectory(CommandManager.encodePath("/"));
         pwdCommand.runCommand(commandArguments);
-        String expectedOutput = fileSeparator + lineSeparator;
+        String expectedOutput = CommandManager.encodePath("/") + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
     
     @Test
     public void testRandomDirectory() throws IOException {
-        fileSystem.setWorkingDirectory(fileSeparator + "tmp" + fileSeparator + "Other");
+        fileSystem.setWorkingDirectory(CommandManager.encodePath("/tmp/Other"));
         pwdCommand.runCommand(commandArguments);
-        String expectedOutput = fileSeparator + "tmp" + fileSeparator + "Other" + lineSeparator;
+        String expectedOutput = CommandManager.encodePath("/tmp/Other") + lineSeparator;
         assertEquals(expectedOutput , outputStream.toString());
     }
 

@@ -78,8 +78,8 @@ public class WcCommand extends Command{
         } 
     }
     
-    private void checkArguments(ArrayList<String> commandArguments) {
-        System.out.println(commandArguments);
+    public void checkArguments(ArrayList<String> commandArguments) {
+        // System.out.println(commandArguments);
         if (commandArguments.isEmpty()) {
             throw new RuntimeException("wc: missing arguments");
         }
@@ -89,7 +89,7 @@ public class WcCommand extends Command{
 
         String flag = commandArguments.get(0);
         if (!flag.equals("-l") && !flag.equals("-m") && !flag.equals("-w")) {
-            throw new RuntimeException("wc: wrong argument " + commandArguments.get(0));
+            throw new RuntimeException("wc: wrong argument " + flag);
         }
     } 
 }

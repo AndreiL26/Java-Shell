@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Commands.CdCommand;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.CommandManager;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +25,6 @@ public class CdCommandTest {
     private static OutputStreamWriter writer;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> commandArguments;
-    private String fileSeparator = System.getProperty("file.separator");
     
     @BeforeClass
     public static void setClass() {
@@ -80,24 +80,24 @@ public class CdCommandTest {
 
     @Test 
     public void testInvalidPath() throws IOException {
-        commandArguments.add("invalid" + fileSeparator + "Path");
+        commandArguments.add(CommandManager.encodePath("invalid/Path"));
         try {
             cdCommand.runCommand(commandArguments);
             fail("cd did not throw an invalid path exception");
         } catch(RuntimeException e) {
-            String expectedMessage = "cd: " + "invalid" + fileSeparator + "Path" + " is not an existing directory";
+            String expectedMessage = "cd: " + CommandManager.encodePath("invalid/Path") + " is not an existing directory";
             assertEquals(expectedMessage, e.getMessage());
         }
     }
 
     @Test 
     public void testFilePath() throws IOException {
-        commandArguments.add(fileSeparator + "Soft");
+        commandArguments.add(CommandManager.encodePath("/Soft"));
         try {
             cdCommand.runCommand(commandArguments);
             fail("cd did not throw an invalid path exception");
         } catch(RuntimeException e) {
-            String expectedMessage = "cd: " + fileSeparator + "Soft" + " is not an existing directory";
+            String expectedMessage = "cd: " + CommandManager.encodePath("/Soft") + " is not an existing directory";
             assertEquals(expectedMessage, e.getMessage());
         }
     }
@@ -117,38 +117,38 @@ public class CdCommandTest {
     @Test
     public void testGoingUpFromRoot() throws IOException {
         commandArguments.add("..");
-        fileSystem.setWorkingDirectory(fileSeparator);
+        fileSystem.setWorkingDirectory(CommandManager.encodePath("/"));
         cdCommand.runCommand(commandArguments);
-        assertEquals(fileSeparator, fileSystem.getWorkingDirectoryPath());
+        assertEquals(CommandManager.encodePath("/"), fileSystem.getWorkingDirectoryPath());
     }
 
     @Test
     public void testCurrentDirectory() throws IOException {
         commandArguments.add(".");
         cdCommand.runCommand(commandArguments);
-        assertEquals(fileSeparator + "tmp", fileSystem.getWorkingDirectoryPath());
+        assertEquals(CommandManager.encodePath("/tmp"), fileSystem.getWorkingDirectoryPath());
     }
 
     @Test
     public void testParentDirectory() throws IOException {
         commandArguments.add("..");
         cdCommand.runCommand(commandArguments);
-        assertEquals(fileSeparator, fileSystem.getWorkingDirectoryPath());
+        assertEquals(CommandManager.encodePath("/"), fileSystem.getWorkingDirectoryPath());
     }
 
     @Test
     public void testRelativePathToDirectory() throws IOException {
-        commandArguments.add("Documents" + fileSeparator + "Eng");
+        commandArguments.add(CommandManager.encodePath("/Documents/Eng"));
         cdCommand.runCommand(commandArguments);
-        String expectedOutput = System.getProperty("java.io.tmpdir") + fileSeparator + "Documents" + fileSeparator + "Eng";
+        String expectedOutput = System.getProperty("java.io.tmpdir") + CommandManager.encodePath("/Documents/Eng");
         assertEquals(expectedOutput, fileSystem.getWorkingDirectoryPath());
     }
 
     @Test
    public void testAbsolutePathToDirectory() throws IOException {
-       commandArguments.add(fileSeparator + "tmp" + fileSeparator + "Other");
+       commandArguments.add(CommandManager.encodePath("/tmp/Other"));
        cdCommand.runCommand(commandArguments);
-       String expectedOutput = fileSeparator + "tmp" + fileSeparator + "Other";
+       String expectedOutput = CommandManager.encodePath("/tmp/Other");
        assertEquals(expectedOutput, fileSystem.getWorkingDirectoryPath());
    }
 

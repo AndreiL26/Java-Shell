@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Commands.CatCommand;
+import uk.ac.ucl.jsh.Utilities.CommandManager;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
 import org.junit.After;
@@ -25,7 +26,6 @@ public class CatCommandTest {
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> commandArguments;
     private String lineSeparator = System.getProperty("line.separator");
-    private String fileSeparator = System.getProperty("file.separator");
     
     @BeforeClass
     public static void setClass() {
@@ -86,7 +86,7 @@ public class CatCommandTest {
 
     @Test
     public void testFileAbsolutePath() throws IOException {
-        commandArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Ware");
+        commandArguments.add(CommandManager.encodePath("/tmp/Documents/Ware"));
         catCommand.runCommand(commandArguments);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
@@ -97,7 +97,7 @@ public class CatCommandTest {
     
     @Test
     public void testFileRelativePath() throws IOException {
-        commandArguments.add("Documents" + fileSeparator + "Ware");
+        commandArguments.add(CommandManager.encodePath("Documents/Ware"));
         catCommand.runCommand(commandArguments);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
@@ -108,8 +108,8 @@ public class CatCommandTest {
 
     @Test
     public void testMultipleFiles() throws IOException {
-        commandArguments.add("Documents" + fileSeparator + "Ware");
-        commandArguments.add(fileSeparator + "tmp" + fileSeparator + "Soft");
+        commandArguments.add(CommandManager.encodePath("Documents/Ware"));
+        commandArguments.add(CommandManager.encodePath("/tmp/Soft"));
         catCommand.runCommand(commandArguments);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;

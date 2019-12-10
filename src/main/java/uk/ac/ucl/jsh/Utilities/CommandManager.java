@@ -48,4 +48,9 @@ public class CommandManager {
         commandMap.put("grep", new GrepCommand(fileSystem, writer));
         commandMap.put("sed", new SedCommand(fileSystem, writer));
     }
+
+    public static String encodePath(String path) {
+        // replaces all the / with a file separator for JUnit tests
+        return path.replaceAll("/", System.getProperty("file.separator"));
+    }
 }

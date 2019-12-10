@@ -59,6 +59,7 @@ public class FileSystem {
          Path engPath = Files.createDirectory(Paths.get(documentsPath + fileSeparator + "Eng"));
          Path wareFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Ware"));
          Path projFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Proj.txt"));
+         Path testDocumentFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "test.txt"));
          
          // Create Eng's children
          Path testFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Test"));
@@ -74,6 +75,7 @@ public class FileSystem {
          // Write to the created files
          Files.write(softFilePath, generateFileText().getBytes(), StandardOpenOption.APPEND);
          Files.write(wareFilePath, generateFileText().getBytes(), StandardOpenOption.APPEND);
+         Files.write(testDocumentFilePath, "hello\n".getBytes(), StandardOpenOption.APPEND);
     }
 
     public void deleteTestFileHierarchy() throws IOException {

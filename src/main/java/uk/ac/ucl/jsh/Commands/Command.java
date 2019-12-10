@@ -16,7 +16,7 @@ public abstract class Command {
 
     public abstract void runCommand(ArrayList<String> commandArguments) throws IOException;
     
-    // public abstract void checkArguments(ArrayList<String> commandArguments); 
+    public abstract void checkArguments(ArrayList<String> commandArguments); 
 
 
 }
