@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 
 public class CommandManager {
     private HashMap<String, Command> commandMap;
@@ -21,6 +22,16 @@ public class CommandManager {
     public FileSystem getFileSystem() {
         return fileSystem;
     }
+
+    public void setWriterStream(PrintStream writerStream) throws IOException {
+        writer.close();
+        writer = new OutputStreamWriter(writerStream);
+
+        for (HashMap.Entry mapEntry : commandMap.entrySet()) {  
+            Command cmd = (Command)mapEntry.getValue();
+            cmd.setWriter(writer);
+        } 
+    } 
 
     public void executeCommand(ArrayList<String> tokens) {
         String commandName = tokens.get(0);

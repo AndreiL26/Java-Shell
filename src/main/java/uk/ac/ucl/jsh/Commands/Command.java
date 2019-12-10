@@ -14,6 +14,9 @@ public abstract class Command {
         this.writer = writer;
     }
 
+    public void setWriter(OutputStreamWriter writer) {
+        this.writer = writer;
+    }
     public abstract void runCommand(ArrayList<String> commandArguments) throws IOException;
     
     public abstract void checkArguments(ArrayList<String> commandArguments); 
