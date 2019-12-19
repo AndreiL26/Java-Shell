@@ -15,25 +15,29 @@ compileUnit
     ;
 
 pwd     :   PWD;
-cd      :   CD ' '+ argument;
-ls      :   LS (' '+ argument)?;
-cat     :   CAT (' '+ arguments)?;
-echo    :   ECHO ' '+ arguments;
-head    :   HEAD (' '+ arguments)?;
-tail    :   TAIL (' '+ arguments)?;
-grep    :   GREP (' '+ arguments);
-sed     :   SED (' '+ arguments);
-find    :   FIND (' '+ arguments);
-wc      :   WC (' '+ arguments)?;
+cd      :   CD WS+ argument;
+ls      :   LS (WS+ argument)?;
+cat     :   CAT (WS+ arguments)?;
+echo    :   ECHO WS+ arguments;
+head    :   HEAD (WS+ arguments)?;
+tail    :   TAIL (WS+ arguments)?;
+grep    :   GREP (WS+ arguments);
+sed     :   SED (WS+ arguments);
+find    :   FIND (WS+ arguments);
+wc      :   WC (WS+ arguments)?;
 
 arguments
     :   argument
-    |   argument ' '+ arguments
+    |   argument WS+ arguments
     ;
 
 argument
+    :   non_quote = non_keywords argument?
+    |   quoted argument?
+    ;
+
+non_keywords
     :   NON_KEYWORD+
-    |   quoted
     ;
 
 quoted
@@ -47,7 +51,7 @@ single_quoted
     ;
 
 squote_content
-    :   (NON_KEYWORD | QUOTE_CONTENT | '"' | '`')*
+    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '`')*
     ;
 
 double_quoted
@@ -55,7 +59,7 @@ double_quoted
     ;
 
 dquote_content 
-    :   (NON_KEYWORD | QUOTE_CONTENT | '\'' | backquoted)*
+    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '\'' | backquoted)*
     ;
 
 backquoted
@@ -63,7 +67,7 @@ backquoted
     ;
 
 bquote_content
-    :   (NON_KEYWORD | QUOTE_CONTENT | '"' | '\'')*
+    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '\'')*
     ;
 
 PWD     : 'pwd';
@@ -78,5 +82,6 @@ SED     : 'sed';
 FIND    : 'find';
 WC      : 'wc';
 
+WS             : [ \t];
 NON_KEYWORD    : ~[ \t"'`\n\r;|><];
 QUOTE_CONTENT  : [;|>< \t];

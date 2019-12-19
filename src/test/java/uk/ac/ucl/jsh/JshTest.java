@@ -8,7 +8,8 @@ public class JshTest {
 
     @Test
     public void testJsh() throws Exception {
-        Jsh.eval("grep mama mama", System.out);
+        Jsh.eval("echo mama a\"m\"a", System.out);
+        //Jsh.eval("echo jas", System.out);
         assert(true);
     }
 

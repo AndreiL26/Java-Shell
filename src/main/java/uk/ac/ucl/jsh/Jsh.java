@@ -21,7 +21,7 @@ public class Jsh {
     private static CommandManager commandManager;
 
     public static Node getCmdTree(String cmdLine) {
-        System.out.println(cmdLine);
+        //System.out.println(cmdLine);
         CmdLineParserLexer parserLexer = new CmdLineParserLexer(CharStreams.fromString(cmdLine));
         CmdLineParserParser parserParser = new CmdLineParserParser(new CommonTokenStream(parserLexer));
         CmdLineParserParser.CompileUnitContext compileUnit = parserParser.compileUnit();
