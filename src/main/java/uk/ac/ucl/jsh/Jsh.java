@@ -1,21 +1,37 @@
 package uk.ac.ucl.jsh;
 
+import uk.ac.ucl.jsh.Parser.BuildCmdTree;
 import uk.ac.ucl.jsh.Parser.Node;
 import uk.ac.ucl.jsh.Utilities.*;
-import uk.ac.ucl.jsh.Parser.Parser;
+import uk.ac.ucl.jsh.antlr.CmdLineParser.CmdLineParserLexer;
+import uk.ac.ucl.jsh.antlr.CmdLineParser.CmdLineParserParser;
+
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Scanner;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+
+
 public class Jsh {
-    private static FileSystem fileSystem = new FileSystem();
+    public static final FileSystem fileSystem = new FileSystem();
     private static CommandManager commandManager;
+
+    public static Node getCmdTree(String cmdLine) {
+        System.out.println(cmdLine);
+        CmdLineParserLexer parserLexer = new CmdLineParserLexer(CharStreams.fromString(cmdLine));
+        CmdLineParserParser parserParser = new CmdLineParserParser(new CommonTokenStream(parserLexer));
+        CmdLineParserParser.CompileUnitContext compileUnit = parserParser.compileUnit();
+        return new BuildCmdTree().visitCompileUnit(compileUnit);
+    }
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(output);
         commandManager = new CommandManager(fileSystem, writer);
-        Node cmdTree = Parser.getCmdTree(cmdline);
+        Node cmdTree = getCmdTree(cmdline);
         cmdTree.accept(new EvalVisitor(commandManager));
     }
 

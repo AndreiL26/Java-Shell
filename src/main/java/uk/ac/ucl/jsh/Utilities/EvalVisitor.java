@@ -1,8 +1,13 @@
 package uk.ac.ucl.jsh.Utilities;
 
-import uk.ac.ucl.jsh.Parser.*;
-import java.io.IOException;
 import java.util.ArrayList;
+
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+
+import uk.ac.ucl.jsh.Parser.*;
+import uk.ac.ucl.jsh.antlr.CallParser.CallParserLexer;
+import uk.ac.ucl.jsh.antlr.CallParser.CallParserParser;
 
 public class EvalVisitor implements TreeVisitor {
     private CommandManager commandManager;
@@ -12,14 +17,11 @@ public class EvalVisitor implements TreeVisitor {
     }
 
     public void visit(CallNode callNode) {
-        try {
-            ArrayList<String> tokens = Parser.getTokens(callNode.getCmdString(), 
-                                                        commandManager.getFileSystem().getWorkingDirectoryPath());
-            commandManager.executeCommand(tokens);
-        }
-        catch (IOException ioException) {
-            throw new RuntimeException(callNode + " could not be executed");
-        }
+        CallParserLexer parserLexer = new CallParserLexer(CharStreams.fromString(callNode.getCmdString()));
+        CallParserParser parserParser = new CallParserParser(new CommonTokenStream(parserLexer));
+        CallParserParser.CompileUnitContext compileUnit = parserParser.compileUnit();
+        ArrayList<String> tokens = new BuildCallCommand().visitCompileUnit(compileUnit);
+        commandManager.executeCommand(tokens);
     }
 
     public void visit(PipeNode pipeNode) {
@@ -29,6 +31,8 @@ public class EvalVisitor implements TreeVisitor {
 
     public void visit(SeqNode seqNode) {
         seqNode.getLeft().accept(this);
-        seqNode.getRight().accept(this);
+        if (seqNode.getRight() != null) {
+            seqNode.getRight().accept(this);
+        }
     }
 }

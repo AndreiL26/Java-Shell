@@ -55,6 +55,7 @@ public class HeadCommand extends Command{
     }
 
     public void checkArguments(ArrayList<String> commandArguments) {
+        System.out.println(commandArguments);
         if (commandArguments.isEmpty()) {
             throw new RuntimeException("head: missing arguments");
         }
