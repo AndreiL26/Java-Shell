@@ -10,15 +10,29 @@ import java.nio.file.Paths;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Cat extends Application{
     
     public Cat(FileSystem fileSystem) {
         super(fileSystem);
+    }
+
+    private void readAndWrite(BufferedReader reader, OutputStreamWriter writer) {
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                writer.write(String.valueOf(line));
+                writer.write(System.getProperty("line.separator"));
+                writer.flush();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("cat: cannot read input");
+        }
+
     }
 
     @Override
@@ -28,21 +42,7 @@ public class Cat extends Application{
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         
         if(applicationArguments.size() == 0) {
-            Scanner scanner = new Scanner(inputStream);
-            String line = null;
-            try {
-                    while (scanner.hasNextLine()) {
-                        line = scanner.nextLine();
-                        writer.write(line);
-                        writer.write(System.getProperty("line.separator"));
-                        writer.flush();
-                    }
-                }
-                catch (IOException e) {
-                    scanner.close();
-                    throw new RuntimeException("cat: cannot write");
-                }
-                scanner.close();   
+            readAndWrite(new BufferedReader(new InputStreamReader(inputStream)), writer);
         }
         else {
             for (String arg : applicationArguments) {
@@ -58,12 +58,8 @@ public class Cat extends Application{
                     if(currFile.isFile()) { 
                         Path filePath = Paths.get(currFile.getPath());
                         try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
-                            String line = null;
-                            while ((line = reader.readLine()) != null) {
-                                writer.write(String.valueOf(line));
-                                writer.write(System.getProperty("line.separator"));
-                                writer.flush();
-                            }
+                            readAndWrite(reader, writer);
+                            
                         } 
                         catch (IOException e) {
                             throw new RuntimeException("cat: cannot open " + arg);
