@@ -1,26 +1,28 @@
-package uk.ac.ucl.jsh.Commands;
+package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class LsCommand extends Command {
+public class Ls extends Application {
     private File currDir;
     
-    public LsCommand(FileSystem fileSystem, OutputStreamWriter writer) {
-        super(fileSystem, writer);
+    public Ls(FileSystem fileSystem) {
+        super(fileSystem);
     }
 
     @Override
-    public void runCommand(ArrayList<String> commandArguments) throws IOException {
-        checkArguments(commandArguments);
+    public void execute(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        checkArguments(commandArguments, inputStream, outputStream);
+        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         if (commandArguments.isEmpty()) {
             currDir = new File(fileSystem.getWorkingDirectoryPath());
         } 
-        else if (commandArguments.size() == 1) {
-            // Consider Absolute path vs Relative PAth
+        else {
             if(commandArguments.get(0).startsWith(System.getProperty("file.separator"))) {
                 currDir = new File(commandArguments.get(0));
             }
@@ -50,7 +52,7 @@ public class LsCommand extends Command {
         }
     }
 
-    public void checkArguments(ArrayList<String> commandArguments) {
+    public void checkArguments(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) {
         if(commandArguments.size() > 1) {
             throw new RuntimeException("ls: too many arguments");
         }

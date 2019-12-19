@@ -5,18 +5,16 @@ import uk.ac.ucl.jsh.Utilities.*;
 import uk.ac.ucl.jsh.Parser.Parser;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Scanner;
 
 public class Jsh {
     private static final FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));;
-    public static CommandManager commandManager;   // Might want to make this final as well if Outputstream will always remain System.out
+    public static ApplicationManager applicationManager;   // Might want to make this final as well if Outputstream will always remain System.out
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
-        OutputStreamWriter writer = new OutputStreamWriter(output);
-        commandManager = new CommandManager(fileSystem, writer);
+        applicationManager = new ApplicationManager(fileSystem);
         Node cmdTree = Parser.getCmdTree(cmdline);
-        cmdTree.accept(new EvalVisitor(commandManager));
+        cmdTree.accept(new EvalVisitor(applicationManager), null, System.out);
     }
 
     public static void main(String[] args) {

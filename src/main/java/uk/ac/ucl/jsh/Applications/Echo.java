@@ -1,19 +1,22 @@
-package uk.ac.ucl.jsh.Commands;
+package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import java.io.OutputStreamWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
-public class EchoCommand extends Command {
+public class Echo extends Application {
     
-    public EchoCommand(FileSystem fileSystem, OutputStreamWriter writer) {
-        super(fileSystem, writer);
+    public Echo(FileSystem fileSystem) {
+        super(fileSystem);
     }
 
     @Override
-    public void runCommand(ArrayList<String> commandArguments) throws IOException{
-        checkArguments(commandArguments);
+    public void execute(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) throws IOException{
+        checkArguments(commandArguments, inputStream, outputStream);
+        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         boolean atLeastOnePrinted = false;
         for (String arg : commandArguments) {
             writer.write(arg);
@@ -29,7 +32,7 @@ public class EchoCommand extends Command {
         }
     }
 
-    public void checkArguments(ArrayList<String> commandArguments) {
+    public void checkArguments(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) {
         
     }
 }

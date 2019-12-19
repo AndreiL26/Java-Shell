@@ -1,27 +1,21 @@
 package uk.ac.ucl.jsh;
 
-import uk.ac.ucl.jsh.Commands.EchoCommand;
+import uk.ac.ucl.jsh.Applications.Echo;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-
 import java.util.ArrayList;
 
 
-public class EchoCommandTest {
-    private static EchoCommand echoCommand;
+public class EchoTest {
+    private static Echo echoApplication;
     private static FileSystem fileSystem;
-    private static OutputStreamWriter writer;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> commandArguments;
     private String lineSeparator = System.getProperty("line.separator");
@@ -31,9 +25,7 @@ public class EchoCommandTest {
         commandArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-        writer = new OutputStreamWriter(System.out);
-        echoCommand = new EchoCommand(fileSystem, writer);
+        echoApplication = new Echo(fileSystem);
     }
 
     @After
@@ -46,7 +38,7 @@ public class EchoCommandTest {
     @Test
     public void testOneArgument() throws IOException {
         commandArguments.add("hello world");
-        echoCommand.runCommand(commandArguments);
+        echoApplication.execute(commandArguments, System.in, outputStream);
         assertEquals("hello world" + lineSeparator, outputStream.toString());
     }
 
@@ -55,13 +47,13 @@ public class EchoCommandTest {
         commandArguments.add("first");
         commandArguments.add("second");
         commandArguments.add("third");
-        echoCommand.runCommand(commandArguments);
+        echoApplication.execute(commandArguments, System.in, outputStream);
         assertEquals("first second third" + lineSeparator, outputStream.toString());
     }
 
     @Test
     public void testNoArguments() throws IOException {
-        echoCommand.runCommand(commandArguments);
+        echoApplication.execute(commandArguments, System.in, outputStream);
         assertEquals("", outputStream.toString());
     }
 

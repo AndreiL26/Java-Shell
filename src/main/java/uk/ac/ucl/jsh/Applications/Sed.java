@@ -1,4 +1,4 @@
-package uk.ac.ucl.jsh.Commands;
+package uk.ac.ucl.jsh.Applications;
 
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -11,13 +11,15 @@ import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
-public class SedCommand extends Command {
+public class Sed extends Application {
     private File sedFile;
 
-    public SedCommand(FileSystem fileSystem, OutputStreamWriter writer) {
-        super(fileSystem, writer);
+    public Sed(FileSystem fileSystem) {
+        super(fileSystem);
     }
 
     private boolean isValid(String argument) { /// MIGHT STILL BE WRONG I THINK?
@@ -63,13 +65,14 @@ public class SedCommand extends Command {
 
 
     @Override
-    public void runCommand(ArrayList<String> commandArguments) throws IOException {
-        checkArguments(commandArguments);
+    public void execute(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        checkArguments(commandArguments, inputStream, outputStream);
         String regex = getRegex(commandArguments.get(0));
         String replacement  = getReplacement(commandArguments.get(0));
         boolean replaceAll = false;
         Charset encoding = StandardCharsets.UTF_8;
         BufferedReader reader;
+        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
 
         if(commandArguments.get(0).endsWith("g")) {
             replaceAll = true;
@@ -80,7 +83,7 @@ public class SedCommand extends Command {
             reader = Files.newBufferedReader(filePath,encoding);
         }
         else {
-            reader = new BufferedReader(new InputStreamReader(System.in));
+            reader = new BufferedReader(new InputStreamReader(inputStream));
         }
         try {
             String line = null;
@@ -98,7 +101,7 @@ public class SedCommand extends Command {
         }
     }
 
-    public void checkArguments(ArrayList<String> commandArguments) {
+    public void checkArguments(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) {
         int numberOfArguments = commandArguments.size();
         if(numberOfArguments == 0)
             throw new RuntimeException("sed: missing arguments!");

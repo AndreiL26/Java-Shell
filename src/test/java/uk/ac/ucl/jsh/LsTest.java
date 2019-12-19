@@ -1,6 +1,6 @@
 package uk.ac.ucl.jsh;
 
-import uk.ac.ucl.jsh.Commands.LsCommand;
+import uk.ac.ucl.jsh.Applications.Ls;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
 import org.junit.After;
@@ -12,16 +12,12 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-
 import java.util.ArrayList;
 
 
-public class LsCommandTest {
-    private static LsCommand lsCommand;
+public class LsTest {
+    private static Ls lsApplication;
     private static FileSystem fileSystem;
-    private static OutputStreamWriter writer;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> commandArguments;
     private String lineSeparator = System.getProperty("line.separator");
@@ -31,9 +27,7 @@ public class LsCommandTest {
         commandArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-        writer = new OutputStreamWriter(System.out);
-        lsCommand = new LsCommand(fileSystem, writer);
+        lsApplication = new Ls(fileSystem);
     }
 
     @Before
@@ -57,7 +51,7 @@ public class LsCommandTest {
         commandArguments.add("/");
         commandArguments.add("..");
         try {
-            lsCommand.runCommand(commandArguments);
+            lsApplication.execute(commandArguments, System.in, outputStream);
             fail("ls did not throw a too many arguments exception");
         } catch(RuntimeException e) {
            String expectedMessage = "ls: too many arguments";
@@ -69,7 +63,7 @@ public class LsCommandTest {
     public void testCurrentDirectory() throws IOException {
         // The filesystem's current working directory will be /tmp/Documents
         fileSystem.setWorkingDirectory("/tmp/Documents");
-        lsCommand.runCommand(commandArguments);
+        lsApplication.execute(commandArguments, System.in, outputStream);
         String expectedOutput = "Ware" + "\t" + "Proj.txt" + "\t" + "Eng" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -78,7 +72,7 @@ public class LsCommandTest {
     public void testArgumentDirectoryRelativePath() throws IOException {
         // The filesystem's current working directory will be /tmp, but the argument will point to /tmp/Documents
         commandArguments.add("Documents"); 
-        lsCommand.runCommand(commandArguments);
+        lsApplication.execute(commandArguments, System.in, outputStream);
         String expectedOutput = "Ware" + "\t" + "Proj.txt" + "\t" + "Eng" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -86,7 +80,7 @@ public class LsCommandTest {
     @Test
     public void testArgumentDirectoryAbsolutePath() throws IOException {
         commandArguments.add("/tmp/Documents/Eng");
-        lsCommand.runCommand(commandArguments);
+        lsApplication.execute(commandArguments, System.in, outputStream);
         String expectedOutput = "Code" + "\t" + "Test" + "\t" + "Plan" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -94,7 +88,7 @@ public class LsCommandTest {
     @Test
     public void testIgnoreDotFiles() throws IOException {
         commandArguments.add("/tmp/Other");
-        lsCommand.runCommand(commandArguments);
+        lsApplication.execute(commandArguments, System.in, outputStream);
         String expectedOutput = "Oth1" + "\t" + "Empty" + "\t" + "Oth2" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -102,7 +96,7 @@ public class LsCommandTest {
     @Test
     public void testEmptyDirectory() throws IOException {
         commandArguments.add("/tmp/Other/Empty");
-        lsCommand.runCommand(commandArguments);
+        lsApplication.execute(commandArguments, System.in, outputStream);
         assertEquals("", outputStream.toString());
     }
 

@@ -21,7 +21,6 @@
     <argLine>-XX:MaxPermSize=512m</argLine>
   </properties>
   <build>
-    <pluginManagement>
       <plugins>
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
@@ -45,7 +44,6 @@
           </configuration>
         </plugin>          
       </plugins>
-    </pluginManagement>
   </build>
   <reporting>
     <plugins>

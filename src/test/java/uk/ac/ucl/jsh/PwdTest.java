@@ -1,6 +1,6 @@
 package uk.ac.ucl.jsh;
 
-import uk.ac.ucl.jsh.Commands.PwdCommand;
+import uk.ac.ucl.jsh.Applications.Pwd;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
 import org.junit.After;
@@ -12,16 +12,12 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-
 import java.util.ArrayList;
 
 
-public class PwdCommandTest {
-    private static PwdCommand pwdCommand;
+public class PwdTest {
+    private static Pwd pwdApplication;
     private static FileSystem fileSystem;
-    private static OutputStreamWriter writer;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> commandArguments;
     private String fileSeparator = System.getProperty("file.separator");
@@ -32,9 +28,7 @@ public class PwdCommandTest {
         commandArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-        writer = new OutputStreamWriter(System.out);
-        pwdCommand = new PwdCommand(fileSystem, writer);
+        pwdApplication = new Pwd(fileSystem);
     }
 
     @Before
@@ -57,7 +51,7 @@ public class PwdCommandTest {
     public void testInvalidNumberOfArguments() throws IOException {
         commandArguments.add("unwantedParameter");
         try {
-            pwdCommand.runCommand(commandArguments);
+            pwdApplication.execute(commandArguments, System.in, outputStream);
             fail("pwd did not throw a too many arguments exception");
         } catch(RuntimeException e) {
            String expectedMessage = "pwd: too many arguments";
@@ -69,7 +63,7 @@ public class PwdCommandTest {
     @Test
     public void testRootDirectory() throws IOException {
         fileSystem.setWorkingDirectory(fileSeparator);
-        pwdCommand.runCommand(commandArguments);
+        pwdApplication.execute(commandArguments, System.in, outputStream);
         String expectedOutput = fileSeparator + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -77,7 +71,7 @@ public class PwdCommandTest {
     @Test
     public void testRandomDirectory() throws IOException {
         fileSystem.setWorkingDirectory(fileSeparator + "tmp" + fileSeparator + "Other");
-        pwdCommand.runCommand(commandArguments);
+        pwdApplication.execute(commandArguments, System.in, outputStream);
         String expectedOutput = fileSeparator + "tmp" + fileSeparator + "Other" + lineSeparator;
         assertEquals(expectedOutput , outputStream.toString());
     }

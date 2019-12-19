@@ -1,25 +1,26 @@
-package uk.ac.ucl.jsh.Commands;
+package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
  
-public class CdCommand extends Command {
+public class Cd extends Application {
 
-    public CdCommand(FileSystem fileSystem, OutputStreamWriter writer) {
-        super(fileSystem, writer);
+    public Cd(FileSystem fileSystem) {
+        super(fileSystem);
     }
 
     @Override
-    public void runCommand(ArrayList<String> commandArguments) throws IOException {
-        checkArguments(commandArguments);
+    public void execute(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        checkArguments(commandArguments, inputStream, outputStream);
         String dirString = commandArguments.get(0);
         File dir;
         String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
-        
+
         if(dirString.startsWith(System.getProperty("file.separator"))) {
             dir = new File(dirString);
         }
@@ -34,7 +35,7 @@ public class CdCommand extends Command {
         fileSystem.setWorkingDirectory(currentDirectoryPath);
     }
 
-    public void checkArguments(ArrayList<String> commandArguments) {
+    public void checkArguments(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) {
         if (commandArguments.isEmpty()) {
             throw new RuntimeException("cd: missing argument");
         } else if (commandArguments.size() > 1) {

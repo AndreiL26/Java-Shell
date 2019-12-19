@@ -1,6 +1,6 @@
 package uk.ac.ucl.jsh;
 
-import uk.ac.ucl.jsh.Commands.CdCommand;
+import uk.ac.ucl.jsh.Applications.Cd;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
 import org.junit.After;
@@ -12,16 +12,12 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-
 import java.util.ArrayList;
 
 
-public class CdCommandTest {
-    private static CdCommand cdCommand;
+public class CdTest {
+    private static Cd cdApplication;
     private static FileSystem fileSystem;
-    private static OutputStreamWriter writer;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> commandArguments;
     private String fileSeparator = System.getProperty("file.separator");
@@ -31,9 +27,7 @@ public class CdCommandTest {
         commandArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-        writer = new OutputStreamWriter(System.out);
-        cdCommand = new CdCommand(fileSystem, writer);
+        cdApplication = new Cd(fileSystem);
     }
 
     @Before
@@ -57,7 +51,7 @@ public class CdCommandTest {
         commandArguments.add("..");
         commandArguments.add("..");
         try {
-            cdCommand.runCommand(commandArguments);
+            cdApplication.execute(commandArguments, System.in, outputStream);
             fail("cd did not throw a too many arguments exception");
 
         } catch(RuntimeException e) {
@@ -70,7 +64,7 @@ public class CdCommandTest {
 	@Test
     public void testLessArguments() throws IOException {
         try {
-            cdCommand.runCommand(commandArguments);
+            cdApplication.execute(commandArguments, System.in, outputStream);
             fail("cd did not throw a missing argument exception");
         } catch(RuntimeException e) {
             String expectedMessage = "cd: missing argument";
@@ -82,7 +76,7 @@ public class CdCommandTest {
     public void testInvalidPath() throws IOException {
         commandArguments.add("invalid" + fileSeparator + "Path");
         try {
-            cdCommand.runCommand(commandArguments);
+            cdApplication.execute(commandArguments, System.in, outputStream);
             fail("cd did not throw an invalid path exception");
         } catch(RuntimeException e) {
             String expectedMessage = "cd: " + "invalid" + fileSeparator + "Path" + " is not an existing directory";
@@ -94,7 +88,7 @@ public class CdCommandTest {
     public void testFilePath() throws IOException {
         commandArguments.add(fileSeparator + "Soft");
         try {
-            cdCommand.runCommand(commandArguments);
+            cdApplication.execute(commandArguments, System.in, outputStream);
             fail("cd did not throw an invalid path exception");
         } catch(RuntimeException e) {
             String expectedMessage = "cd: " + fileSeparator + "Soft" + " is not an existing directory";
@@ -106,7 +100,7 @@ public class CdCommandTest {
     public void testDotsInterpretation() throws IOException {
         commandArguments.add("...");
         try {
-            cdCommand.runCommand(commandArguments);
+            cdApplication.execute(commandArguments, System.in, outputStream);
             fail("cd did not throw an invalid path exception");
         } catch(RuntimeException e) {
             String expectedMessage = "cd: " + "..." + " is not an existing directory";
@@ -118,28 +112,28 @@ public class CdCommandTest {
     public void testGoingUpFromRoot() throws IOException {
         commandArguments.add("..");
         fileSystem.setWorkingDirectory(fileSeparator);
-        cdCommand.runCommand(commandArguments);
+        cdApplication.execute(commandArguments, System.in, outputStream);
         assertEquals(fileSeparator, fileSystem.getWorkingDirectoryPath());
     }
 
     @Test
     public void testCurrentDirectory() throws IOException {
         commandArguments.add(".");
-        cdCommand.runCommand(commandArguments);
+        cdApplication.execute(commandArguments, System.in, outputStream);
         assertEquals(fileSeparator + "tmp", fileSystem.getWorkingDirectoryPath());
     }
 
     @Test
     public void testParentDirectory() throws IOException {
         commandArguments.add("..");
-        cdCommand.runCommand(commandArguments);
+        cdApplication.execute(commandArguments, System.in, outputStream);
         assertEquals(fileSeparator, fileSystem.getWorkingDirectoryPath());
     }
 
     @Test
     public void testRelativePathToDirectory() throws IOException {
         commandArguments.add("Documents" + fileSeparator + "Eng");
-        cdCommand.runCommand(commandArguments);
+        cdApplication.execute(commandArguments, System.in, outputStream);
         String expectedOutput = System.getProperty("java.io.tmpdir") + fileSeparator + "Documents" + fileSeparator + "Eng";
         assertEquals(expectedOutput, fileSystem.getWorkingDirectoryPath());
     }
@@ -147,7 +141,7 @@ public class CdCommandTest {
     @Test
    public void testAbsolutePathToDirectory() throws IOException {
        commandArguments.add(fileSeparator + "tmp" + fileSeparator + "Other");
-       cdCommand.runCommand(commandArguments);
+       cdApplication.execute(commandArguments, System.in, outputStream);
        String expectedOutput = fileSeparator + "tmp" + fileSeparator + "Other";
        assertEquals(expectedOutput, fileSystem.getWorkingDirectoryPath());
    }

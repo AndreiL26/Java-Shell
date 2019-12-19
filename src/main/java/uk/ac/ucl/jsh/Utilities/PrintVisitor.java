@@ -3,10 +3,10 @@ package uk.ac.ucl.jsh.Utilities;
 import uk.ac.ucl.jsh.Parser.CallNode;
 import uk.ac.ucl.jsh.Parser.PipeNode;
 import uk.ac.ucl.jsh.Parser.SeqNode;
-
+/*
 public class PrintVisitor implements TreeVisitor {
     private StringBuilder shiftSB = new StringBuilder("");
-
+    /*
     public void visit(CallNode callNode) {
         System.out.println(shiftSB.toString() + "Call node: " + callNode.getCmdString());
     }
@@ -26,4 +26,6 @@ public class PrintVisitor implements TreeVisitor {
         seqNode.getRight().accept(this);
         shiftSB.setLength(shiftSB.length()-3);
     }
+    
 }
+*/
