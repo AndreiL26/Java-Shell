@@ -20,7 +20,7 @@ public class CdCommand extends Command {
         File dir;
         String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
         
-        if(dirString.charAt(0) == '/') {
+        if(dirString.startsWith(System.getProperty("file.separator"))) {
             dir = new File(dirString);
         }
         else {

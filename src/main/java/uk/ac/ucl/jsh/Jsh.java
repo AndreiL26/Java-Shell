@@ -17,8 +17,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 
 public class Jsh {
-    public static final FileSystem fileSystem = new FileSystem();
-    private static CommandManager commandManager;
+    private static final FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));;
+    private static CommandManager commandManager;   // Might want to make this final as well if Outputstream will always remain System.out
 
     public static Node getCmdTree(String cmdLine) {
         //System.out.println(cmdLine);

@@ -14,12 +14,15 @@ public class PwdCommand extends Command {
 
     @Override
     public void runCommand(ArrayList<String> commandArguments) throws IOException {
+       checkArguments(commandArguments);
        writer.write(fileSystem.getWorkingDirectoryPath() + System.getProperty("line.separator"));
        writer.flush();
     }
     
     public void checkArguments(ArrayList<String> commandArguments) {
-
+        if(!commandArguments.isEmpty()) {
+            throw new RuntimeException("pwd: too many arguments");
+        }
     }
   
 }

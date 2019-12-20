@@ -16,7 +16,10 @@ public class EchoCommand extends Command {
         checkArguments(commandArguments);
         boolean atLeastOnePrinted = false;
         for (String arg : commandArguments) {
-            writer.write(arg + " ");
+            writer.write(arg);
+            if(commandArguments.get(commandArguments.size() - 1).compareTo(arg) != 0) {
+                writer.write(" ");
+            }
             writer.flush();
             atLeastOnePrinted = true;
         }
