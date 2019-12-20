@@ -79,7 +79,7 @@ public class Cat extends Application{
 
     public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
         if(applicationArguments.isEmpty() && inputStream == null) {
-            throw new RuntimeException("cat: missing argument");
+            throw new RuntimeException("cat: missing input");
         }
     }
    

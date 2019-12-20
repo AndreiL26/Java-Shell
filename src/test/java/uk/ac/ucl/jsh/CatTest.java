@@ -10,8 +10,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 
@@ -47,6 +50,17 @@ public class CatTest {
         outputStream.reset();
     }   
 
+
+    @Test 
+    public void testMissingInput() throws IOException {
+        try {
+            catApplication.execute(applicationArguments, null, outputStream);
+            fail("cat did not throw a missing input exception");
+        } catch (RuntimeException e) {
+            assertEquals("cat: missing input", e.getMessage());
+        }
+    }
+
     @Test 
     public void testInvalidPath() throws IOException {
         applicationArguments.add("/InvalidPath");
@@ -71,12 +85,20 @@ public class CatTest {
         }
     }
 
-    /*
+    
     @Test
-    public void testStandardInput () throws IOException {
-
+    public void testReadingFromInputStream () throws IOException {
+        ByteArrayOutputStream aux = new ByteArrayOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
+        String expectedOutput = "Hello world" + lineSeparator + "I am here!" + lineSeparator;
+        writer.write(expectedOutput);
+        writer.flush();
+        writer.close();
+        ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
+        catApplication.execute(applicationArguments, testInput, outputStream);  
+        assertEquals(expectedOutput, outputStream.toString());
     }
-    */
+
 
     @Test
     public void testFileAbsolutePath() throws IOException {

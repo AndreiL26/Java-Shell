@@ -170,10 +170,6 @@ public class SedTest {
 
         ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
         applicationArguments.add("s/Hello/Sad/g");
-        for(int i = 0; i < applicationArguments.size(); ++ i)
-        {
-            System.out.println(applicationArguments.get(i));
-        }
         sedApplication.execute(applicationArguments, testInput, outputStream);
         
         String expectedOutput = "Sad world" + lineSeparator;
