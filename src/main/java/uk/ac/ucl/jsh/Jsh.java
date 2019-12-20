@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Parser.BuildCmdTree;
 import uk.ac.ucl.jsh.Parser.Node;
+import uk.ac.ucl.jsh.Parser.Parser;
 import uk.ac.ucl.jsh.Utilities.*;
 import uk.ac.ucl.jsh.antlr.CmdLineParser.CmdLineParserLexer;
 import uk.ac.ucl.jsh.antlr.CmdLineParser.CmdLineParserParser;
@@ -11,25 +12,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Scanner;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-
-
 public class Jsh {
     private static final FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));;
     public static ApplicationManager applicationManager;   // Might want to make this final as well if Outputstream will always remain System.out
 
-    public static Node getCmdTree(String cmdLine) {
-        //System.out.println(cmdLine);
-        CmdLineParserLexer parserLexer = new CmdLineParserLexer(CharStreams.fromString(cmdLine));
-        CmdLineParserParser parserParser = new CmdLineParserParser(new CommonTokenStream(parserLexer));
-        CmdLineParserParser.CompileUnitContext compileUnit = parserParser.compileUnit();
-        return new BuildCmdTree().visitCompileUnit(compileUnit);
-    }
-
     public static void eval(String cmdline, OutputStream output) throws IOException {
         applicationManager = new ApplicationManager(fileSystem);
-        Node cmdTree = getCmdTree(cmdline);
+        Node cmdTree = Parser.parserCmdLine(cmdline);
         cmdTree.accept(new EvalVisitor(applicationManager), null, System.out);
     }
 

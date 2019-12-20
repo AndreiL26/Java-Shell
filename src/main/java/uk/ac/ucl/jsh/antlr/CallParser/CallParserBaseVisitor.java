@@ -129,6 +129,13 @@ public class CallParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitApplication_literal(CallParserParser.Application_literalContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitQuoted(CallParserParser.QuotedContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

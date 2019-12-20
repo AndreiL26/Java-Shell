@@ -208,6 +208,18 @@ public class CallParserBaseListener implements CallParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterApplication_literal(CallParserParser.Application_literalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitApplication_literal(CallParserParser.Application_literalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterQuoted(CallParserParser.QuotedContext ctx) { }
 	/**
 	 * {@inheritDoc}

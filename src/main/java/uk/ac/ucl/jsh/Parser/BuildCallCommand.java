@@ -1,7 +1,10 @@
 package uk.ac.ucl.jsh.Parser;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.antlr.CallParser.*;
 
 public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
@@ -164,7 +167,10 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 	
     @Override 
     public ArrayList<String> visitBackquoted(CallParserParser.BackquotedContext ctx) { 
-        //String commandSubstitutionStirng = ctx.content.getText();
-        return new ArrayList<>(List.of(ctx.content.getText()));
+        String cmdSubstitutionStirng = ctx.content.getText();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ArrayList<String> tokens = Parser.parseCallCommand(cmdSubstitutionStirng);
+        Jsh.applicationManager.executeApplication(tokens, null, outputStream);
+        return new ArrayList<>(List.of(outputStream.toString().trim()));
     }
 }

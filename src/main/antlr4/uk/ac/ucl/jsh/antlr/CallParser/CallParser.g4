@@ -19,10 +19,10 @@ application
     ;
 
 pwd     :   PWD;
-cd      :   CD WS+ argument;
+cd      :   CD (WS+ argument)?;
 ls      :   LS (WS+ argument)?;
 cat     :   CAT (WS+ arguments)?;
-echo    :   ECHO WS+ arguments;
+echo    :   ECHO (WS+ arguments)?;
 head    :   HEAD (WS+ arguments)?;
 tail    :   TAIL (WS+ arguments)?;
 grep    :   GREP (WS+ arguments);
@@ -42,8 +42,12 @@ argument
 
 non_quoted
     :   NON_KEYWORD+
-    |   PWD | CD | LS | CAT | ECHO | HEAD | TAIL | GREP | SED | FIND | WC
+    |   application_literal
     ;
+
+application_literal 
+    :   PWD | CD | LS | CAT | ECHO | HEAD | TAIL | GREP | SED | FIND | WC
+    ;   
 
 quoted
     :   single_quoted
@@ -56,7 +60,7 @@ single_quoted
     ;
 
 squote_content
-    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '`')*
+    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '`' | application_literal)*
     ;
 
 double_quoted
@@ -64,7 +68,7 @@ double_quoted
     ;
 
 dquote_content 
-    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '\'' | backquoted)*
+    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '\'' | backquoted | application_literal)*
     ;
 
 backquoted
@@ -72,7 +76,7 @@ backquoted
     ;
 
 bquote_content
-    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '\'')*
+    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '\'' | application_literal)*
     ;
 
 PWD     : 'pwd';

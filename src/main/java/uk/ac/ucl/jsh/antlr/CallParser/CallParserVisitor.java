@@ -107,6 +107,12 @@ public interface CallParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNon_quoted(CallParserParser.Non_quotedContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CallParserParser#application_literal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitApplication_literal(CallParserParser.Application_literalContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CallParserParser#quoted}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

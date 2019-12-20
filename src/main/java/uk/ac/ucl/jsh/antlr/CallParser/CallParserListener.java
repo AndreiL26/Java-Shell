@@ -168,6 +168,16 @@ public interface CallParserListener extends ParseTreeListener {
 	 */
 	void exitNon_quoted(CallParserParser.Non_quotedContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CallParserParser#application_literal}.
+	 * @param ctx the parse tree
+	 */
+	void enterApplication_literal(CallParserParser.Application_literalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CallParserParser#application_literal}.
+	 * @param ctx the parse tree
+	 */
+	void exitApplication_literal(CallParserParser.Application_literalContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CallParserParser#quoted}.
 	 * @param ctx the parse tree
 	 */
