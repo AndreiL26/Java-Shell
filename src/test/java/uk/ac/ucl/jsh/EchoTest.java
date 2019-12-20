@@ -53,8 +53,7 @@ public class EchoTest {
 
     @Test
     public void testNoArguments() throws IOException {
-        echoApplication.execute(applicationArguments, System.in, outputStream);
+        echoApplication.execute(applicationArguments, null, outputStream);
         assertEquals("", outputStream.toString());
     }
-
 }
