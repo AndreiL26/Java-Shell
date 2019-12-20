@@ -1,6 +1,6 @@
 package uk.ac.ucl.jsh;
 
-import uk.ac.ucl.jsh.Commands.PwdCommand;
+import uk.ac.ucl.jsh.Applications.Pwd;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
 import org.junit.After;
@@ -12,29 +12,23 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-
 import java.util.ArrayList;
 
 
-public class PwdCommandTest {
-    private static PwdCommand pwdCommand;
+public class PwdTest {
+    private static Pwd pwdApplication;
     private static FileSystem fileSystem;
-    private static OutputStreamWriter writer;
     private static ByteArrayOutputStream outputStream;
-    private static ArrayList<String> commandArguments;
+    private static ArrayList<String> applicationArguments;
     private String fileSeparator = System.getProperty("file.separator");
     private String lineSeparator = System.getProperty("line.separator");
     
     @BeforeClass
     public static void setClass() {
-        commandArguments = new ArrayList<>();
+        applicationArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-        writer = new OutputStreamWriter(System.out);
-        pwdCommand = new PwdCommand(fileSystem, writer);
+        pwdApplication = new Pwd(fileSystem);
     }
 
     @Before
@@ -49,19 +43,18 @@ public class PwdCommandTest {
     // Delete the test hierarchy, reset the command arguments and reset the outputstream
     public void afterTest() throws IOException {
         fileSystem.deleteTestFileHierarchy();
-        commandArguments.clear();
+        applicationArguments.clear();
         outputStream.reset();
     }   
 
     @Test
     public void testInvalidNumberOfArguments() throws IOException {
-        commandArguments.add("unwantedParameter");
+        applicationArguments.add("unwantedParameter");
         try {
-            pwdCommand.runCommand(commandArguments);
+            pwdApplication.execute(applicationArguments, System.in, outputStream);
             fail("pwd did not throw a too many arguments exception");
         } catch(RuntimeException e) {
-           String expectedMessage = "pwd: too many arguments";
-           assertEquals(expectedMessage, e.getMessage());
+           assertEquals("pwd: too many arguments", e.getMessage());
          }
 
     }
@@ -69,15 +62,14 @@ public class PwdCommandTest {
     @Test
     public void testRootDirectory() throws IOException {
         fileSystem.setWorkingDirectory(fileSeparator);
-        pwdCommand.runCommand(commandArguments);
-        String expectedOutput = fileSeparator + lineSeparator;
-        assertEquals(expectedOutput, outputStream.toString());
+        pwdApplication.execute(applicationArguments, System.in, outputStream);
+        assertEquals(fileSeparator + lineSeparator, outputStream.toString());
     }
     
     @Test
     public void testRandomDirectory() throws IOException {
         fileSystem.setWorkingDirectory(fileSeparator + "tmp" + fileSeparator + "Other");
-        pwdCommand.runCommand(commandArguments);
+        pwdApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = fileSeparator + "tmp" + fileSeparator + "Other" + lineSeparator;
         assertEquals(expectedOutput , outputStream.toString());
     }

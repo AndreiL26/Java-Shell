@@ -1,31 +1,33 @@
-package uk.ac.ucl.jsh.Commands;
+package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class LsCommand extends Command {
-    private File currDir;
+public class Ls extends Application {
     
-    public LsCommand(FileSystem fileSystem, OutputStreamWriter writer) {
-        super(fileSystem, writer);
+    public Ls(FileSystem fileSystem) {
+        super(fileSystem);
     }
 
     @Override
-    public void runCommand(ArrayList<String> commandArguments) throws IOException {
-        checkArguments(commandArguments);
-        if (commandArguments.isEmpty()) {
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        checkArguments(applicationArguments, inputStream, outputStream);
+        File currDir = null;
+        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+        if (applicationArguments.isEmpty()) {
             currDir = new File(fileSystem.getWorkingDirectoryPath());
         } 
-        else if (commandArguments.size() == 1) {
-            // Consider Absolute path vs Relative PAth
-            if(commandArguments.get(0).startsWith(System.getProperty("file.separator"))) {
-                currDir = new File(commandArguments.get(0));
+        else {
+            if(applicationArguments.get(0).startsWith(System.getProperty("file.separator"))) {
+                currDir = new File(applicationArguments.get(0));
             }
             else {
-                currDir = new File(fileSystem.getWorkingDirectoryPath(), commandArguments.get(0));
+                currDir = new File(fileSystem.getWorkingDirectoryPath(), applicationArguments.get(0));
             }
         }
         try {
@@ -50,8 +52,8 @@ public class LsCommand extends Command {
         }
     }
 
-    public void checkArguments(ArrayList<String> commandArguments) {
-        if(commandArguments.size() > 1) {
+    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if(applicationArguments.size() > 1) {
             throw new RuntimeException("ls: too many arguments");
         }
     }

@@ -1,6 +1,6 @@
 package uk.ac.ucl.jsh;
 
-import uk.ac.ucl.jsh.Commands.LsCommand;
+import uk.ac.ucl.jsh.Applications.Ls;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
 import org.junit.After;
@@ -13,30 +13,24 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
 
-public class LsCommandTest {
-    private static LsCommand lsCommand;
+public class LsTest {
+    private static Ls lsApplication;
     private static FileSystem fileSystem;
-    private static OutputStreamWriter writer;
     private static ByteArrayOutputStream outputStream;
-    private static ArrayList<String> commandArguments;
+    private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
     
     @BeforeClass
     public static void setClass() {
-        commandArguments = new ArrayList<>();
+        applicationArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-        writer = new OutputStreamWriter(System.out);
-        lsCommand = new LsCommand(fileSystem, writer);
+        lsApplication = new Ls(fileSystem);
     }
 
     @Before
@@ -51,28 +45,27 @@ public class LsCommandTest {
     // Delete the test hierarchy, reset the command arguments and reset the outputstream
     public void afterTest() throws IOException {
         fileSystem.deleteTestFileHierarchy();
-        commandArguments.clear();
+        applicationArguments.clear();
         outputStream.reset();
     }   
 
     @Test 
     public void testMoreArguments() throws IOException {
-        commandArguments.add("/");
-        commandArguments.add("..");
+        applicationArguments.add("/");
+        applicationArguments.add("..");
         try {
-            lsCommand.runCommand(commandArguments);
+            lsApplication.execute(applicationArguments, System.in, outputStream);
             fail("ls did not throw a too many arguments exception");
         } catch(RuntimeException e) {
-           String expectedMessage = "ls: too many arguments";
-           assertEquals(expectedMessage, e.getMessage());
-         }
+           assertEquals("ls: too many arguments", e.getMessage());
+        }
     }
 
     @Test
     public void testCurrentDirectory() throws IOException {
         // The filesystem's current working directory will be /tmp/Documents
         fileSystem.setWorkingDirectory("/tmp/Documents");
-        lsCommand.runCommand(commandArguments);
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Ware" + "\t" + "Proj.txt" + "\t" + "Eng" + lineSeparator;
         assertEqualStrings(expectedOutput, outputStream.toString());
     }
@@ -80,32 +73,32 @@ public class LsCommandTest {
     @Test
     public void testArgumentDirectoryRelativePath() throws IOException {
         // The filesystem's current working directory will be /tmp, but the argument will point to /tmp/Documents
-        commandArguments.add("Documents"); 
-        lsCommand.runCommand(commandArguments);
+        applicationArguments.add("Documents"); 
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Ware" + "\t" + "Proj.txt" + "\t" + "Eng" + lineSeparator;
         assertEqualStrings(expectedOutput, outputStream.toString());
     }
 
     @Test
     public void testArgumentDirectoryAbsolutePath() throws IOException {
-        commandArguments.add("/tmp/Documents/Eng");
-        lsCommand.runCommand(commandArguments);
+        applicationArguments.add("/tmp/Documents/Eng");
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Code" + "\t" + "Test" + "\t" + "Plan" + lineSeparator;
         assertEqualStrings(expectedOutput, outputStream.toString());
     }
 
     @Test
     public void testIgnoreDotFiles() throws IOException {
-        commandArguments.add("/tmp/Other");
-        lsCommand.runCommand(commandArguments);
+        applicationArguments.add("/tmp/Other");
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Oth1" + "\t" + "Empty" + "\t" + "Oth2" + lineSeparator;
         assertEqualStrings(expectedOutput, outputStream.toString());
     }
 
     @Test
     public void testEmptyDirectory() throws IOException {
-        commandArguments.add("/tmp/Other/Empty");
-        lsCommand.runCommand(commandArguments);
+        applicationArguments.add("/tmp/Other/Empty");
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         assertEqualStrings("", outputStream.toString());
     }
 

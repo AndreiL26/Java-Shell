@@ -1,6 +1,6 @@
 package uk.ac.ucl.jsh;
 
-import uk.ac.ucl.jsh.Commands.CatCommand;
+import uk.ac.ucl.jsh.Applications.Cat;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
 import org.junit.After;
@@ -12,29 +12,23 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-
 import java.util.ArrayList;
 
 
-public class CatCommandTest {
-    private static CatCommand catCommand;
+public class CatTest {
+    private static Cat catApplication;
     private static FileSystem fileSystem;
-    private static OutputStreamWriter writer;
     private static ByteArrayOutputStream outputStream;
-    private static ArrayList<String> commandArguments;
+    private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
     private String fileSeparator = System.getProperty("file.separator");
     
     @BeforeClass
     public static void setClass() {
-        commandArguments = new ArrayList<>();
+        applicationArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-        writer = new OutputStreamWriter(System.out);
-        catCommand = new CatCommand(fileSystem, writer);
+        catApplication = new Cat(fileSystem);
     }
 
     @Before
@@ -49,15 +43,15 @@ public class CatCommandTest {
     // Delete the test hierarchy, reset the command arguments and reset the outputstream
     public void afterTest() throws IOException {
         fileSystem.deleteTestFileHierarchy();
-        commandArguments.clear();
+        applicationArguments.clear();
         outputStream.reset();
     }   
 
     @Test 
     public void testInvalidPath() throws IOException {
-        commandArguments.add("/InvalidPath");
+        applicationArguments.add("/InvalidPath");
         try {
-            catCommand.runCommand(commandArguments);
+            catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw an invalid path exception");
         } catch(RuntimeException e) {
            String expectedMessage = "cat: file does not exist";
@@ -67,9 +61,9 @@ public class CatCommandTest {
 
     @Test
     public void testDirectoryPath() throws IOException {
-        commandArguments.add("Documents");
+        applicationArguments.add("Documents");
         try {
-            catCommand.runCommand(commandArguments);
+            catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw a directory path exception");
         } catch(RuntimeException e) {
             String expectedMessage = "cat: " + "Documents" + " is a directory";
@@ -86,8 +80,8 @@ public class CatCommandTest {
 
     @Test
     public void testFileAbsolutePath() throws IOException {
-        commandArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Ware");
-        catCommand.runCommand(commandArguments);
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Ware");
+        catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
         expectedOutput += "This is a test of another test" + lineSeparator;
@@ -97,8 +91,8 @@ public class CatCommandTest {
     
     @Test
     public void testFileRelativePath() throws IOException {
-        commandArguments.add("Documents" + fileSeparator + "Ware");
-        catCommand.runCommand(commandArguments);
+        applicationArguments.add("Documents" + fileSeparator + "Ware");
+        catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
         expectedOutput += "This is a test of another test" + lineSeparator;
@@ -108,9 +102,9 @@ public class CatCommandTest {
 
     @Test
     public void testMultipleFiles() throws IOException {
-        commandArguments.add("Documents" + fileSeparator + "Ware");
-        commandArguments.add(fileSeparator + "tmp" + fileSeparator + "Soft");
-        catCommand.runCommand(commandArguments);
+        applicationArguments.add("Documents" + fileSeparator + "Ware");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Soft");
+        catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
         expectedOutput += "This is a test of another test" + lineSeparator;
