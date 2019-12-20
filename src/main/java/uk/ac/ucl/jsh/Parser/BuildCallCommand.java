@@ -7,7 +7,7 @@ import uk.ac.ucl.jsh.antlr.CallParser.*;
 public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
     @Override 
     public ArrayList<String> visitCompileUnit(CallParserParser.CompileUnitContext ctx) { 
-        return visitChildren(ctx); 
+        return visit(ctx.application()); 
     }
 	
     @Override 

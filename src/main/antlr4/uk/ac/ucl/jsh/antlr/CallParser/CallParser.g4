@@ -1,6 +1,10 @@
 grammar CallParser;
 
 compileUnit
+    : WS* application WS*
+    ;
+
+application    
     :   pwd
     |   cd
     |   ls
@@ -32,12 +36,13 @@ arguments
     ;
 
 argument
-    :   non_quote = non_keywords argument?
+    :   non_quote = non_quoted argument?
     |   quoted argument?
     ;
 
-non_keywords
+non_quoted
     :   NON_KEYWORD+
+    |   PWD | CD | LS | CAT | ECHO | HEAD | TAIL | GREP | SED | FIND | WC
     ;
 
 quoted

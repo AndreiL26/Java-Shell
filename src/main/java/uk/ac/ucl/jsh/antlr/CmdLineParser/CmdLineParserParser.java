@@ -17,8 +17,7 @@ public class CmdLineParserParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		CALL_CONTENT=1, SEMI=2, PIPE=3, DQUOTE=4, SQUOTE=5, BQUOTE=6, GT=7, LT=8, 
-		UNQUOTED=9, WHITESPACE=10;
+		CALL_CONTENT=1, SEMI=2, PIPE=3, GT=4, LT=5, WHITESPACE=6;
 	public static final int
 		RULE_compileUnit = 0, RULE_command = 1, RULE_pipe = 2, RULE_seq = 3, RULE_call = 4;
 	private static String[] makeRuleNames() {
@@ -30,14 +29,13 @@ public class CmdLineParserParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, "';'", "'|'", "'\"'", "'''", "'`'", "'>'", "'<'"
+			null, null, "';'", "'|'", "'>'", "'<'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "CALL_CONTENT", "SEMI", "PIPE", "DQUOTE", "SQUOTE", "BQUOTE", "GT", 
-			"LT", "UNQUOTED", "WHITESPACE"
+			null, "CALL_CONTENT", "SEMI", "PIPE", "GT", "LT", "WHITESPACE"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -529,7 +527,7 @@ public class CmdLineParserParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\f\61\4\2\t\2\4\3"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\b\61\4\2\t\2\4\3"+
 		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\5\2\17\n\2\3\3\3\3\5\3\23\n\3\3\4"+
 		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4\35\n\4\f\4\16\4 \13\4\3\5\3\5\3\5\3\5"+
 		"\3\5\3\5\3\5\3\5\7\5*\n\5\f\5\16\5-\13\5\3\6\3\6\3\6\2\4\6\b\7\2\4\6\b"+
