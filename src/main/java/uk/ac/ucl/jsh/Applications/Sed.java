@@ -17,13 +17,13 @@ import java.io.OutputStream;
 public class Sed extends Application {
     private String regex;
     private String replacement;
-    private File   sedFile;
 
     public Sed(FileSystem fileSystem) {
         super(fileSystem);
     }
 
-    private boolean isValid(String argument) { /// MIGHT STILL BE WRONG I THINK?
+    private boolean isValid(String argument) { 
+        /// Consider cases where delimiter is *, + or any other regex keyword, or s or g
         if(argument.charAt(0) != 's') {
             return false;
         }
@@ -54,11 +54,26 @@ public class Sed extends Application {
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
         checkArguments(applicationArguments, inputStream, outputStream);
         boolean replaceAll = false;
+        File sedFile = null;
         BufferedReader reader;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
 
         if(applicationArguments.get(0).endsWith("g")) {
             replaceAll = true;
+        }
+
+        if(applicationArguments.size() == 2){
+            String filePath = applicationArguments.get(1);
+            if(filePath.charAt(0) == '/') {
+                sedFile = new File(applicationArguments.get(1));
+            }
+            else {
+                sedFile = new File(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + filePath);
+            }
+
+            if(!sedFile.exists()) {
+                throw new RuntimeException("sed: cannot open " + filePath);
+            }
         }
     
         if(sedFile != null)  {
@@ -87,7 +102,7 @@ public class Sed extends Application {
     public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
         int numberOfArguments = applicationArguments.size();
         if (numberOfArguments == 0) {
-            throw new RuntimeException("sed: missing arguments!");
+            throw new RuntimeException("sed: missing arguments");
         }   
 
         if (numberOfArguments == 1 && inputStream == null) {
@@ -96,23 +111,11 @@ public class Sed extends Application {
 
         if (numberOfArguments >= 1) {
             if(isValid(applicationArguments.get(0)) == false) {
-                throw new RuntimeException("sed: invalid first argument!");
+                throw new RuntimeException("sed: invalid first argument");
             } 
         }
 
-        if(numberOfArguments == 2){
-            String filePath = applicationArguments.get(1);
-            if(filePath.charAt(0) == '/') {
-                sedFile = new File(applicationArguments.get(1));
-            }
-            else {
-                sedFile = new File(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + filePath);
-            }
-
-            if(!sedFile.exists()) {
-                throw new RuntimeException("sed: cannot open " + filePath);
-            }
-        }
+       
 
         if (numberOfArguments > 2){
             throw new RuntimeException("sed: too many arguments");

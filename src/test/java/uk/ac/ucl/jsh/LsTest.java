@@ -19,12 +19,12 @@ public class LsTest {
     private static Ls lsApplication;
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
-    private static ArrayList<String> commandArguments;
+    private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
     
     @BeforeClass
     public static void setClass() {
-        commandArguments = new ArrayList<>();
+        applicationArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
         lsApplication = new Ls(fileSystem);
@@ -42,28 +42,27 @@ public class LsTest {
     // Delete the test hierarchy, reset the command arguments and reset the outputstream
     public void afterTest() throws IOException {
         fileSystem.deleteTestFileHierarchy();
-        commandArguments.clear();
+        applicationArguments.clear();
         outputStream.reset();
     }   
 
     @Test 
     public void testMoreArguments() throws IOException {
-        commandArguments.add("/");
-        commandArguments.add("..");
+        applicationArguments.add("/");
+        applicationArguments.add("..");
         try {
-            lsApplication.execute(commandArguments, System.in, outputStream);
+            lsApplication.execute(applicationArguments, System.in, outputStream);
             fail("ls did not throw a too many arguments exception");
         } catch(RuntimeException e) {
-           String expectedMessage = "ls: too many arguments";
-           assertEquals(expectedMessage, e.getMessage());
-         }
+           assertEquals("ls: too many arguments", e.getMessage());
+        }
     }
 
     @Test
     public void testCurrentDirectory() throws IOException {
         // The filesystem's current working directory will be /tmp/Documents
         fileSystem.setWorkingDirectory("/tmp/Documents");
-        lsApplication.execute(commandArguments, System.in, outputStream);
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Ware" + "\t" + "Proj.txt" + "\t" + "Eng" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -71,32 +70,32 @@ public class LsTest {
     @Test
     public void testArgumentDirectoryRelativePath() throws IOException {
         // The filesystem's current working directory will be /tmp, but the argument will point to /tmp/Documents
-        commandArguments.add("Documents"); 
-        lsApplication.execute(commandArguments, System.in, outputStream);
+        applicationArguments.add("Documents"); 
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Ware" + "\t" + "Proj.txt" + "\t" + "Eng" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
 
     @Test
     public void testArgumentDirectoryAbsolutePath() throws IOException {
-        commandArguments.add("/tmp/Documents/Eng");
-        lsApplication.execute(commandArguments, System.in, outputStream);
+        applicationArguments.add("/tmp/Documents/Eng");
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Code" + "\t" + "Test" + "\t" + "Plan" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
 
     @Test
     public void testIgnoreDotFiles() throws IOException {
-        commandArguments.add("/tmp/Other");
-        lsApplication.execute(commandArguments, System.in, outputStream);
+        applicationArguments.add("/tmp/Other");
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Oth1" + "\t" + "Empty" + "\t" + "Oth2" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
 
     @Test
     public void testEmptyDirectory() throws IOException {
-        commandArguments.add("/tmp/Other/Empty");
-        lsApplication.execute(commandArguments, System.in, outputStream);
+        applicationArguments.add("/tmp/Other/Empty");
+        lsApplication.execute(applicationArguments, System.in, outputStream);
         assertEquals("", outputStream.toString());
     }
 

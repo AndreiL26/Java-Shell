@@ -19,13 +19,13 @@ public class CatTest {
     private static Cat catApplication;
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
-    private static ArrayList<String> commandArguments;
+    private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
     private String fileSeparator = System.getProperty("file.separator");
     
     @BeforeClass
     public static void setClass() {
-        commandArguments = new ArrayList<>();
+        applicationArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
         catApplication = new Cat(fileSystem);
@@ -43,15 +43,15 @@ public class CatTest {
     // Delete the test hierarchy, reset the command arguments and reset the outputstream
     public void afterTest() throws IOException {
         fileSystem.deleteTestFileHierarchy();
-        commandArguments.clear();
+        applicationArguments.clear();
         outputStream.reset();
     }   
 
     @Test 
     public void testInvalidPath() throws IOException {
-        commandArguments.add("/InvalidPath");
+        applicationArguments.add("/InvalidPath");
         try {
-            catApplication.execute(commandArguments, System.in, outputStream);
+            catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw an invalid path exception");
         } catch(RuntimeException e) {
            String expectedMessage = "cat: file does not exist";
@@ -61,9 +61,9 @@ public class CatTest {
 
     @Test
     public void testDirectoryPath() throws IOException {
-        commandArguments.add("Documents");
+        applicationArguments.add("Documents");
         try {
-            catApplication.execute(commandArguments, System.in, outputStream);
+            catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw a directory path exception");
         } catch(RuntimeException e) {
             String expectedMessage = "cat: " + "Documents" + " is a directory";
@@ -80,8 +80,8 @@ public class CatTest {
 
     @Test
     public void testFileAbsolutePath() throws IOException {
-        commandArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Ware");
-        catApplication.execute(commandArguments, System.in, outputStream);
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Ware");
+        catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
         expectedOutput += "This is a test of another test" + lineSeparator;
@@ -91,8 +91,8 @@ public class CatTest {
     
     @Test
     public void testFileRelativePath() throws IOException {
-        commandArguments.add("Documents" + fileSeparator + "Ware");
-        catApplication.execute(commandArguments, System.in, outputStream);
+        applicationArguments.add("Documents" + fileSeparator + "Ware");
+        catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
         expectedOutput += "This is a test of another test" + lineSeparator;
@@ -102,9 +102,9 @@ public class CatTest {
 
     @Test
     public void testMultipleFiles() throws IOException {
-        commandArguments.add("Documents" + fileSeparator + "Ware");
-        commandArguments.add(fileSeparator + "tmp" + fileSeparator + "Soft");
-        catApplication.execute(commandArguments, System.in, outputStream);
+        applicationArguments.add("Documents" + fileSeparator + "Ware");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Soft");
+        catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
         expectedOutput += "This is a test of another test" + lineSeparator;

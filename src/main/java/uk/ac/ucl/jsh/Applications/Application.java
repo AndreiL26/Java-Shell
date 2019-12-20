@@ -13,9 +13,9 @@ public abstract class Application {
         this.fileSystem = fileSystem;     
     }
 
-    public abstract void execute(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outpustream) throws IOException;
+    public abstract void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outpustream) throws IOException;
     
-    public abstract void checkArguments(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outpustream); 
+    public abstract void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outpustream); 
 
 
 }

@@ -17,12 +17,12 @@ public class EchoTest {
     private static Echo echoApplication;
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
-    private static ArrayList<String> commandArguments;
+    private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
   
     @BeforeClass
     public static void setClass() {
-        commandArguments = new ArrayList<>();
+        applicationArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
         echoApplication = new Echo(fileSystem);
@@ -31,29 +31,29 @@ public class EchoTest {
     @After
     // Reset the command arguments and reset the outputstream
     public void afterTest() throws IOException {
-        commandArguments.clear();
+        applicationArguments.clear();
         outputStream.reset();
     }   
 
     @Test
     public void testOneArgument() throws IOException {
-        commandArguments.add("hello world");
-        echoApplication.execute(commandArguments, System.in, outputStream);
+        applicationArguments.add("hello world");
+        echoApplication.execute(applicationArguments, System.in, outputStream);
         assertEquals("hello world" + lineSeparator, outputStream.toString());
     }
 
     @Test
     public void testMultipleArguments() throws IOException {
-        commandArguments.add("first");
-        commandArguments.add("second");
-        commandArguments.add("third");
-        echoApplication.execute(commandArguments, System.in, outputStream);
+        applicationArguments.add("first");
+        applicationArguments.add("second");
+        applicationArguments.add("third");
+        echoApplication.execute(applicationArguments, System.in, outputStream);
         assertEquals("first second third" + lineSeparator, outputStream.toString());
     }
 
     @Test
     public void testNoArguments() throws IOException {
-        echoApplication.execute(commandArguments, System.in, outputStream);
+        echoApplication.execute(applicationArguments, System.in, outputStream);
         assertEquals("", outputStream.toString());
     }
 

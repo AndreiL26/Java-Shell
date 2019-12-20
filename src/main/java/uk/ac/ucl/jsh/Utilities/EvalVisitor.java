@@ -7,7 +7,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import java.util.ArrayList;
+
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+
+import uk.ac.ucl.jsh.antlr.CallParser.CallParserLexer;
+import uk.ac.ucl.jsh.antlr.CallParser.CallParserParser;
 
 public class EvalVisitor implements TreeVisitor {
     private ApplicationManager applicationManager;
@@ -17,14 +24,11 @@ public class EvalVisitor implements TreeVisitor {
     }
 
     public void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
-        try {
-            ArrayList<String> tokens = Parser.getTokens(callNode.getCmdString(), 
-                                                        applicationManager.getFileSystem().getWorkingDirectoryPath());
-            applicationManager.executeApplication(tokens, inputStream, outputStream); 
-        }
-        catch (IOException ioException) {
-            throw new RuntimeException(callNode + " could not be executed");
-        }
+        CallParserLexer parserLexer = new CallParserLexer(CharStreams.fromString(callNode.getCmdString()));
+        CallParserParser parserParser = new CallParserParser(new CommonTokenStream(parserLexer));
+        CallParserParser.CompileUnitContext compileUnit = parserParser.compileUnit();
+        ArrayList<String> tokens = new BuildCallCommand().visitCompileUnit(compileUnit);
+        applicationManager.executeApplication(tokens, inputStream, outputStream);
     }
 
     public void visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream) {
@@ -36,6 +40,8 @@ public class EvalVisitor implements TreeVisitor {
 
     public void visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) {
         seqNode.getLeft().accept(this, inputStream, outputStream);
-        seqNode.getRight().accept(this, inputStream,  outputStream);
+        if(seqNode.getRight() != null) {
+            seqNode.getRight().accept(this, inputStream,  outputStream);
+        }
     }
 }

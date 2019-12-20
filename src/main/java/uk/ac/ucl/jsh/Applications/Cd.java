@@ -15,9 +15,9 @@ public class Cd extends Application {
     }
 
     @Override
-    public void execute(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
-        checkArguments(commandArguments, inputStream, outputStream);
-        String dirString = commandArguments.get(0);
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        checkArguments(applicationArguments, inputStream, outputStream);
+        String dirString = applicationArguments.get(0);
         File dir;
         String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
 
@@ -35,10 +35,10 @@ public class Cd extends Application {
         fileSystem.setWorkingDirectory(currentDirectoryPath);
     }
 
-    public void checkArguments(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) {
-        if (commandArguments.isEmpty()) {
+    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if (applicationArguments.isEmpty()) {
             throw new RuntimeException("cd: missing argument");
-        } else if (commandArguments.size() > 1) {
+        } else if (applicationArguments.size() > 1) {
             throw new RuntimeException("cd: too many arguments");
         }
     }

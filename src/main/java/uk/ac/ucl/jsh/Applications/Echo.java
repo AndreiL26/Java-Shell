@@ -14,13 +14,13 @@ public class Echo extends Application {
     }
 
     @Override
-    public void execute(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) throws IOException{
-        checkArguments(commandArguments, inputStream, outputStream);
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException{
+        checkArguments(applicationArguments, inputStream, outputStream);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         boolean atLeastOnePrinted = false;
-        for (String arg : commandArguments) {
+        for (String arg : applicationArguments) {
             writer.write(arg);
-            if(commandArguments.get(commandArguments.size() - 1).compareTo(arg) != 0) {
+            if(applicationArguments.get(applicationArguments.size() - 1).compareTo(arg) != 0) {
                 writer.write(" ");
             }
             writer.flush();
@@ -32,7 +32,7 @@ public class Echo extends Application {
         }
     }
 
-    public void checkArguments(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) {
+    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
         
     }
 }

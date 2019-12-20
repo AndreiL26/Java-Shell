@@ -9,25 +9,25 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Ls extends Application {
-    private File currDir;
     
     public Ls(FileSystem fileSystem) {
         super(fileSystem);
     }
 
     @Override
-    public void execute(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
-        checkArguments(commandArguments, inputStream, outputStream);
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        checkArguments(applicationArguments, inputStream, outputStream);
+        File currDir = null;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-        if (commandArguments.isEmpty()) {
+        if (applicationArguments.isEmpty()) {
             currDir = new File(fileSystem.getWorkingDirectoryPath());
         } 
         else {
-            if(commandArguments.get(0).startsWith(System.getProperty("file.separator"))) {
-                currDir = new File(commandArguments.get(0));
+            if(applicationArguments.get(0).startsWith(System.getProperty("file.separator"))) {
+                currDir = new File(applicationArguments.get(0));
             }
             else {
-                currDir = new File(fileSystem.getWorkingDirectoryPath(), commandArguments.get(0));
+                currDir = new File(fileSystem.getWorkingDirectoryPath(), applicationArguments.get(0));
             }
         }
         try {
@@ -52,8 +52,8 @@ public class Ls extends Application {
         }
     }
 
-    public void checkArguments(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) {
-        if(commandArguments.size() > 1) {
+    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if(applicationArguments.size() > 1) {
             throw new RuntimeException("ls: too many arguments");
         }
     }

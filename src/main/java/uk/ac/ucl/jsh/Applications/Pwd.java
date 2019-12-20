@@ -15,15 +15,15 @@ public class Pwd extends Application {
     }
 
     @Override
-    public void execute(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
-       checkArguments(commandArguments, inputStream, outputStream);
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+       checkArguments(applicationArguments, inputStream, outputStream);
        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
        writer.write(fileSystem.getWorkingDirectoryPath() + System.getProperty("line.separator"));
        writer.flush();
     }
     
-    public void checkArguments(ArrayList<String> commandArguments, InputStream inputStream, OutputStream outputStream) {
-        if(!commandArguments.isEmpty()) {
+    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if(!applicationArguments.isEmpty()) {
             throw new RuntimeException("pwd: too many arguments");
         }
     }
