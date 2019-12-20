@@ -24,18 +24,14 @@ call
     :   text = CALL_CONTENT
     ;
 
-fragment SQUOTE_CONTENT     : (~[\r\n'])+;
-fragment BQUOTE_CONTENT     : (~[\r\n`])+;
-fragment DQUOTE_CONTENT     : (BQUOTE_CONTENT | ~[\r\n"`])+;
-fragment NON_KEYWORD        : ~[\n'"`;|];
-CALL_CONTENT                : (NON_KEYWORD | SQUOTE SQUOTE_CONTENT SQUOTE | BQUOTE BQUOTE_CONTENT BQUOTE | DQUOTE DQUOTE_CONTENT DQUOTE)+;
+fragment SQUOTED     : '\'' (~[\r\n'])+ '\'';
+fragment BQUOTED     : '`' (~[\r\n`])+ '`';
+fragment DQUOTED     : '"' (BQUOTED | ~[\r\n"`])+ '"';
+fragment NON_KEYWORD : ~[\n'"`;|];
+CALL_CONTENT         : (NON_KEYWORD | SQUOTED | BQUOTED | DQUOTED)+;
 
 SEMI        : ';';
 PIPE        : '|';
-DQUOTE      : '"';
-SQUOTE      : '\'';
-BQUOTE      : '`';
 GT          : '>';
 LT          : '<';
-UNQUOTED    : ~[ \t"'`\r\n;|<>];
 WHITESPACE  : [ \t] -> channel(HIDDEN);

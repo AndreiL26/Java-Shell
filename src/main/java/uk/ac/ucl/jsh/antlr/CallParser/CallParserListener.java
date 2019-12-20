@@ -18,6 +18,16 @@ public interface CallParserListener extends ParseTreeListener {
 	 */
 	void exitCompileUnit(CallParserParser.CompileUnitContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link CallParserParser#application}.
+	 * @param ctx the parse tree
+	 */
+	void enterApplication(CallParserParser.ApplicationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link CallParserParser#application}.
+	 * @param ctx the parse tree
+	 */
+	void exitApplication(CallParserParser.ApplicationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link CallParserParser#pwd}.
 	 * @param ctx the parse tree
 	 */
@@ -148,15 +158,15 @@ public interface CallParserListener extends ParseTreeListener {
 	 */
 	void exitArgument(CallParserParser.ArgumentContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link CallParserParser#non_keywords}.
+	 * Enter a parse tree produced by {@link CallParserParser#non_quoted}.
 	 * @param ctx the parse tree
 	 */
-	void enterNon_keywords(CallParserParser.Non_keywordsContext ctx);
+	void enterNon_quoted(CallParserParser.Non_quotedContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link CallParserParser#non_keywords}.
+	 * Exit a parse tree produced by {@link CallParserParser#non_quoted}.
 	 * @param ctx the parse tree
 	 */
-	void exitNon_keywords(CallParserParser.Non_keywordsContext ctx);
+	void exitNon_quoted(CallParserParser.Non_quotedContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link CallParserParser#quoted}.
 	 * @param ctx the parse tree

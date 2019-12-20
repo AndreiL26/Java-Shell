@@ -17,6 +17,12 @@ public interface CallParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompileUnit(CallParserParser.CompileUnitContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link CallParserParser#application}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitApplication(CallParserParser.ApplicationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link CallParserParser#pwd}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -95,11 +101,11 @@ public interface CallParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArgument(CallParserParser.ArgumentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CallParserParser#non_keywords}.
+	 * Visit a parse tree produced by {@link CallParserParser#non_quoted}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNon_keywords(CallParserParser.Non_keywordsContext ctx);
+	T visitNon_quoted(CallParserParser.Non_quotedContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CallParserParser#quoted}.
 	 * @param ctx the parse tree
