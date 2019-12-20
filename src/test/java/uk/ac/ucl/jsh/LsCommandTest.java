@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
@@ -16,6 +17,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 
 public class LsCommandTest {
@@ -71,7 +74,7 @@ public class LsCommandTest {
         fileSystem.setWorkingDirectory("/tmp/Documents");
         lsCommand.runCommand(commandArguments);
         String expectedOutput = "Ware" + "\t" + "Proj.txt" + "\t" + "Eng" + lineSeparator;
-        assertEquals(expectedOutput, outputStream.toString());
+        assertEqualStrings(expectedOutput, outputStream.toString());
     }
 
     @Test
@@ -80,7 +83,7 @@ public class LsCommandTest {
         commandArguments.add("Documents"); 
         lsCommand.runCommand(commandArguments);
         String expectedOutput = "Ware" + "\t" + "Proj.txt" + "\t" + "Eng" + lineSeparator;
-        assertEquals(expectedOutput, outputStream.toString());
+        assertEqualStrings(expectedOutput, outputStream.toString());
     }
 
     @Test
@@ -88,7 +91,7 @@ public class LsCommandTest {
         commandArguments.add("/tmp/Documents/Eng");
         lsCommand.runCommand(commandArguments);
         String expectedOutput = "Code" + "\t" + "Test" + "\t" + "Plan" + lineSeparator;
-        assertEquals(expectedOutput, outputStream.toString());
+        assertEqualStrings(expectedOutput, outputStream.toString());
     }
 
     @Test
@@ -96,14 +99,21 @@ public class LsCommandTest {
         commandArguments.add("/tmp/Other");
         lsCommand.runCommand(commandArguments);
         String expectedOutput = "Oth1" + "\t" + "Empty" + "\t" + "Oth2" + lineSeparator;
-        assertEquals(expectedOutput, outputStream.toString());
+        assertEqualStrings(expectedOutput, outputStream.toString());
     }
 
     @Test
     public void testEmptyDirectory() throws IOException {
         commandArguments.add("/tmp/Other/Empty");
         lsCommand.runCommand(commandArguments);
-        assertEquals("", outputStream.toString());
+        assertEqualStrings("", outputStream.toString());
     }
 
+    private void assertEqualStrings(String expectedString, String actualString) {
+        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split("\t")));
+        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split("\t")));
+        Collections.sort(expectedTokens);
+        Collections.sort(actualTokens);
+        assertEquals(expectedTokens, actualTokens);
+    }
 }
