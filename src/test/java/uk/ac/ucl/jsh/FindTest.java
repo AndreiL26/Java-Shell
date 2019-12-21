@@ -97,6 +97,32 @@ public class FindTest {
     }
 
     @Test
+    public void testFindFromFilePath() throws IOException {
+        try {
+            applicationArguments.add("Soft");
+            applicationArguments.add("-name");
+            applicationArguments.add("Invalid");
+            findApplication.execute(applicationArguments, null, outputStream);
+            fail("find did not throw a cannot open directory exception");
+        } catch (RuntimeException e) {
+            assertEquals("find: could not open " + "Soft", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testInvalidArgumentsMissingDashName() throws IOException {
+        try {
+            applicationArguments.add("Documents");
+            applicationArguments.add("NotName");
+            applicationArguments.add("FindMe");
+            findApplication.execute(applicationArguments, null, outputStream);
+            fail("find did not throw an invalid argument exception");
+        } catch (RuntimeException e) {
+            assertEquals("find: invalid argument " + "NotName", e.getMessage());
+        }
+    }
+
+    @Test
     public void testFindOneFileFromCurrentDirectory() throws IOException {
         applicationArguments.add("-name");
         applicationArguments.add("Soft");

@@ -84,10 +84,22 @@ public class SedTest {
     }
 
     @Test
-    public void testInvalidFisrtArgumentEmptyRegex() throws IOException {
-        applicationArguments.add("s//Huh/");
-        applicationArguments.add("Soft");
+    public void testInvalidFirstArgumentWrongLastCharacter() throws IOException {
         try {
+            applicationArguments.add("s/Regex/Replacement/Wrong");
+            applicationArguments.add("Soft");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw an invalid first argument exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: invalid first argument", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testInvalidFisrtArgumentEmptyRegex() throws IOException {
+        try {
+            applicationArguments.add("s//Huh/");
+            applicationArguments.add("Soft");
             sedApplication.execute(applicationArguments, null, outputStream);
             fail("sed did not throw an invalid first argument exception");
         } catch (RuntimeException e) {
@@ -97,13 +109,50 @@ public class SedTest {
 
     @Test
     public void testInvalidFirstArgumentTooManyDelimiters() throws IOException {
-        applicationArguments.add("s/Regex/Replacem/nt/");
-        applicationArguments.add("Soft");
         try {
+            applicationArguments.add("s/Regex/Replacem/nt/");
+            applicationArguments.add("Soft");
             sedApplication.execute(applicationArguments, null, outputStream);
             fail("sed did not throw an invalid first argument exception");
         } catch (RuntimeException e) {
             assertEquals("sed: invalid first argument", e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testInvalidFirstArguementWrongEnding() throws IOException {
+        try {
+            applicationArguments.add("s/Regex/Replacement");
+            applicationArguments.add("Soft");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw an invalid first argument exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: invalid first argument", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testReadFromInvalidPath() throws IOException {
+        try {
+            applicationArguments.add("s/Regex/Replacement/");
+            applicationArguments.add("INVALID PATH");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw a cannot open file exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: cannot open " + "INVALID PATH", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testInvalidArgumentsTooMany() throws IOException {
+        try {
+            applicationArguments.add("s/Regex/Replacement/");
+            applicationArguments.add("okay");
+            applicationArguments.add("TOO MANY");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw a too many arguments exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: too many arguments", e.getMessage());
         }
     }
 
@@ -115,6 +164,34 @@ public class SedTest {
         String expectedOutput = new String();
         expectedOutput += "This is a repl" + lineSeparator;
         expectedOutput += "This is a repl of another repl" + lineSeparator;
+        expectedOutput += lineSeparator;
+        
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+
+    @Test
+    public void testReadFromFileRelativePath() throws IOException {
+        applicationArguments.add("s/test/repl/");
+        applicationArguments.add("Soft");
+        sedApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "This is a repl" + lineSeparator;
+        expectedOutput += "This is a repl of another test" + lineSeparator;
+        expectedOutput += lineSeparator;
+        
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+
+    @Test
+    public void testReadingFromFileAbsolutePath() throws IOException {
+        applicationArguments.add("s/test/repl/");
+        applicationArguments.add("/tmp/Documents/Ware");
+        sedApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "This is a repl" + lineSeparator;
+        expectedOutput += "This is a repl of another test" + lineSeparator;
         expectedOutput += lineSeparator;
         
         assertEquals(expectedOutput, outputStream.toString());
@@ -177,4 +254,6 @@ public class SedTest {
         expectedOutput += "world" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
+
+    
 }

@@ -1,6 +1,6 @@
 package uk.ac.ucl.jsh;
 
-import uk.ac.ucl.jsh.Applications.Head;
+import uk.ac.ucl.jsh.Applications.Tail;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 
 import org.junit.After;
@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 
 
-public class HeadTest {
-    private static Head headApplication;
+public class TailTest {
+    private static Tail tailApplication;
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
@@ -32,7 +32,7 @@ public class HeadTest {
         applicationArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
-        headApplication = new Head(fileSystem);
+        tailApplication = new Tail(fileSystem);
     }
 
     @Before
@@ -57,20 +57,20 @@ public class HeadTest {
             applicationArguments.add("two");
             applicationArguments.add("three");
             applicationArguments.add("four");
-            headApplication.execute(applicationArguments, null, outputStream);
-            fail("head did not throw a too many arguments exception");
+            tailApplication.execute(applicationArguments, null, outputStream);
+            fail("tail did not throw a too many arguments exception");
         } catch (RuntimeException e) {
-           assertEquals("head: too many arguments", e.getMessage());
+           assertEquals("tail: too many arguments", e.getMessage());
         }
     }
 
     @Test
     public void testMissingInput() throws IOException {
         try {
-            headApplication.execute(applicationArguments, null, outputStream);
-            fail("head did not throw a missing input exception");
+            tailApplication.execute(applicationArguments, null, outputStream);
+            fail("tail did not throw a missing input exception");
         } catch (RuntimeException e) {
-            assertEquals("head: missing input", e.getMessage());
+            assertEquals("tail: missing input", e.getMessage());
         }
     }
 
@@ -79,10 +79,10 @@ public class HeadTest {
         try {
             applicationArguments.add("-n");
             applicationArguments.add("15");
-            headApplication.execute(applicationArguments, null, outputStream);
-            fail("head did not throw a missing input exception");
+            tailApplication.execute(applicationArguments, null, outputStream);
+            fail("tail did not throw a missing input exception");
         } catch (RuntimeException e) {
-            assertEquals("head: missing input", e.getMessage());
+            assertEquals("tail: missing input", e.getMessage());
         }
     }
 
@@ -91,10 +91,10 @@ public class HeadTest {
         try {
             applicationArguments.add("15");
             applicationArguments.add("FilePath");
-            headApplication.execute(applicationArguments, null, outputStream);
-            fail("head did not throw an invalid argument exception");
+            tailApplication.execute(applicationArguments, null, outputStream);
+            fail("tail did not throw an invalid argument exception");
         } catch (RuntimeException e) {
-            assertEquals("head: wrong argument " + "15", e.getMessage());
+            assertEquals("tail: wrong argument " + "15", e.getMessage());
         }
     }
 
@@ -104,10 +104,10 @@ public class HeadTest {
             applicationArguments.add("-n");
             applicationArguments.add("I'm not a number!");
             applicationArguments.add("FilePath");
-            headApplication.execute(applicationArguments, null, outputStream);
-            fail("head did not throw a wrong argument exception");
+            tailApplication.execute(applicationArguments, null, outputStream);
+            fail("tail did not throw a wrong argument exception");
         } catch (RuntimeException e) {
-            assertEquals("head: wrong argument " + "I'm not a number!", e.getMessage());
+            assertEquals("tail: wrong argument " + "I'm not a number!", e.getMessage());
         }
     }
 
@@ -117,10 +117,10 @@ public class HeadTest {
             applicationArguments.add("-n");
             applicationArguments.add("15");
             applicationArguments.add("InvalidPath");
-            headApplication.execute(applicationArguments, null, outputStream);
-            fail("head did not throw an invalig argument exception");
+            tailApplication.execute(applicationArguments, null, outputStream);
+            fail("tail did not throw an invalig argument exception");
         } catch (RuntimeException e) {
-            assertEquals("head: " + "InvalidPath" + " does not exist", e.getMessage());
+            assertEquals("tail: " + "InvalidPath" + " does not exist", e.getMessage());
         }
     }
 
@@ -130,10 +130,10 @@ public class HeadTest {
             applicationArguments.add("-n");
             applicationArguments.add("6");
             applicationArguments.add("/tmp/Documents/Eng");
-            headApplication.execute(applicationArguments, null, outputStream);
-            fail("head did not throw a cannot read input exception");
+            tailApplication.execute(applicationArguments, null, outputStream);
+            fail("tail did not throw a cannot read input exception");
         } catch (RuntimeException e) {
-            assertEquals("head: cannot read input", e.getMessage());
+            assertEquals("tail: cannot read input", e.getMessage());
         }
     }
 
@@ -141,10 +141,10 @@ public class HeadTest {
     public void testDefaultNumberOfLinesFromAbsolutePath() throws IOException {
         applicationArguments.add("/tmp/Documents/Eng/Test");
         String expectedOutput = new String();
-        for(int i = 0; i < 10; ++ i) {
+        for(int i = 10; i < 20; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
         }
-        headApplication.execute(applicationArguments, null, outputStream);
+        tailApplication.execute(applicationArguments, null, outputStream);
         assertEquals(expectedOutput, outputStream.toString());
     }
 
@@ -153,10 +153,10 @@ public class HeadTest {
         fileSystem.setWorkingDirectory("/tmp/Documents/Eng");
         applicationArguments.add("Test");
         String expectedOutput = new String();
-        for(int i = 0; i < 10; ++ i) {
+        for(int i = 10; i < 20; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
         }
-        headApplication.execute(applicationArguments, null, outputStream);
+        tailApplication.execute(applicationArguments, null, outputStream);
         assertEquals(expectedOutput, outputStream.toString());
     }
 
@@ -166,10 +166,10 @@ public class HeadTest {
         applicationArguments.add("15");
         applicationArguments.add("/tmp/Documents/Eng/Test");
         String expectedOutput = new String();
-        for(int i = 0; i < 15; ++ i) {
+        for(int i = 5; i < 20; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
         }
-        headApplication.execute(applicationArguments, null, outputStream);
+        tailApplication.execute(applicationArguments, null, outputStream);
         assertEquals(expectedOutput, outputStream.toString());
     }
 
@@ -182,7 +182,7 @@ public class HeadTest {
         for(int i = 0; i < 20; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
         }
-        headApplication.execute(applicationArguments, null, outputStream);
+        tailApplication.execute(applicationArguments, null, outputStream);
         assertEquals(expectedOutput, outputStream.toString());
     }
 
@@ -191,14 +191,14 @@ public class HeadTest {
         applicationArguments.add("-n");
         applicationArguments.add("-15");
         applicationArguments.add("/tmp/Documents/Eng/Test");
-        headApplication.execute(applicationArguments, null, outputStream);
+        tailApplication.execute(applicationArguments, null, outputStream);
         assertEquals("", outputStream.toString());
     }
 
     @Test
     public void testReadFromEmptyFile() throws IOException {
         applicationArguments.add("/tmp/Documents/Proj.txt");
-        headApplication.execute(applicationArguments, null, outputStream);
+        tailApplication.execute(applicationArguments, null, outputStream);
         assertEquals("", outputStream.toString());
     }
 
@@ -211,7 +211,7 @@ public class HeadTest {
         writer.flush();
         writer.close();
         ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
-        headApplication.execute(applicationArguments, testInput, outputStream);
+        tailApplication.execute(applicationArguments, testInput, outputStream);
         assertEquals(expectedOutput, outputStream.toString());
     }
 
@@ -230,7 +230,7 @@ public class HeadTest {
         ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
         applicationArguments.add("-n");
         applicationArguments.add("2");
-        headApplication.execute(applicationArguments, testInput, outputStream);
-        assertEquals("First line" + lineSeparator + "Second line" + lineSeparator, outputStream.toString());
+        tailApplication.execute(applicationArguments, testInput, outputStream);
+        assertEquals("Third line" + lineSeparator + "Fourth line" + lineSeparator, outputStream.toString());
     }
 }

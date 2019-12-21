@@ -28,7 +28,7 @@ public class Cd extends Application {
             dir = new File(currentDirectoryPath, dirString);
 
         } 
-        if (!dir.exists() || !dir.isDirectory()) {
+        if (!dir.isDirectory()) {
             throw new RuntimeException("cd: " + dirString + " is not an existing directory");
         }
         currentDirectoryPath = dir.getCanonicalPath();

@@ -28,8 +28,12 @@ public class Sed extends Application {
             return false;
         }
         char delimiter = argument.charAt(1);
-
+        
         if(argument.charAt(argument.length() - 1) != delimiter && argument.charAt(argument.length()-1) != 'g') {
+            return false;
+        }
+
+        if(argument.charAt(argument.length() - 1) == 'g' && argument.charAt(argument.length() - 2) != delimiter) {
             return false;
         }
 
@@ -64,7 +68,7 @@ public class Sed extends Application {
 
         if(applicationArguments.size() == 2){
             String filePath = applicationArguments.get(1);
-            if(filePath.charAt(0) == '/') {
+            if(filePath.startsWith(System.getProperty("file.separator"))) {
                 sedFile = new File(applicationArguments.get(1));
             }
             else {
@@ -101,25 +105,21 @@ public class Sed extends Application {
 
     public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
         int numberOfArguments = applicationArguments.size();
-        if (numberOfArguments == 0) {
+        if (numberOfArguments <= 0) {
             throw new RuntimeException("sed: missing arguments");
         }   
+
+        if (numberOfArguments > 2){
+            throw new RuntimeException("sed: too many arguments");
+        }
 
         if (numberOfArguments == 1 && inputStream == null) {
             throw new RuntimeException("sed: missing input");
         }
 
-        if (numberOfArguments >= 1) {
-            if(isValid(applicationArguments.get(0)) == false) {
-                throw new RuntimeException("sed: invalid first argument");
-            } 
-        }
-
-       
-
-        if (numberOfArguments > 2){
-            throw new RuntimeException("sed: too many arguments");
-        }
+        if(isValid(applicationArguments.get(0)) == false) {
+            throw new RuntimeException("sed: invalid first argument");
+        } 
     }
 
 }
