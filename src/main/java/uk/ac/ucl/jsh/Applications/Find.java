@@ -85,11 +85,11 @@ public class Find extends Application {
             else {
                 rootSearchDirectory = new File(fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0));
             }
-            if(!rootSearchDirectory.exists() || !rootSearchDirectory.isDirectory()) {
+            if(!rootSearchDirectory.isDirectory()) {
                 throw new RuntimeException("find: could not open " + applicationArguments.get(0));
             }
             if(applicationArguments.get(1).compareTo("-name") != 0) {
-                throw new RuntimeException("find: wrong argument");
+                throw new RuntimeException("find: invalid argument " + applicationArguments.get(1));
             }
         }
         if(applicationArguments.size() > 3) {

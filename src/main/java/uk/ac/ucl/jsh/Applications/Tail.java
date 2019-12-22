@@ -88,14 +88,18 @@ public class Tail extends Application {
     }
     
     public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if ((applicationArguments.isEmpty() || applicationArguments.size() == 2) && inputStream == null)  {
-            throw new RuntimeException("tail: missing arguments");
-        }
-        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
-            throw new RuntimeException("tail: wrong argument " + applicationArguments.get(0));
+        if ((applicationArguments.isEmpty()) && inputStream == null)  {
+            throw new RuntimeException("tail: missing input");
         }
         if (applicationArguments.size() > 3) {
             throw new RuntimeException("tail: too many arguments");
         }
+        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
+            throw new RuntimeException("tail: wrong argument " + applicationArguments.get(0));
+        }
+        if (applicationArguments.size() == 2 && inputStream == null) {
+            throw new RuntimeException("tail: missing input");
+        }
+       
     }
 }

@@ -17,6 +17,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Grep extends Application {
+    
     public Grep(FileSystem fileSystem) {
         super(fileSystem);
     }
@@ -40,7 +41,7 @@ public class Grep extends Application {
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
         checkArguments(applicationArguments, inputStream, outputStream);
         Path filePath;
         Pattern grepPattern;
@@ -64,7 +65,7 @@ public class Grep extends Application {
                     filePath = Paths.get(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + currentFileName);
                 }
                 if (Files.isDirectory(filePath) || !Files.isReadable(filePath)) {
-                    throw new RuntimeException("grep: wrong file argument" + currentFileName);
+                    throw new RuntimeException("grep: cannot open " + currentFileName);
                 }
                 filePathArray[i] = filePath;
             }

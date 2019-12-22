@@ -30,7 +30,7 @@ public class Head extends Application{
             }
         }
         catch (IOException e) {
-            throw new RuntimeException("head: cannot open file");
+            throw new RuntimeException("head: cannot read input");
         }
     }
 
@@ -67,7 +67,7 @@ public class Head extends Application{
                     readAndWrite(reader, writer, headLines);
                 }
                 catch (IOException e) {
-                    throw new RuntimeException("head: cannot open " + headArg);
+                    throw new RuntimeException("head: cannot open file");
                 }
             }
             else {
@@ -79,15 +79,19 @@ public class Head extends Application{
     }
 
     public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if ((applicationArguments.isEmpty() || applicationArguments.size() == 2) && inputStream == null) {
+        if ((applicationArguments.isEmpty()) && inputStream == null) {
             throw new RuntimeException("head: missing input");
-        }
-        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
-            throw new RuntimeException("head: wrong argument " + applicationArguments.get(0));
         }
         if (applicationArguments.size() > 3) {
             throw new RuntimeException("head: too many arguments");
+        } 
+        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
+            throw new RuntimeException("head: wrong argument " + applicationArguments.get(0));
         }
+        if (applicationArguments.size() == 2 && inputStream == null) {
+            throw new RuntimeException("head: missing input");
+        }
+       
        
     }
 }
