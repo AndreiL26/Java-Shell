@@ -17,78 +17,6 @@ public interface CallParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompileUnit(CallParserParser.CompileUnitContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CallParserParser#application}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitApplication(CallParserParser.ApplicationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#pwd}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitPwd(CallParserParser.PwdContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#cd}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCd(CallParserParser.CdContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#ls}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLs(CallParserParser.LsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#cat}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCat(CallParserParser.CatContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#echo}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEcho(CallParserParser.EchoContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#head}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitHead(CallParserParser.HeadContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#tail}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTail(CallParserParser.TailContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#grep}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGrep(CallParserParser.GrepContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#sed}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSed(CallParserParser.SedContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#find}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFind(CallParserParser.FindContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#wc}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitWc(CallParserParser.WcContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link CallParserParser#arguments}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -106,12 +34,6 @@ public interface CallParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNon_quoted(CallParserParser.Non_quotedContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link CallParserParser#application_literal}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitApplication_literal(CallParserParser.Application_literalContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CallParserParser#quoted}.
 	 * @param ctx the parse tree

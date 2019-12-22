@@ -1,34 +1,8 @@
 grammar CallParser;
 
 compileUnit
-    : WS* application WS*
+    : WS* arguments WS* EOF
     ;
-
-application    
-    :   pwd
-    |   cd
-    |   ls
-    |   cat
-    |   echo
-    |   head
-    |   tail
-    |   grep
-    |   sed
-    |   find
-    |   wc
-    ;
-
-pwd     :   PWD;
-cd      :   CD (WS+ argument)?;
-ls      :   LS (WS+ argument)?;
-cat     :   CAT (WS+ arguments)?;
-echo    :   ECHO (WS+ arguments)?;
-head    :   HEAD (WS+ arguments)?;
-tail    :   TAIL (WS+ arguments)?;
-grep    :   GREP (WS+ arguments);
-sed     :   SED (WS+ arguments);
-find    :   FIND (WS+ arguments);
-wc      :   WC (WS+ arguments)?;
 
 arguments
     :   argument
@@ -42,12 +16,7 @@ argument
 
 non_quoted
     :   NON_KEYWORD+
-    |   application_literal
     ;
-
-application_literal 
-    :   PWD | CD | LS | CAT | ECHO | HEAD | TAIL | GREP | SED | FIND | WC
-    ;   
 
 quoted
     :   single_quoted
@@ -60,7 +29,7 @@ single_quoted
     ;
 
 squote_content
-    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '`' | application_literal)*
+    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '`')*
     ;
 
 double_quoted
@@ -68,28 +37,18 @@ double_quoted
     ;
 
 dquote_content 
-    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '\'' | backquoted | application_literal)*
+    :   content = (NON_KEYWORD | QUOTE_CONTENT | WS | '\'') dquote_content?
+    |   backquoted dquote_content?
     ;
+
 
 backquoted
     :   '`' content = bquote_content '`'
     ;
 
 bquote_content
-    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '\'' | application_literal)*
+    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '\'')*
     ;
-
-PWD     : 'pwd';
-CD      : 'cd';
-LS      : 'ls';
-CAT     : 'cat';
-ECHO    : 'echo';
-HEAD    : 'head';
-TAIL    : 'tail';
-GREP    : 'grep';
-SED     : 'sed';
-FIND    : 'find';
-WC      : 'wc';
 
 WS             : [ \t];
 NON_KEYWORD    : ~[ \t"'`\n\r;|><];

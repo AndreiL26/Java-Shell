@@ -10,115 +10,9 @@ import uk.ac.ucl.jsh.antlr.CallParser.*;
 public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
     @Override 
     public ArrayList<String> visitCompileUnit(CallParserParser.CompileUnitContext ctx) { 
-        return visit(ctx.application()); 
-    }
-	
-    @Override 
-    public ArrayList<String> visitPwd(CallParserParser.PwdContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("pwd"));
-        return result;
-    }
-	
-    @Override 
-    public ArrayList<String> visitCd(CallParserParser.CdContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("cd"));
-        if (ctx.argument() != null) {
-            result.addAll(visit(ctx.argument()));
-        }
-
-        return result;
-    }
-    
-    @Override 
-    public ArrayList<String> visitLs(CallParserParser.LsContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("ls"));
-        if (ctx.argument() != null) {
-            result.addAll(visit(ctx.argument()));
-        }
-
-        return result;
-    }
-	
-    @Override 
-    public ArrayList<String> visitCat(CallParserParser.CatContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("cat"));
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
-        }
-
-        return result;
-    }
-	
-    @Override 
-    public ArrayList<String> visitEcho(CallParserParser.EchoContext ctx) {
-        ArrayList<String> result = new ArrayList<>(List.of("echo"));
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
-        }
-
-        return result;
+        return visit(ctx.arguments()); 
     }
 
-    @Override 
-    public ArrayList<String> visitHead(CallParserParser.HeadContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("head"));
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
-        }
-
-        return result;
-    }
-	
-    @Override 
-    public ArrayList<String> visitTail(CallParserParser.TailContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("tail"));
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
-        }
-
-        return result;
-    }
-
-    @Override 
-    public ArrayList<String> visitGrep(CallParserParser.GrepContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("grep"));
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
-        }  
-
-        return result;
-    }
-	
-    @Override 
-    public ArrayList<String> visitSed(CallParserParser.SedContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("sed"));
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
-        }
-
-        return result; 
-    }
-	
-    @Override 
-    public ArrayList<String> visitFind(CallParserParser.FindContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("find"));
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
-        }
-
-        return result;
-    }
-	
-    @Override 
-    public ArrayList<String> visitWc(CallParserParser.WcContext ctx) { 
-        ArrayList<String> result = new ArrayList<>(List.of("wc"));
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
-        }
-
-        return result;
-    }
-	
     @Override 
     public ArrayList<String> visitArguments(CallParserParser.ArgumentsContext ctx) {
         ArrayList<String> result = new ArrayList<>();
@@ -162,7 +56,24 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 	
     @Override 
     public ArrayList<String> visitDouble_quoted(CallParserParser.Double_quotedContext ctx) {
-        return new ArrayList<>(List.of(ctx.content.getText()));
+        return visit(ctx.dquote_content());
+    }
+
+    @Override 
+    public ArrayList<String> visitDquote_content(CallParserParser.Dquote_contentContext ctx) { 
+        StringBuilder stringBuilder = new StringBuilder();
+        if (ctx.backquoted() != null) {
+            stringBuilder.append(visit(ctx.backquoted()).get(0));
+        }
+        else {
+            stringBuilder.append(ctx.content.getText());
+        }
+
+        if (ctx.dquote_content() != null) {
+            stringBuilder.append(visit(ctx.dquote_content()).get(0));
+        }
+
+        return new ArrayList<>(List.of(stringBuilder.toString()));
     }
 	
     @Override 
