@@ -47,6 +47,7 @@ public class CommandManager {
         commandMap.put("tail", new TailCommand(fileSystem, writer));
         commandMap.put("grep", new GrepCommand(fileSystem, writer));
         commandMap.put("sed", new SedCommand(fileSystem, writer));
+        commandMap.put("wc", new WcCommand(fileSystem, writer));
     }
 
     public static String encodePath(String path) {
