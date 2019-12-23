@@ -24,9 +24,9 @@ call
     :   text = CALL_CONTENT
     ;
 
-fragment SQUOTED     : '\'' (~[\r\n'])+ '\'';
-fragment BQUOTED     : '`' (~[\r\n`])+ '`';
-fragment DQUOTED     : '"' (BQUOTED | ~[\r\n"`])+ '"';
+fragment SQUOTED     : '\'' (~[\r\n'])* '\'';
+fragment BQUOTED     : '`' (~[\r\n`])* '`';
+fragment DQUOTED     : '"' (BQUOTED | ~[\r\n"`])* '"';
 fragment NON_KEYWORD : ~[\n'"`;|];
 CALL_CONTENT         : (NON_KEYWORD | SQUOTED | BQUOTED | DQUOTED)+;
 

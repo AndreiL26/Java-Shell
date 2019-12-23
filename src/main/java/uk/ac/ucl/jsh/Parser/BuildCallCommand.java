@@ -50,7 +50,7 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
     }
 	
     @Override 
-    public ArrayList<String> visitSingle_quoted(CallParserParser.Single_quotedContext ctx) { 
+    public ArrayList<String> visitSingle_quoted(CallParserParser.Single_quotedContext ctx) {
         return new ArrayList<>(List.of(ctx.content.getText()));
     }
 	
@@ -65,7 +65,7 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
         if (ctx.backquoted() != null) {
             stringBuilder.append(visit(ctx.backquoted()).get(0));
         }
-        else {
+        else if (ctx.content != null) {
             stringBuilder.append(ctx.content.getText());
         }
 
@@ -79,6 +79,10 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
     @Override 
     public ArrayList<String> visitBackquoted(CallParserParser.BackquotedContext ctx) { 
         String cmdSubstitutionStirng = ctx.content.getText();
+        if (cmdSubstitutionStirng == "") {
+            return new ArrayList<>(List.of(""));
+        }
+        
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ArrayList<String> tokens = Parser.parseCallCommand(cmdSubstitutionStirng);
         Jsh.applicationManager.executeApplication(tokens, null, outputStream);

@@ -1,7 +1,7 @@
 grammar CallParser;
 
 compileUnit
-    : WS* arguments WS* EOF
+    :   WS* arguments WS* EOF
     ;
 
 arguments
@@ -37,10 +37,10 @@ double_quoted
     ;
 
 dquote_content 
-    :   content = (NON_KEYWORD | QUOTE_CONTENT | WS | '\'') dquote_content?
-    |   backquoted dquote_content?
+    :   content = (NON_KEYWORD | QUOTE_CONTENT | WS | '\'') dquote_content
+    |   backquoted dquote_content
+    |  
     ;
-
 
 backquoted
     :   '`' content = bquote_content '`'
