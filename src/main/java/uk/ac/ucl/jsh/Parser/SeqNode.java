@@ -28,7 +28,7 @@ public class SeqNode implements Node {
         return right;
     }
     
-    public void accept(TreeVisitor testVisitor, InputStream inputStream, OutputStream outputStream) {
-        testVisitor.visit(this, inputStream, outputStream);
+    public <T> T accept(TreeVisitor<T> testVisitor, InputStream inputStream, OutputStream outputStream) {
+        return testVisitor.visit(this, inputStream, outputStream);
     }
 }

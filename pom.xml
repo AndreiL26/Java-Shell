@@ -87,7 +87,7 @@
         </executions>
         <configuration>
           <visitor>true</visitor>
-          <listener>true</listener>
+          <listener>false</listener>
           <outputDirectory>
               ${basedir}/src/main/java/
           </outputDirectory>

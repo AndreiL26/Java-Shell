@@ -106,14 +106,6 @@ public class CallParserParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_compileUnit; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterCompileUnit(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitCompileUnit(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitCompileUnit(this);
 			else return visitor.visitChildren(this);
@@ -188,14 +180,6 @@ public class CallParserParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_arguments; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterArguments(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitArguments(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitArguments(this);
 			else return visitor.visitChildren(this);
@@ -268,14 +252,6 @@ public class CallParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_argument; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterArgument(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitArgument(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitArgument(this);
@@ -352,14 +328,6 @@ public class CallParserParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_non_quoted; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterNon_quoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitNon_quoted(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitNon_quoted(this);
 			else return visitor.visitChildren(this);
@@ -421,14 +389,6 @@ public class CallParserParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_quoted; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterQuoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitQuoted(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitQuoted(this);
 			else return visitor.visitChildren(this);
@@ -488,14 +448,6 @@ public class CallParserParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_single_quoted; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterSingle_quoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitSingle_quoted(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitSingle_quoted(this);
 			else return visitor.visitChildren(this);
@@ -544,14 +496,6 @@ public class CallParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_squote_content; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterSquote_content(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitSquote_content(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitSquote_content(this);
@@ -611,14 +555,6 @@ public class CallParserParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_double_quoted; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterDouble_quoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitDouble_quoted(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitDouble_quoted(this);
 			else return visitor.visitChildren(this);
@@ -665,14 +601,6 @@ public class CallParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_dquote_content; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterDquote_content(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitDquote_content(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitDquote_content(this);
@@ -748,14 +676,6 @@ public class CallParserParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_backquoted; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterBackquoted(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitBackquoted(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitBackquoted(this);
 			else return visitor.visitChildren(this);
@@ -804,14 +724,6 @@ public class CallParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_bquote_content; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).enterBquote_content(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CallParserListener ) ((CallParserListener)listener).exitBquote_content(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CallParserVisitor ) return ((CallParserVisitor<? extends T>)visitor).visitBquote_content(this);

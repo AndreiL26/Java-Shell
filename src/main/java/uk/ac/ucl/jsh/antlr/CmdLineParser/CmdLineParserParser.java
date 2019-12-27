@@ -101,14 +101,6 @@ public class CmdLineParserParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_compileUnit; }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).enterCompileUnit(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).exitCompileUnit(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitCompileUnit(this);
 			else return visitor.visitChildren(this);
@@ -160,14 +152,6 @@ public class CmdLineParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_command; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).enterCommand(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).exitCommand(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitCommand(this);
@@ -232,14 +216,6 @@ public class CmdLineParserParser extends Parser {
 		}
 		public PipeBaseContext(PipeContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).enterPipeBase(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).exitPipeBase(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitPipeBase(this);
 			else return visitor.visitChildren(this);
@@ -254,14 +230,6 @@ public class CmdLineParserParser extends Parser {
 			return getRuleContext(CallContext.class,0);
 		}
 		public PipeRecursiveContext(PipeContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).enterPipeRecursive(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).exitPipeRecursive(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitPipeRecursive(this);
@@ -355,14 +323,6 @@ public class CmdLineParserParser extends Parser {
 		}
 		public SeqRecursiveContext(SeqContext ctx) { copyFrom(ctx); }
 		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).enterSeqRecursive(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).exitSeqRecursive(this);
-		}
-		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitSeqRecursive(this);
 			else return visitor.visitChildren(this);
@@ -379,14 +339,6 @@ public class CmdLineParserParser extends Parser {
 			return getRuleContext(CommandContext.class,i);
 		}
 		public SeqBaseContext(SeqContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).enterSeqBase(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).exitSeqBase(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitSeqBase(this);
@@ -466,14 +418,6 @@ public class CmdLineParserParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_call; }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).enterCall(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof CmdLineParserListener ) ((CmdLineParserListener)listener).exitCall(this);
-		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitCall(this);

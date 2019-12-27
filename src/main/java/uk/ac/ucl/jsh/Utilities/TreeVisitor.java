@@ -8,8 +8,8 @@ import java.io.OutputStream;
 
 import uk.ac.ucl.jsh.Parser.CallNode;
 
-public interface TreeVisitor {
-    void visit(SeqNode seqNode,   InputStream inputStream, OutputStream outputStream);
-    void visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream);
-    void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream);
+public interface TreeVisitor<T> {
+    T visit(SeqNode seqNode,   InputStream inputStream, OutputStream outputStream);
+    T visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream);
+    T visit(CallNode callNode, InputStream inputStream, OutputStream outputStream);
 }

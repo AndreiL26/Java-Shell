@@ -16,7 +16,7 @@ public class CallNode implements Node {
         return cmdString;
     }
 
-    public void accept(TreeVisitor treeVisitor, InputStream inputStream, OutputStream outputStream) {
-        treeVisitor.visit(this, inputStream, outputStream);
+    public <T> T accept(TreeVisitor<T> treeVisitor, InputStream inputStream, OutputStream outputStream) {
+        return treeVisitor.visit(this, inputStream, outputStream);
     }
 }

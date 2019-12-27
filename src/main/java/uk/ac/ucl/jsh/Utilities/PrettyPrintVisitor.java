@@ -7,27 +7,33 @@ import uk.ac.ucl.jsh.Parser.CallNode;
 import uk.ac.ucl.jsh.Parser.PipeNode;
 import uk.ac.ucl.jsh.Parser.SeqNode;
 
-public class PrintVisitor implements TreeVisitor {
+public class PrettyPrintVisitor implements TreeVisitor<Void> {
     private StringBuilder shiftSB = new StringBuilder("");
     
-    public void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
+    public Void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
         System.out.println(shiftSB.toString() + "Call node: " + callNode.getCmdString());
+
+        return null;
     }
 
-    public void visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream) {
+    public Void visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream) {
         System.out.println(shiftSB.toString() + "Pipe Node");
         shiftSB.append("   ");
         pipeNode.getLeft().accept(this, null, null);
         pipeNode.getRight().accept(this, null, null);
         shiftSB.setLength(shiftSB.length()-3);
+
+        return null;
     }
 
-    public void visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) {
+    public Void visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) {
         System.out.println(shiftSB.toString() + "Seq Node");
         shiftSB.append("   ");
         seqNode.getLeft().accept(this, null, null);
         seqNode.getRight().accept(this, null, null);
         shiftSB.setLength(shiftSB.length()-3);
+
+        return null;
     }
     
 }
