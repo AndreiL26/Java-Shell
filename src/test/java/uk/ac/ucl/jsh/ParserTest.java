@@ -18,16 +18,16 @@ import uk.ac.ucl.jsh.Utilities.ToStringVisitor;
 public class ParserTest {
     @Test
     public void testUnquotedCallCommand() {
-        String callCommand = "   a    bc def'ghi'    ";
-        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList("a", "bc", "defghi"));
+        String callCommand = "   a    bc def    ";
+        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList("a", "bc", "def"));
         ArrayList<String> actualTokens = Parser.parseCallCommand(callCommand);
         assertTrue(expectedTokens.equals(actualTokens));
     }
 
     @Test
     public void testSingleQuotedCallCommand() {
-        String callCommand = "  a 'bc `echo def`'  ";
-        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList("a", "bc `echo def`"));
+        String callCommand = "  a a'bc `echo def`'  ";
+        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList("a", "abc `echo def`"));
         ArrayList<String> actualTokens = Parser.parseCallCommand(callCommand);
         assertTrue(expectedTokens.equals(actualTokens));
     }

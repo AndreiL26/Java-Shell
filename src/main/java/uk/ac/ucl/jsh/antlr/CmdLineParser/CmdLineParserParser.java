@@ -17,25 +17,30 @@ public class CmdLineParserParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		CALL_CONTENT=1, SEMI=2, PIPE=3, GT=4, LT=5, WHITESPACE=6;
+		T__0=1, T__1=2, T__2=3, WS=4, NON_KEYWORD=5, SEMI=6, PIPE=7, GT=8, LT=9;
 	public static final int
-		RULE_compileUnit = 0, RULE_command = 1, RULE_pipe = 2, RULE_seq = 3, RULE_call = 4;
+		RULE_compileUnit = 0, RULE_command = 1, RULE_pipe = 2, RULE_seq = 3, RULE_call = 4, 
+		RULE_call_content = 5, RULE_single_quoted = 6, RULE_squote_content = 7, 
+		RULE_double_quoted = 8, RULE_dquote_content = 9, RULE_backquoted = 10, 
+		RULE_bquote_content = 11, RULE_keyword = 12;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"compileUnit", "command", "pipe", "seq", "call"
+			"compileUnit", "command", "pipe", "seq", "call", "call_content", "single_quoted", 
+			"squote_content", "double_quoted", "dquote_content", "backquoted", "bquote_content", 
+			"keyword"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, "';'", "'|'", "'>'", "'<'"
+			null, "'''", "'\"'", "'`'", null, null, "';'", "'|'", "'>'", "'<'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "CALL_CONTENT", "SEMI", "PIPE", "GT", "LT", "WHITESPACE"
+			null, null, null, null, "WS", "NON_KEYWORD", "SEMI", "PIPE", "GT", "LT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -111,20 +116,20 @@ public class CmdLineParserParser extends Parser {
 		CompileUnitContext _localctx = new CompileUnitContext(_ctx, getState());
 		enterRule(_localctx, 0, RULE_compileUnit);
 		try {
-			setState(12);
+			setState(28);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(10);
+				setState(26);
 				seq(0);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(11);
+				setState(27);
 				command();
 				}
 				break;
@@ -163,20 +168,20 @@ public class CmdLineParserParser extends Parser {
 		CommandContext _localctx = new CommandContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_command);
 		try {
-			setState(16);
+			setState(32);
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(14);
+				setState(30);
 				pipe(0);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(15);
+				setState(31);
 				call();
 				}
 				break;
@@ -257,15 +262,15 @@ public class CmdLineParserParser extends Parser {
 			_ctx = _localctx;
 			_prevctx = _localctx;
 
-			setState(19);
+			setState(35);
 			((PipeBaseContext)_localctx).call1 = call();
-			setState(20);
+			setState(36);
 			match(PIPE);
-			setState(21);
+			setState(37);
 			((PipeBaseContext)_localctx).call2 = call();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(28);
+			setState(44);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -276,16 +281,16 @@ public class CmdLineParserParser extends Parser {
 					{
 					_localctx = new PipeRecursiveContext(new PipeContext(_parentctx, _parentState));
 					pushNewRecursionContext(_localctx, _startState, RULE_pipe);
-					setState(23);
+					setState(39);
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(24);
+					setState(40);
 					match(PIPE);
-					setState(25);
+					setState(41);
 					call();
 					}
 					} 
 				}
-				setState(30);
+				setState(46);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			}
@@ -366,15 +371,15 @@ public class CmdLineParserParser extends Parser {
 			_ctx = _localctx;
 			_prevctx = _localctx;
 
-			setState(32);
+			setState(48);
 			((SeqBaseContext)_localctx).cmd1 = command();
-			setState(33);
+			setState(49);
 			match(SEMI);
-			setState(34);
+			setState(50);
 			((SeqBaseContext)_localctx).cmd2 = command();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(41);
+			setState(57);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -385,16 +390,16 @@ public class CmdLineParserParser extends Parser {
 					{
 					_localctx = new SeqRecursiveContext(new SeqContext(_parentctx, _parentState));
 					pushNewRecursionContext(_localctx, _startState, RULE_seq);
-					setState(36);
+					setState(52);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-					setState(37);
+					setState(53);
 					match(SEMI);
-					setState(38);
+					setState(54);
 					command();
 					}
 					} 
 				}
-				setState(43);
+				setState(59);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			}
@@ -412,15 +417,24 @@ public class CmdLineParserParser extends Parser {
 	}
 
 	public static class CallContext extends ParserRuleContext {
-		public Token text;
-		public TerminalNode CALL_CONTENT() { return getToken(CmdLineParserParser.CALL_CONTENT, 0); }
 		public CallContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_call; }
+	 
+		public CallContext() { }
+		public void copyFrom(CallContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class SimpleCallContext extends CallContext {
+		public Call_contentContext call_content() {
+			return getRuleContext(Call_contentContext.class,0);
+		}
+		public SimpleCallContext(CallContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitCall(this);
+			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitSimpleCall(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -429,10 +443,579 @@ public class CmdLineParserParser extends Parser {
 		CallContext _localctx = new CallContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_call);
 		try {
+			_localctx = new SimpleCallContext(_localctx);
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(44);
-			((CallContext)_localctx).text = match(CALL_CONTENT);
+			setState(60);
+			call_content();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Call_contentContext extends ParserRuleContext {
+		public List<TerminalNode> NON_KEYWORD() { return getTokens(CmdLineParserParser.NON_KEYWORD); }
+		public TerminalNode NON_KEYWORD(int i) {
+			return getToken(CmdLineParserParser.NON_KEYWORD, i);
+		}
+		public List<Single_quotedContext> single_quoted() {
+			return getRuleContexts(Single_quotedContext.class);
+		}
+		public Single_quotedContext single_quoted(int i) {
+			return getRuleContext(Single_quotedContext.class,i);
+		}
+		public List<Double_quotedContext> double_quoted() {
+			return getRuleContexts(Double_quotedContext.class);
+		}
+		public Double_quotedContext double_quoted(int i) {
+			return getRuleContext(Double_quotedContext.class,i);
+		}
+		public List<BackquotedContext> backquoted() {
+			return getRuleContexts(BackquotedContext.class);
+		}
+		public BackquotedContext backquoted(int i) {
+			return getRuleContext(BackquotedContext.class,i);
+		}
+		public List<TerminalNode> WS() { return getTokens(CmdLineParserParser.WS); }
+		public TerminalNode WS(int i) {
+			return getToken(CmdLineParserParser.WS, i);
+		}
+		public Call_contentContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_call_content; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitCall_content(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Call_contentContext call_content() throws RecognitionException {
+		Call_contentContext _localctx = new Call_contentContext(_ctx, getState());
+		enterRule(_localctx, 10, RULE_call_content);
+		try {
+			int _alt;
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(67); 
+			_errHandler.sync(this);
+			_alt = 1;
+			do {
+				switch (_alt) {
+				case 1:
+					{
+					setState(67);
+					_errHandler.sync(this);
+					switch (_input.LA(1)) {
+					case NON_KEYWORD:
+						{
+						setState(62);
+						match(NON_KEYWORD);
+						}
+						break;
+					case T__0:
+						{
+						setState(63);
+						single_quoted();
+						}
+						break;
+					case T__1:
+						{
+						setState(64);
+						double_quoted();
+						}
+						break;
+					case T__2:
+						{
+						setState(65);
+						backquoted();
+						}
+						break;
+					case WS:
+						{
+						setState(66);
+						match(WS);
+						}
+						break;
+					default:
+						throw new NoViableAltException(this);
+					}
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				setState(69); 
+				_errHandler.sync(this);
+				_alt = getInterpreter().adaptivePredict(_input,5,_ctx);
+			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Single_quotedContext extends ParserRuleContext {
+		public Squote_contentContext squote_content() {
+			return getRuleContext(Squote_contentContext.class,0);
+		}
+		public Single_quotedContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_single_quoted; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitSingle_quoted(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Single_quotedContext single_quoted() throws RecognitionException {
+		Single_quotedContext _localctx = new Single_quotedContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_single_quoted);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(71);
+			match(T__0);
+			setState(72);
+			squote_content();
+			setState(73);
+			match(T__0);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Squote_contentContext extends ParserRuleContext {
+		public List<TerminalNode> NON_KEYWORD() { return getTokens(CmdLineParserParser.NON_KEYWORD); }
+		public TerminalNode NON_KEYWORD(int i) {
+			return getToken(CmdLineParserParser.NON_KEYWORD, i);
+		}
+		public List<KeywordContext> keyword() {
+			return getRuleContexts(KeywordContext.class);
+		}
+		public KeywordContext keyword(int i) {
+			return getRuleContext(KeywordContext.class,i);
+		}
+		public List<TerminalNode> WS() { return getTokens(CmdLineParserParser.WS); }
+		public TerminalNode WS(int i) {
+			return getToken(CmdLineParserParser.WS, i);
+		}
+		public Squote_contentContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_squote_content; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitSquote_content(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Squote_contentContext squote_content() throws RecognitionException {
+		Squote_contentContext _localctx = new Squote_contentContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_squote_content);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(82);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__2) | (1L << WS) | (1L << NON_KEYWORD) | (1L << SEMI) | (1L << PIPE) | (1L << GT) | (1L << LT))) != 0)) {
+				{
+				setState(80);
+				_errHandler.sync(this);
+				switch (_input.LA(1)) {
+				case NON_KEYWORD:
+					{
+					setState(75);
+					match(NON_KEYWORD);
+					}
+					break;
+				case SEMI:
+				case PIPE:
+				case GT:
+				case LT:
+					{
+					setState(76);
+					keyword();
+					}
+					break;
+				case WS:
+					{
+					setState(77);
+					match(WS);
+					}
+					break;
+				case T__1:
+					{
+					setState(78);
+					match(T__1);
+					}
+					break;
+				case T__2:
+					{
+					setState(79);
+					match(T__2);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				setState(84);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Double_quotedContext extends ParserRuleContext {
+		public Dquote_contentContext dquote_content() {
+			return getRuleContext(Dquote_contentContext.class,0);
+		}
+		public Double_quotedContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_double_quoted; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitDouble_quoted(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Double_quotedContext double_quoted() throws RecognitionException {
+		Double_quotedContext _localctx = new Double_quotedContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_double_quoted);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(85);
+			match(T__1);
+			setState(86);
+			dquote_content();
+			setState(87);
+			match(T__1);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Dquote_contentContext extends ParserRuleContext {
+		public List<TerminalNode> NON_KEYWORD() { return getTokens(CmdLineParserParser.NON_KEYWORD); }
+		public TerminalNode NON_KEYWORD(int i) {
+			return getToken(CmdLineParserParser.NON_KEYWORD, i);
+		}
+		public List<KeywordContext> keyword() {
+			return getRuleContexts(KeywordContext.class);
+		}
+		public KeywordContext keyword(int i) {
+			return getRuleContext(KeywordContext.class,i);
+		}
+		public List<TerminalNode> WS() { return getTokens(CmdLineParserParser.WS); }
+		public TerminalNode WS(int i) {
+			return getToken(CmdLineParserParser.WS, i);
+		}
+		public List<BackquotedContext> backquoted() {
+			return getRuleContexts(BackquotedContext.class);
+		}
+		public BackquotedContext backquoted(int i) {
+			return getRuleContext(BackquotedContext.class,i);
+		}
+		public Dquote_contentContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_dquote_content; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitDquote_content(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Dquote_contentContext dquote_content() throws RecognitionException {
+		Dquote_contentContext _localctx = new Dquote_contentContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_dquote_content);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(96);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__2) | (1L << WS) | (1L << NON_KEYWORD) | (1L << SEMI) | (1L << PIPE) | (1L << GT) | (1L << LT))) != 0)) {
+				{
+				setState(94);
+				_errHandler.sync(this);
+				switch (_input.LA(1)) {
+				case NON_KEYWORD:
+					{
+					setState(89);
+					match(NON_KEYWORD);
+					}
+					break;
+				case SEMI:
+				case PIPE:
+				case GT:
+				case LT:
+					{
+					setState(90);
+					keyword();
+					}
+					break;
+				case WS:
+					{
+					setState(91);
+					match(WS);
+					}
+					break;
+				case T__0:
+					{
+					setState(92);
+					match(T__0);
+					}
+					break;
+				case T__2:
+					{
+					setState(93);
+					backquoted();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				setState(98);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class BackquotedContext extends ParserRuleContext {
+		public Bquote_contentContext content;
+		public Bquote_contentContext bquote_content() {
+			return getRuleContext(Bquote_contentContext.class,0);
+		}
+		public BackquotedContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_backquoted; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitBackquoted(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final BackquotedContext backquoted() throws RecognitionException {
+		BackquotedContext _localctx = new BackquotedContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_backquoted);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(99);
+			match(T__2);
+			setState(100);
+			((BackquotedContext)_localctx).content = bquote_content();
+			setState(101);
+			match(T__2);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Bquote_contentContext extends ParserRuleContext {
+		public List<TerminalNode> NON_KEYWORD() { return getTokens(CmdLineParserParser.NON_KEYWORD); }
+		public TerminalNode NON_KEYWORD(int i) {
+			return getToken(CmdLineParserParser.NON_KEYWORD, i);
+		}
+		public List<KeywordContext> keyword() {
+			return getRuleContexts(KeywordContext.class);
+		}
+		public KeywordContext keyword(int i) {
+			return getRuleContext(KeywordContext.class,i);
+		}
+		public List<TerminalNode> WS() { return getTokens(CmdLineParserParser.WS); }
+		public TerminalNode WS(int i) {
+			return getToken(CmdLineParserParser.WS, i);
+		}
+		public Bquote_contentContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_bquote_content; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitBquote_content(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Bquote_contentContext bquote_content() throws RecognitionException {
+		Bquote_contentContext _localctx = new Bquote_contentContext(_ctx, getState());
+		enterRule(_localctx, 22, RULE_bquote_content);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(110);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << WS) | (1L << NON_KEYWORD) | (1L << SEMI) | (1L << PIPE) | (1L << GT) | (1L << LT))) != 0)) {
+				{
+				setState(108);
+				_errHandler.sync(this);
+				switch (_input.LA(1)) {
+				case NON_KEYWORD:
+					{
+					setState(103);
+					match(NON_KEYWORD);
+					}
+					break;
+				case SEMI:
+				case PIPE:
+				case GT:
+				case LT:
+					{
+					setState(104);
+					keyword();
+					}
+					break;
+				case WS:
+					{
+					setState(105);
+					match(WS);
+					}
+					break;
+				case T__1:
+					{
+					setState(106);
+					match(T__1);
+					}
+					break;
+				case T__0:
+					{
+					setState(107);
+					match(T__0);
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				setState(112);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class KeywordContext extends ParserRuleContext {
+		public TerminalNode SEMI() { return getToken(CmdLineParserParser.SEMI, 0); }
+		public TerminalNode PIPE() { return getToken(CmdLineParserParser.PIPE, 0); }
+		public TerminalNode GT() { return getToken(CmdLineParserParser.GT, 0); }
+		public TerminalNode LT() { return getToken(CmdLineParserParser.LT, 0); }
+		public KeywordContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_keyword; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof CmdLineParserVisitor ) return ((CmdLineParserVisitor<? extends T>)visitor).visitKeyword(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final KeywordContext keyword() throws RecognitionException {
+		KeywordContext _localctx = new KeywordContext(_ctx, getState());
+		enterRule(_localctx, 24, RULE_keyword);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(113);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << SEMI) | (1L << PIPE) | (1L << GT) | (1L << LT))) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -471,19 +1054,36 @@ public class CmdLineParserParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\b\61\4\2\t\2\4\3"+
-		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\5\2\17\n\2\3\3\3\3\5\3\23\n\3\3\4"+
-		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4\35\n\4\f\4\16\4 \13\4\3\5\3\5\3\5\3\5"+
-		"\3\5\3\5\3\5\3\5\7\5*\n\5\f\5\16\5-\13\5\3\6\3\6\3\6\2\4\6\b\7\2\4\6\b"+
-		"\n\2\2\2/\2\16\3\2\2\2\4\22\3\2\2\2\6\24\3\2\2\2\b!\3\2\2\2\n.\3\2\2\2"+
-		"\f\17\5\b\5\2\r\17\5\4\3\2\16\f\3\2\2\2\16\r\3\2\2\2\17\3\3\2\2\2\20\23"+
-		"\5\6\4\2\21\23\5\n\6\2\22\20\3\2\2\2\22\21\3\2\2\2\23\5\3\2\2\2\24\25"+
-		"\b\4\1\2\25\26\5\n\6\2\26\27\7\5\2\2\27\30\5\n\6\2\30\36\3\2\2\2\31\32"+
-		"\f\3\2\2\32\33\7\5\2\2\33\35\5\n\6\2\34\31\3\2\2\2\35 \3\2\2\2\36\34\3"+
-		"\2\2\2\36\37\3\2\2\2\37\7\3\2\2\2 \36\3\2\2\2!\"\b\5\1\2\"#\5\4\3\2#$"+
-		"\7\4\2\2$%\5\4\3\2%+\3\2\2\2&\'\f\4\2\2\'(\7\4\2\2(*\5\4\3\2)&\3\2\2\2"+
-		"*-\3\2\2\2+)\3\2\2\2+,\3\2\2\2,\t\3\2\2\2-+\3\2\2\2./\7\3\2\2/\13\3\2"+
-		"\2\2\6\16\22\36+";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\13v\4\2\t\2\4\3\t"+
+		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
+		"\f\t\f\4\r\t\r\4\16\t\16\3\2\3\2\5\2\37\n\2\3\3\3\3\5\3#\n\3\3\4\3\4\3"+
+		"\4\3\4\3\4\3\4\3\4\3\4\7\4-\n\4\f\4\16\4\60\13\4\3\5\3\5\3\5\3\5\3\5\3"+
+		"\5\3\5\3\5\7\5:\n\5\f\5\16\5=\13\5\3\6\3\6\3\7\3\7\3\7\3\7\3\7\6\7F\n"+
+		"\7\r\7\16\7G\3\b\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\7\tS\n\t\f\t\16\tV\13"+
+		"\t\3\n\3\n\3\n\3\n\3\13\3\13\3\13\3\13\3\13\7\13a\n\13\f\13\16\13d\13"+
+		"\13\3\f\3\f\3\f\3\f\3\r\3\r\3\r\3\r\3\r\7\ro\n\r\f\r\16\rr\13\r\3\16\3"+
+		"\16\3\16\2\4\6\b\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\3\3\2\b\13\2\u0080"+
+		"\2\36\3\2\2\2\4\"\3\2\2\2\6$\3\2\2\2\b\61\3\2\2\2\n>\3\2\2\2\fE\3\2\2"+
+		"\2\16I\3\2\2\2\20T\3\2\2\2\22W\3\2\2\2\24b\3\2\2\2\26e\3\2\2\2\30p\3\2"+
+		"\2\2\32s\3\2\2\2\34\37\5\b\5\2\35\37\5\4\3\2\36\34\3\2\2\2\36\35\3\2\2"+
+		"\2\37\3\3\2\2\2 #\5\6\4\2!#\5\n\6\2\" \3\2\2\2\"!\3\2\2\2#\5\3\2\2\2$"+
+		"%\b\4\1\2%&\5\n\6\2&\'\7\t\2\2\'(\5\n\6\2(.\3\2\2\2)*\f\3\2\2*+\7\t\2"+
+		"\2+-\5\n\6\2,)\3\2\2\2-\60\3\2\2\2.,\3\2\2\2./\3\2\2\2/\7\3\2\2\2\60."+
+		"\3\2\2\2\61\62\b\5\1\2\62\63\5\4\3\2\63\64\7\b\2\2\64\65\5\4\3\2\65;\3"+
+		"\2\2\2\66\67\f\4\2\2\678\7\b\2\28:\5\4\3\29\66\3\2\2\2:=\3\2\2\2;9\3\2"+
+		"\2\2;<\3\2\2\2<\t\3\2\2\2=;\3\2\2\2>?\5\f\7\2?\13\3\2\2\2@F\7\7\2\2AF"+
+		"\5\16\b\2BF\5\22\n\2CF\5\26\f\2DF\7\6\2\2E@\3\2\2\2EA\3\2\2\2EB\3\2\2"+
+		"\2EC\3\2\2\2ED\3\2\2\2FG\3\2\2\2GE\3\2\2\2GH\3\2\2\2H\r\3\2\2\2IJ\7\3"+
+		"\2\2JK\5\20\t\2KL\7\3\2\2L\17\3\2\2\2MS\7\7\2\2NS\5\32\16\2OS\7\6\2\2"+
+		"PS\7\4\2\2QS\7\5\2\2RM\3\2\2\2RN\3\2\2\2RO\3\2\2\2RP\3\2\2\2RQ\3\2\2\2"+
+		"SV\3\2\2\2TR\3\2\2\2TU\3\2\2\2U\21\3\2\2\2VT\3\2\2\2WX\7\4\2\2XY\5\24"+
+		"\13\2YZ\7\4\2\2Z\23\3\2\2\2[a\7\7\2\2\\a\5\32\16\2]a\7\6\2\2^a\7\3\2\2"+
+		"_a\5\26\f\2`[\3\2\2\2`\\\3\2\2\2`]\3\2\2\2`^\3\2\2\2`_\3\2\2\2ad\3\2\2"+
+		"\2b`\3\2\2\2bc\3\2\2\2c\25\3\2\2\2db\3\2\2\2ef\7\5\2\2fg\5\30\r\2gh\7"+
+		"\5\2\2h\27\3\2\2\2io\7\7\2\2jo\5\32\16\2ko\7\6\2\2lo\7\4\2\2mo\7\3\2\2"+
+		"ni\3\2\2\2nj\3\2\2\2nk\3\2\2\2nl\3\2\2\2nm\3\2\2\2or\3\2\2\2pn\3\2\2\2"+
+		"pq\3\2\2\2q\31\3\2\2\2rp\3\2\2\2st\t\2\2\2t\33\3\2\2\2\16\36\".;EGRT`"+
+		"bnp";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
