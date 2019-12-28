@@ -62,8 +62,8 @@ public class SedTest {
 
     @Test
     public void testMissingInputStreamAndFile() throws IOException {
-        applicationArguments.add("s/test/repl/");
         try {
+            applicationArguments.add("s/test/repl/");
             sedApplication.execute(applicationArguments, null, outputStream);
             fail("sed did not throw a missing input exception");
         } catch (RuntimeException e) {
@@ -73,9 +73,69 @@ public class SedTest {
 
     @Test 
     public void testInvalidFirstArgumentEmptyString() throws IOException {
-        applicationArguments.add(" ");
-        applicationArguments.add("Soft");
         try {
+            applicationArguments.add("");
+            applicationArguments.add("Soft");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw an invalid first argument exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: invalid first argument", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testInvalidFirstArgumentWrongFirstCharacter() throws IOException {
+        try {
+            applicationArguments.add("t/Regex/Replace/");
+            applicationArguments.add("Soft");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw an invalid first argument exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: invalid first argument", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testInvalidFirstArgumentSpecialDelimiter() throws IOException {
+        try {
+            applicationArguments.add("sgRexgReplaceMeg");
+            applicationArguments.add("Soft");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw an invalid first argument exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: invalid first argument", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testInvalidFirstArgumentSpecialDelimiterTooManyTimes() throws IOException {
+        try {
+            applicationArguments.add("sgRegexgReplacementgg");
+            applicationArguments.add("Soft");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw an invalid first argument exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: invalid first argument", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCharactersUsedInReplacementAndAsDelimiter() throws IOException {
+        try {
+            applicationArguments.add("ssRegexsReplacesMesg");
+            applicationArguments.add("Soft");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw an invalid first argument exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: invalid first argument", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCharactergUsedInReplacementAndAsDelimiter() throws IOException {
+        try {
+            applicationArguments.add("sgRegexgReplacementg");
+            applicationArguments.add("Soft");
             sedApplication.execute(applicationArguments, null, outputStream);
             fail("sed did not throw an invalid first argument exception");
         } catch (RuntimeException e) {
@@ -86,7 +146,7 @@ public class SedTest {
     @Test
     public void testInvalidFirstArgumentWrongLastCharacter() throws IOException {
         try {
-            applicationArguments.add("s/Regex/Replacement/Wrong");
+            applicationArguments.add("s/Regex/Replacement/n");
             applicationArguments.add("Soft");
             sedApplication.execute(applicationArguments, null, outputStream);
             fail("sed did not throw an invalid first argument exception");
@@ -119,6 +179,18 @@ public class SedTest {
         }
     }
     
+    @Test
+    public void testInvalidFirstArgumentMissingDelimiter() throws IOException {
+        try {
+            applicationArguments.add("s/RegexReplacement/");
+            applicationArguments.add("Soft");
+            sedApplication.execute(applicationArguments, null, outputStream);
+            fail("sed did not throw an invalid first argument exception");
+        } catch (RuntimeException e) {
+            assertEquals("sed: invalid first argument", e.getMessage());
+        }
+    }
+
     @Test
     public void testInvalidFirstArguementWrongEnding() throws IOException {
         try {
@@ -159,6 +231,19 @@ public class SedTest {
     @Test
     public void testReplaceAllOccurences() throws IOException {
         applicationArguments.add("s/test/repl/g");
+        applicationArguments.add("Soft");
+        sedApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "This is a repl" + lineSeparator;
+        expectedOutput += "This is a repl of another repl" + lineSeparator;
+        expectedOutput += lineSeparator;
+        
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    public void testReplaceAllOccurencesWithSpecialDelimiter() throws IOException {
+        applicationArguments.add("sgtestgreplgg");
         applicationArguments.add("Soft");
         sedApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
@@ -247,6 +332,26 @@ public class SedTest {
 
         ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
         applicationArguments.add("s/Hello/Sad/g");
+        sedApplication.execute(applicationArguments, testInput, outputStream);
+        
+        String expectedOutput = "Sad world" + lineSeparator;
+        expectedOutput += "Sad Sad world!" + lineSeparator;
+        expectedOutput += "world" + lineSeparator;
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    public void testReadingFromInputStreamWithSpecialDelimiter() throws IOException {
+        ByteArrayOutputStream aux = new ByteArrayOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
+        writer.write("Hello world" + lineSeparator);
+        writer.write("Hello Hello world!" + lineSeparator);
+        writer.write("world" + lineSeparator);
+        writer.flush();
+        writer.close();
+
+        ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
+        applicationArguments.add("ssHellosSadsg");
         sedApplication.execute(applicationArguments, testInput, outputStream);
         
         String expectedOutput = "Sad world" + lineSeparator;

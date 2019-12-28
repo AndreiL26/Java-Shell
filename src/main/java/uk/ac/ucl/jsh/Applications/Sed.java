@@ -23,7 +23,10 @@ public class Sed extends Application {
     }
 
     private boolean isValid(String argument) { 
-        /// Consider cases where delimiter is *, + or any other regex keyword, or s or g
+        if(argument == "") {
+            return false;
+        }
+
         if(argument.charAt(0) != 's') {
             return false;
         }
@@ -37,16 +40,37 @@ public class Sed extends Application {
             return false;
         }
 
-        if(argument.codePoints().filter(ch -> ch == delimiter).count() != 3) {
-            return false;
+        if(delimiter == 's') {
+            if(argument.codePoints().filter(ch -> ch == delimiter).count() != 4) {
+                return false;
+            }
         }
 
-        int firstDelimiterIndex = argument.indexOf(delimiter);
+        if(delimiter == 'g') {
+            if(argument.codePoints().filter(ch -> ch == delimiter).count() != 3 && argument.codePoints().filter(ch -> ch == delimiter).count() != 4) {
+                return false;
+            }
+        }
+
+        if(delimiter != 's' && delimiter != 'g') {
+            if(argument.codePoints().filter(ch -> ch == delimiter).count() != 3) {
+                return false;
+            }
+        }
+
+        int firstDelimiterIndex;
+        if(delimiter != 's') {
+            firstDelimiterIndex = argument.indexOf(delimiter);
+        }
+        else {
+            firstDelimiterIndex = argument.indexOf(delimiter, 1);
+        }
+
         int secondDelimiterIndex = argument.indexOf(delimiter, firstDelimiterIndex + 1);
         int thirdDelimiterIndex = argument.indexOf(delimiter, secondDelimiterIndex + 1);
 
-        this.regex = argument.substring(firstDelimiterIndex+1, secondDelimiterIndex);
-        this.replacement = argument.substring(secondDelimiterIndex+1, thirdDelimiterIndex);
+        this.regex = argument.substring(firstDelimiterIndex + 1, secondDelimiterIndex);
+        this.replacement = argument.substring(secondDelimiterIndex + 1, thirdDelimiterIndex);
 
         if(regex.compareTo("") == 0) {
             return false;
