@@ -14,10 +14,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.io.OutputStreamWriter;
 
-public class Tail extends Application {
+public class Tail implements Application {
+    private FileSystem fileSystem;
 
     public Tail(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     private void readAndWriteLast(BufferedReader reader, OutputStreamWriter writer, int tailLines) {
@@ -42,6 +43,21 @@ public class Tail extends Application {
         }       
     }
     
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if ((applicationArguments.isEmpty()) && inputStream == null)  {
+            throw new RuntimeException("tail: missing input");
+        }
+        if (applicationArguments.size() > 3) {
+            throw new RuntimeException("tail: too many arguments");
+        }
+        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
+            throw new RuntimeException("tail: wrong argument " + applicationArguments.get(0));
+        }
+        if (applicationArguments.size() == 2 && inputStream == null) {
+            throw new RuntimeException("tail: missing input");
+        }
+    }
+
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
         checkArguments(applicationArguments, inputStream, outputStream);
@@ -87,19 +103,4 @@ public class Tail extends Application {
         }
     }
     
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if ((applicationArguments.isEmpty()) && inputStream == null)  {
-            throw new RuntimeException("tail: missing input");
-        }
-        if (applicationArguments.size() > 3) {
-            throw new RuntimeException("tail: too many arguments");
-        }
-        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
-            throw new RuntimeException("tail: wrong argument " + applicationArguments.get(0));
-        }
-        if (applicationArguments.size() == 2 && inputStream == null) {
-            throw new RuntimeException("tail: missing input");
-        }
-       
-    }
 }

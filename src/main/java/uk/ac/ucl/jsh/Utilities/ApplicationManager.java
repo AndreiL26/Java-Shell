@@ -25,8 +25,12 @@ public class ApplicationManager {
         String applicationName = tokens.get(0);
         ArrayList<String> applicationArguments = new ArrayList<String>(tokens.subList(1, tokens.size()));
         try {
+            if(applicationName.startsWith("_")) {
+                unsafeVersion = true;
+            }
             if(applicationMap.containsKey(applicationName)) {
                 Application currentApplication = applicationMap.get(applicationName);
+                if(app)
                 currentApplication.execute(applicationArguments, inputStream, outputStream);
             } else {
                 throw new RuntimeException(applicationName + ": unknown application");

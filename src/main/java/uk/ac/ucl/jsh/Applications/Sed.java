@@ -14,12 +14,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
-public class Sed extends Application {
+public class Sed implements Application {
+    private FileSystem fileSystem;
     private String regex;
     private String replacement;
 
     public Sed(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     private boolean isValid(String argument) { 
@@ -78,6 +79,25 @@ public class Sed extends Application {
         return true;
     }
 
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        int numberOfArguments = applicationArguments.size();
+        if (numberOfArguments <= 0) {
+            throw new RuntimeException("sed: missing arguments");
+        }   
+
+        if (numberOfArguments > 2){
+            throw new RuntimeException("sed: too many arguments");
+        }
+
+        if (numberOfArguments == 1 && inputStream == null) {
+            throw new RuntimeException("sed: missing input");
+        }
+
+        if(isValid(applicationArguments.get(0)) == false) {
+            throw new RuntimeException("sed: invalid first argument");
+        } 
+    }
+
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
         checkArguments(applicationArguments, inputStream, outputStream);
@@ -125,25 +145,6 @@ public class Sed extends Application {
         } catch (IOException e) {
             throw new RuntimeException("sed: cannot read input");
         }
-    }
-
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        int numberOfArguments = applicationArguments.size();
-        if (numberOfArguments <= 0) {
-            throw new RuntimeException("sed: missing arguments");
-        }   
-
-        if (numberOfArguments > 2){
-            throw new RuntimeException("sed: too many arguments");
-        }
-
-        if (numberOfArguments == 1 && inputStream == null) {
-            throw new RuntimeException("sed: missing input");
-        }
-
-        if(isValid(applicationArguments.get(0)) == false) {
-            throw new RuntimeException("sed: invalid first argument");
-        } 
     }
 
 }

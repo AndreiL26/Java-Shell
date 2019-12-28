@@ -14,9 +14,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class Head extends Application{
+public class Head implements Application{
+    private FileSystem fileSystem;
+
     public Head(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     private void readAndWrite(BufferedReader reader, OutputStreamWriter writer, int headLines) {
@@ -31,6 +33,21 @@ public class Head extends Application{
         }
         catch (IOException e) {
             throw new RuntimeException("head: cannot read input");
+        }
+    }
+
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if ((applicationArguments.isEmpty()) && inputStream == null) {
+            throw new RuntimeException("head: missing input");
+        }
+        if (applicationArguments.size() > 3) {
+            throw new RuntimeException("head: too many arguments");
+        } 
+        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
+            throw new RuntimeException("head: wrong argument " + applicationArguments.get(0));
+        }
+        if (applicationArguments.size() == 2 && inputStream == null) {
+            throw new RuntimeException("head: missing input");
         }
     }
 
@@ -78,20 +95,4 @@ public class Head extends Application{
         }
     }
 
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if ((applicationArguments.isEmpty()) && inputStream == null) {
-            throw new RuntimeException("head: missing input");
-        }
-        if (applicationArguments.size() > 3) {
-            throw new RuntimeException("head: too many arguments");
-        } 
-        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
-            throw new RuntimeException("head: wrong argument " + applicationArguments.get(0));
-        }
-        if (applicationArguments.size() == 2 && inputStream == null) {
-            throw new RuntimeException("head: missing input");
-        }
-       
-       
-    }
 }

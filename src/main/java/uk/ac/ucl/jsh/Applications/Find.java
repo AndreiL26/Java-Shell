@@ -12,14 +12,15 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class Find extends Application {
+public class Find implements Application {
+    private FileSystem fileSystem;
     private String fileSeparator = System.getProperty("file.separator");
     private String lineSeparator = System.getProperty("line.separator");
     private PathMatcher matcher;
     private OutputStreamWriter writer;
 
     public Find(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     private void find(String currentDirectoryPath, String currentResolvedPath) throws IOException {
@@ -37,30 +38,7 @@ public class Find extends Application {
         }
     }
 
-    @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
-        String searchRootDirectory;
-        String resolvedPath = ".";
-        checkArguments(applicationArguments, inputStream, outputStream);
-        writer = new OutputStreamWriter(outputStream);
-
-        if(applicationArguments.size() == 2) {
-            searchRootDirectory = fileSystem.getWorkingDirectoryPath();
-        }
-        else {
-            if(applicationArguments.get(0).startsWith(fileSeparator)) {
-                searchRootDirectory = applicationArguments.get(0);
-            }
-            else {
-                searchRootDirectory = fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0);
-            }
-            resolvedPath = applicationArguments.get(0);
-        }
-        matcher = FileSystems.getDefault().getPathMatcher("glob:" + applicationArguments.get(applicationArguments.size() - 1));
-        find(searchRootDirectory, resolvedPath);
-    }
-
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
         if(applicationArguments.size() < 2) {
             throw new RuntimeException("find: missing arguments");
         }
@@ -88,4 +66,28 @@ public class Find extends Application {
             throw new RuntimeException("find: too many arguments");
         }
     }
+
+    @Override
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        String searchRootDirectory;
+        String resolvedPath = ".";
+        checkArguments(applicationArguments, inputStream, outputStream);
+        writer = new OutputStreamWriter(outputStream);
+
+        if(applicationArguments.size() == 2) {
+            searchRootDirectory = fileSystem.getWorkingDirectoryPath();
+        }
+        else {
+            if(applicationArguments.get(0).startsWith(fileSeparator)) {
+                searchRootDirectory = applicationArguments.get(0);
+            }
+            else {
+                searchRootDirectory = fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0);
+            }
+            resolvedPath = applicationArguments.get(0);
+        }
+        matcher = FileSystems.getDefault().getPathMatcher("glob:" + applicationArguments.get(applicationArguments.size() - 1));
+        find(searchRootDirectory, resolvedPath);
+    }
+
 }

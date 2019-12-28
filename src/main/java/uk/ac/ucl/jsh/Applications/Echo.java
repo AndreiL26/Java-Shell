@@ -7,15 +7,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-public class Echo extends Application {
+public class Echo implements Application {
     
     public Echo(FileSystem fileSystem) {
-        super(fileSystem);
+        
     }
 
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException{
-        checkArguments(applicationArguments, inputStream, outputStream);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         boolean atLeastOnePrinted = false;
         for (String arg : applicationArguments) {
@@ -32,7 +31,4 @@ public class Echo extends Application {
         }
     }
 
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        
-    }
 }

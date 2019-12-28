@@ -7,11 +7,17 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class Pwd extends Application {
-
+public class Pwd implements Application {
+    private FileSystem fileSystem;
 
     public Pwd(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
+    }
+
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if(!applicationArguments.isEmpty()) {
+            throw new RuntimeException("pwd: too many arguments");
+        }
     }
 
     @Override
@@ -22,10 +28,4 @@ public class Pwd extends Application {
        writer.flush();
     }
     
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if(!applicationArguments.isEmpty()) {
-            throw new RuntimeException("pwd: too many arguments");
-        }
-    }
-  
 }

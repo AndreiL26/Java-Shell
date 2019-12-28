@@ -15,10 +15,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class Cat extends Application{
+public class Cat implements Application{
+    private FileSystem fileSystem;
     
     public Cat(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     private void readAndWrite(BufferedReader reader, OutputStreamWriter writer) {
@@ -34,7 +35,13 @@ public class Cat extends Application{
         }
 
     }
-
+    
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if(applicationArguments.isEmpty() && inputStream == null) {
+            throw new RuntimeException("cat: missing input");
+        }
+    }
+    
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException{
         checkArguments(applicationArguments, inputStream, outputStream);
@@ -75,12 +82,6 @@ public class Cat extends Application{
             }
         }
         
-    }
-
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if(applicationArguments.isEmpty() && inputStream == null) {
-            throw new RuntimeException("cat: missing input");
-        }
     }
    
 }

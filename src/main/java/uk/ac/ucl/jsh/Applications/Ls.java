@@ -8,10 +8,17 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class Ls extends Application {
+public class Ls implements Application {
+    private FileSystem fileSystem;
     
     public Ls(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
+    }
+
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if(applicationArguments.size() > 1) {
+            throw new RuntimeException("ls: too many arguments");
+        }
     }
 
     @Override
@@ -52,9 +59,4 @@ public class Ls extends Application {
         }
     }
 
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if(applicationArguments.size() > 1) {
-            throw new RuntimeException("ls: too many arguments");
-        }
-    }
 }

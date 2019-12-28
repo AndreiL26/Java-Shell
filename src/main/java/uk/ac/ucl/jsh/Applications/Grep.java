@@ -16,10 +16,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class Grep extends Application {
+public class Grep implements Application {
+    private FileSystem fileSystem;
     
     public Grep(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     private void readAndMatch(BufferedReader reader, OutputStreamWriter writer, Pattern pattern, String fileName) {
@@ -37,6 +38,15 @@ public class Grep extends Application {
             }
         } catch (IOException e) {
             throw new RuntimeException("grep: cannot read input");
+        }
+    }
+
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        if (applicationArguments.isEmpty()) {
+            throw new RuntimeException("grep: missing arguments");
+        }
+        if (applicationArguments.size() == 1 && inputStream == null) {
+            throw new RuntimeException("grep: missing input");
         }
     }
 
@@ -83,12 +93,4 @@ public class Grep extends Application {
         }
     }
 
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if (applicationArguments.isEmpty()) {
-            throw new RuntimeException("grep: missing arguments");
-        }
-        if (applicationArguments.size() == 1 && inputStream == null) {
-            throw new RuntimeException("grep: missing input");
-        }
-    }
 }
