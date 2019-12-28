@@ -21,7 +21,7 @@ public class BuildCmdTree extends CmdLineParserBaseVisitor<Node> {
         return visit(ctx.call());
     }
 
-    @Override 
+    @Override
     public Node visitPipeBase(CmdLineParserParser.PipeBaseContext ctx) { 
         return new PipeNode(visit(ctx.call1), visit(ctx.call2));
     }
@@ -36,15 +36,13 @@ public class BuildCmdTree extends CmdLineParserBaseVisitor<Node> {
         return new SeqNode(visit(ctx.seq()), visit(ctx.command()));
     }
 
-    //TO CHANGE
     @Override 
     public Node visitSeqBase(CmdLineParserParser.SeqBaseContext ctx) { 
         return new SeqNode(visit(ctx.cmd1), visit(ctx.cmd2));
     }
 
-    @Override 
-    public Node visitCall(CmdLineParserParser.CallContext ctx) { 
-        //System.out.println(ctx.getText());
-        return new CallNode(ctx.text.getText());
+    public Node visitSimpleCall(CmdLineParserParser.SimpleCallContext ctx) {
+        return new CallNode(ctx.getText());
     }
+	
 }

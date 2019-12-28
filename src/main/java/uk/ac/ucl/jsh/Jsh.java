@@ -1,11 +1,8 @@
 package uk.ac.ucl.jsh;
 
-import uk.ac.ucl.jsh.Parser.BuildCmdTree;
 import uk.ac.ucl.jsh.Parser.Node;
 import uk.ac.ucl.jsh.Parser.Parser;
 import uk.ac.ucl.jsh.Utilities.*;
-import uk.ac.ucl.jsh.antlr.CmdLineParser.CmdLineParserLexer;
-import uk.ac.ucl.jsh.antlr.CmdLineParser.CmdLineParserParser;
 
 
 import java.io.IOException;
@@ -22,7 +19,7 @@ public class Jsh {
         cmdTree.accept(new EvalVisitor(applicationManager), null, System.out);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         if (args.length > 0) {
             if (args.length != 2) {
                 System.out.println("jsh: wrong number of arguments");
@@ -36,6 +33,7 @@ public class Jsh {
             } catch (Exception e) {
                 System.out.println("jsh: " + e.getMessage());
             }
+            //eval(args[1], System.out);
         } else {
             System.out.println("Hello World!");
             Scanner input = new Scanner(System.in);

@@ -29,7 +29,7 @@ single_quoted
     ;
 
 squote_content
-    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '`')*
+    :   (NON_KEYWORD | KEYWORD | WS | '"' | '`')*
     ;
 
 double_quoted
@@ -37,7 +37,7 @@ double_quoted
     ;
 
 dquote_content 
-    :   content = (NON_KEYWORD | QUOTE_CONTENT | WS | '\'') dquote_content
+    :   content = (NON_KEYWORD | KEYWORD | WS | '\'') dquote_content
     |   backquoted dquote_content
     |  
     ;
@@ -47,9 +47,9 @@ backquoted
     ;
 
 bquote_content
-    :   (NON_KEYWORD | QUOTE_CONTENT | WS | '"' | '\'')*
+    :   (NON_KEYWORD | KEYWORD | WS | '"' | '\'')*
     ;
 
 WS             : [ \t];
 NON_KEYWORD    : ~[ \t"'`\n\r;|><];
-QUOTE_CONTENT  : [;|>< \t];
+KEYWORD        : [;|><];

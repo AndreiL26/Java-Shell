@@ -14,7 +14,7 @@ null
 null
 WS
 NON_KEYWORD
-QUOTE_CONTENT
+KEYWORD
 
 rule names:
 compileUnit

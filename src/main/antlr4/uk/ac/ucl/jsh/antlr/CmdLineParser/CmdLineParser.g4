@@ -21,17 +21,25 @@ seq
     ;
 
 call
-    :   text = CALL_CONTENT
+    :   call_content                          #simpleCall
     ;
 
-fragment SQUOTED     : '\'' (~[\r\n'])* '\'';
-fragment BQUOTED     : '`' (~[\r\n`])* '`';
-fragment DQUOTED     : '"' (BQUOTED | ~[\r\n"`])* '"';
-fragment NON_KEYWORD : ~[\n'"`;|];
-CALL_CONTENT         : (NON_KEYWORD | SQUOTED | BQUOTED | DQUOTED)+;
+call_content    :   (NON_KEYWORD | single_quoted | double_quoted | backquoted | WS)+;
 
+single_quoted   :   '\'' squote_content '\'';
+squote_content  :   (NON_KEYWORD | keyword | WS | '"' | '`')*;
+
+double_quoted   :   '"' dquote_content '"';
+dquote_content  :   (NON_KEYWORD | keyword | WS | '\'' | backquoted)*; 
+
+backquoted      :   '`' content = bquote_content '`';
+bquote_content  :   (NON_KEYWORD | keyword | WS | '"' | '\'')*;
+
+keyword : SEMI | PIPE | GT | LT;
+
+WS             : [ \t];
+NON_KEYWORD    : ~[ \t"'`\n\r;|><];
 SEMI        : ';';
 PIPE        : '|';
 GT          : '>';
 LT          : '<';
-WHITESPACE  : [ \t] -> channel(HIDDEN);

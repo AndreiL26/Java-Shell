@@ -51,9 +51,58 @@ public interface CmdLineParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSeqBase(CmdLineParserParser.SeqBaseContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link CmdLineParserParser#call}.
+	 * Visit a parse tree produced by the {@code simpleCall}
+	 * labeled alternative in {@link CmdLineParserParser#call}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCall(CmdLineParserParser.CallContext ctx);
+	T visitSimpleCall(CmdLineParserParser.SimpleCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#call_content}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCall_content(CmdLineParserParser.Call_contentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#single_quoted}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSingle_quoted(CmdLineParserParser.Single_quotedContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#squote_content}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSquote_content(CmdLineParserParser.Squote_contentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#double_quoted}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDouble_quoted(CmdLineParserParser.Double_quotedContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#dquote_content}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDquote_content(CmdLineParserParser.Dquote_contentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#backquoted}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBackquoted(CmdLineParserParser.BackquotedContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#bquote_content}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBquote_content(CmdLineParserParser.Bquote_contentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#keyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKeyword(CmdLineParserParser.KeywordContext ctx);
 }
