@@ -44,6 +44,7 @@ public class Tail extends Application {
     
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+        applicationArguments = this.globArguments(applicationArguments);
         checkArguments(applicationArguments, inputStream, outputStream);
         int tailLines = 10;
         String tailArg;

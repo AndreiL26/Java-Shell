@@ -16,6 +16,7 @@ public class Cd extends Application {
 
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        applicationArguments = this.globArguments(applicationArguments);
         checkArguments(applicationArguments, inputStream, outputStream);
         String dirString = applicationArguments.get(0);
         File dir;

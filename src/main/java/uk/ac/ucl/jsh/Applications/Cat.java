@@ -36,7 +36,8 @@ public class Cat extends Application{
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException{
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        applicationArguments = this.globArguments(applicationArguments);
         checkArguments(applicationArguments, inputStream, outputStream);
         String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);

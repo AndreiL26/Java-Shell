@@ -16,6 +16,7 @@ public class Pwd extends Application {
 
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+       applicationArguments = this.globArguments(applicationArguments);
        checkArguments(applicationArguments, inputStream, outputStream);
        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
        writer.write(fileSystem.getWorkingDirectoryPath() + System.getProperty("line.separator"));

@@ -16,6 +16,7 @@ public class Ls extends Application {
 
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        applicationArguments = this.globArguments(applicationArguments);
         checkArguments(applicationArguments, inputStream, outputStream);
         File currDir = null;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
