@@ -14,7 +14,6 @@ public class Jsh {
     public static ApplicationManager applicationManager = new ApplicationManager(fileSystem);   // Might want to make this final as well if Outputstream will always remain System.out
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
-        //applicationManager = new ApplicationManager(fileSystem);
         Node cmdTree = Parser.parserCmdLine(cmdline);
         cmdTree.accept(new EvalVisitor(applicationManager), null, System.out);
     }
