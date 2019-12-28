@@ -13,6 +13,8 @@ import static org.junit.Assert.fail;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 
 
@@ -21,10 +23,19 @@ public class FindTest {
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
+    private String fileSeparator = System.getProperty("file.separator");
     private String lineSeparator = System.getProperty("line.separator");
+    
+    private void assertEqualStrings(String expectedString, String actualString) {
+        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split("\t")));
+        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split("\t")));
+        Collections.sort(expectedTokens);
+        Collections.sort(actualTokens);
+        assertEquals(expectedTokens, actualTokens);
+    }
 
     
-    /*@BeforeClass
+    @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
         fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
@@ -127,7 +138,7 @@ public class FindTest {
         applicationArguments.add("-name");
         applicationArguments.add("Soft");
         findApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("Soft" + lineSeparator, outputStream.toString());
+        assertEqualStrings("." + fileSeparator + "Soft" + lineSeparator, outputStream.toString());
     }
 
     @Test
@@ -135,7 +146,7 @@ public class FindTest {
         applicationArguments.add("-name");
         applicationArguments.add("Documents");
         findApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("", outputStream.toString());
+        assertEqualStrings("", outputStream.toString());
     }
 
     @Test 
@@ -145,9 +156,9 @@ public class FindTest {
         applicationArguments.add("Oth*");
         findApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
-        expectedOutput += "Oth1" + lineSeparator;
-        expectedOutput += "Oth2" + lineSeparator;
-        assertEquals(expectedOutput, outputStream.toString());
+        expectedOutput += "Other" + fileSeparator + "Oth1" + lineSeparator;
+        expectedOutput += "Other" + fileSeparator + "Oth2" + lineSeparator;
+        assertEqualStrings(expectedOutput, outputStream.toString());
     }
 
     @Test
@@ -157,18 +168,18 @@ public class FindTest {
         applicationArguments.add("*h*");
         findApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
-        expectedOutput += "Oth1" + lineSeparator;
-        expectedOutput += "Oth2" + lineSeparator;
-        assertEquals(expectedOutput, outputStream.toString());
+        expectedOutput += "Other" + fileSeparator + "Oth1" + lineSeparator;
+        expectedOutput += "Other" + fileSeparator + "Oth2" + lineSeparator;
+        assertEqualStrings(expectedOutput, outputStream.toString());
     }
 
     @Test
     public void testFindFileFromAbsolutePath() throws IOException {
-        applicationArguments.add("/tmp/Documents/Eng");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng");
         applicationArguments.add("-name");
         applicationArguments.add("T*");
         findApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("Test" + lineSeparator, outputStream.toString());
+        assertEqualStrings(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test" + lineSeparator, outputStream.toString());
     }
 
     @Test
@@ -176,7 +187,7 @@ public class FindTest {
         applicationArguments.add("-name");
         applicationArguments.add("NoMatch!");
         findApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("", outputStream.toString());
+        assertEqualStrings("", outputStream.toString());
     }
 
     @Test
@@ -184,8 +195,7 @@ public class FindTest {
         applicationArguments.add("-name");
         applicationArguments.add("Code");
         findApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("/Documents/Eng/Code" + lineSeparator, outputStream.toString());
-    }*/
-
+        assertEqualStrings("." + fileSeparator + "Documents" + fileSeparator + "Eng"  + fileSeparator + "Code" + lineSeparator, outputStream.toString());
+    }
 
 }

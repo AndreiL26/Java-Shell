@@ -16,33 +16,23 @@ public class Find extends Application {
     private String fileSeparator = System.getProperty("file.separator");
     private String lineSeparator = System.getProperty("line.separator");
     private PathMatcher matcher;
+    private OutputStreamWriter writer;
 
     public Find(FileSystem fileSystem) {
         super(fileSystem);
     }
 
-    private void find(String searchRootDirectory, String currentSearchPath, OutputStreamWriter writer) throws IOException {
-        File currentFile;
-        if (currentSearchPath != "") {
-            currentFile = new File(searchRootDirectory + fileSeparator + currentSearchPath);
-        }
-        else {
-            currentFile = new File(searchRootDirectory);
-        }
+    private void find(String currentDirectoryPath, String currentResolvedPath) throws IOException {
+        File currentFile = new File(currentDirectoryPath);
         File[] fileArray = currentFile.listFiles();
         for(File file: fileArray) {
+            String currentFilePath = currentDirectoryPath + fileSeparator + file.getName();
             if(file.isFile() && matcher.matches(Paths.get(file.getName()))) {
-                if(currentSearchPath != "") {
-                    writer.write(currentSearchPath + fileSeparator + file.getName() + lineSeparator);
-                }
-                else {
-                    writer.write(file.getName() + lineSeparator);
-                }
+                writer.write(currentResolvedPath + fileSeparator + file.getName() + lineSeparator);
                 writer.flush();
             }
-            
             if(file.isDirectory()) {
-                find(searchRootDirectory, currentSearchPath + fileSeparator + file.getName(), writer);
+                find(currentFilePath, currentResolvedPath + fileSeparator + file.getName());
             }
         }
     }
@@ -50,8 +40,9 @@ public class Find extends Application {
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
         String searchRootDirectory;
+        String resolvedPath = ".";
         checkArguments(applicationArguments, inputStream, outputStream);
-        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+        writer = new OutputStreamWriter(outputStream);
 
         if(applicationArguments.size() == 2) {
             searchRootDirectory = fileSystem.getWorkingDirectoryPath();
@@ -63,9 +54,10 @@ public class Find extends Application {
             else {
                 searchRootDirectory = fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0);
             }
+            resolvedPath = applicationArguments.get(0);
         }
         matcher = FileSystems.getDefault().getPathMatcher("glob:" + applicationArguments.get(applicationArguments.size() - 1));
-        find(searchRootDirectory, "", writer);
+        find(searchRootDirectory, resolvedPath);
     }
 
     public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
