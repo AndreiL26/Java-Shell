@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Pwd;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -48,26 +49,26 @@ public class PwdTest {
     }   
 
     @Test
-    public void testInvalidNumberOfArguments() throws IOException {
+    public void testInvalidNumberOfArguments() {
         applicationArguments.add("unwantedParameter");
         try {
             pwdApplication.execute(applicationArguments, System.in, outputStream);
             fail("pwd did not throw a too many arguments exception");
-        } catch(RuntimeException e) {
+        } catch(JshException e) {
            assertEquals("pwd: too many arguments", e.getMessage());
          }
 
     }
 
     @Test
-    public void testRootDirectory() throws IOException {
+    public void testRootDirectory() throws JshException {
         fileSystem.setWorkingDirectory(fileSeparator);
         pwdApplication.execute(applicationArguments, System.in, outputStream);
         assertEquals(fileSeparator + lineSeparator, outputStream.toString());
     }
     
     @Test
-    public void testRandomDirectory() throws IOException {
+    public void testRandomDirectory() throws JshException {
         fileSystem.setWorkingDirectory(fileSeparator + "tmp" + fileSeparator + "Other");
         pwdApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = fileSeparator + "tmp" + fileSeparator + "Other" + lineSeparator;

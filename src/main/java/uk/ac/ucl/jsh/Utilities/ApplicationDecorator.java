@@ -1,6 +1,5 @@
 package uk.ac.ucl.jsh.Utilities;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public abstract class ApplicationDecorator implements Application {
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outpustream) throws IOException {
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outpustream) throws JshException {
         this.application.execute(applicationArguments, inputStream, outpustream);
     }
 

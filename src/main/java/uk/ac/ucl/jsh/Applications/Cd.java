@@ -1,6 +1,8 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,16 +17,16 @@ public class Cd implements Application {
         this.fileSystem = fileSystem;
     }
 
-    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         if (applicationArguments.isEmpty()) {
-            throw new RuntimeException("cd: missing argument");
+            throw new JshException("cd: missing argument");
         } else if (applicationArguments.size() > 1) {
-            throw new RuntimeException("cd: too many arguments");
+            throw new JshException("cd: too many arguments");
         }
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         checkArguments(applicationArguments, inputStream, outputStream);
         String dirString = applicationArguments.get(0);
         File dir;
@@ -38,9 +40,13 @@ public class Cd implements Application {
 
         } 
         if (!dir.isDirectory()) {
-            throw new RuntimeException("cd: " + dirString + " is not an existing directory");
+            throw new JshException("cd: " + dirString + " is not an existing directory");
         }
-        currentDirectoryPath = dir.getCanonicalPath();
+        try {
+            currentDirectoryPath = dir.getCanonicalPath();
+        } catch (IOException e) {
+            throw new JshException("cd: could not get path");
+        }
         fileSystem.setWorkingDirectory(currentDirectoryPath);
     }
 

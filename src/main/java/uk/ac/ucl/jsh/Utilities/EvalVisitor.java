@@ -18,7 +18,11 @@ public class EvalVisitor implements TreeVisitor<Void> {
 
     public Void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
         ArrayList<String> tokens = Parser.parseCallCommand(callNode.getCmdString());
-        applicationManager.executeApplication(tokens, inputStream, outputStream);
+        try {
+            applicationManager.executeApplication(tokens, inputStream, outputStream);
+        } catch (JshException e) {
+            throw new RuntimeException(e.getMessage());
+        }
         
         return null;
     }

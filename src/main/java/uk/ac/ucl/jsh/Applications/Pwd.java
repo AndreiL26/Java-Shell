@@ -1,6 +1,8 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,18 +16,22 @@ public class Pwd implements Application {
         this.fileSystem = fileSystem;
     }
 
-    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         if(!applicationArguments.isEmpty()) {
-            throw new RuntimeException("pwd: too many arguments");
+            throw new JshException("pwd: too many arguments");
         }
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
        checkArguments(applicationArguments, inputStream, outputStream);
        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-       writer.write(fileSystem.getWorkingDirectoryPath() + System.getProperty("line.separator"));
-       writer.flush();
+       try {
+            writer.write(fileSystem.getWorkingDirectoryPath() + System.getProperty("line.separator"));
+            writer.flush();
+       } catch (IOException e) {
+           throw new JshException("pwd: cannot write output");
+       }
     }
-    
+
 }

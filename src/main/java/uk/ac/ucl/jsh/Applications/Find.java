@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,13 +39,13 @@ public class Find implements Application {
         }
     }
 
-    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException{
         if(applicationArguments.size() < 2) {
-            throw new RuntimeException("find: missing arguments");
+            throw new JshException("find: missing arguments");
         }
         if(applicationArguments.size() == 2) {
             if(applicationArguments.get(0).compareTo("-name") != 0) {
-                throw new RuntimeException("find: wrong argument");
+                throw new JshException("find: wrong argument");
             }
         }
         if(applicationArguments.size() == 3) {
@@ -56,19 +57,19 @@ public class Find implements Application {
                 rootSearchDirectory = new File(fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0));
             }
             if(!rootSearchDirectory.isDirectory()) {
-                throw new RuntimeException("find: could not open " + applicationArguments.get(0));
+                throw new JshException("find: could not open " + applicationArguments.get(0));
             }
             if(applicationArguments.get(1).compareTo("-name") != 0) {
-                throw new RuntimeException("find: invalid argument " + applicationArguments.get(1));
+                throw new JshException("find: invalid argument " + applicationArguments.get(1));
             }
         }
         if(applicationArguments.size() > 3) {
-            throw new RuntimeException("find: too many arguments");
+            throw new JshException("find: too many arguments");
         }
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         String searchRootDirectory;
         String resolvedPath = ".";
         checkArguments(applicationArguments, inputStream, outputStream);
@@ -87,7 +88,11 @@ public class Find implements Application {
             resolvedPath = applicationArguments.get(0);
         }
         matcher = FileSystems.getDefault().getPathMatcher("glob:" + applicationArguments.get(applicationArguments.size() - 1));
-        find(searchRootDirectory, resolvedPath);
+        try {
+            find(searchRootDirectory, resolvedPath);
+        } catch (IOException e) {
+            throw new JshException("find: could not write output");
+        }
     }
 
 }

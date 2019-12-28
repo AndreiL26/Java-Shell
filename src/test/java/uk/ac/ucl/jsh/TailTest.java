@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Tail;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -51,7 +52,7 @@ public class TailTest {
     }   
     
     @Test
-    public void testInvalidNumberOfArgumentsTooMany() throws IOException {
+    public void testInvalidNumberOfArgumentsTooMany() {
         try {
             applicationArguments.add("one");
             applicationArguments.add("two");
@@ -59,86 +60,86 @@ public class TailTest {
             applicationArguments.add("four");
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw a too many arguments exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
            assertEquals("tail: too many arguments", e.getMessage());
         }
     }
 
     @Test
-    public void testMissingInput() throws IOException {
+    public void testMissingInput() {
         try {
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw a missing input exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("tail: missing input", e.getMessage());
         }
     }
 
     @Test
-    public void testMissingInputTwoArguments() throws IOException {
+    public void testMissingInputTwoArguments() {
         try {
             applicationArguments.add("-n");
             applicationArguments.add("15");
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw a missing input exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("tail: missing input", e.getMessage());
         }
     }
 
     @Test
-    public void testInvalidFirstArgumentMissingDashn() throws IOException {
+    public void testInvalidFirstArgumentMissingDashn() {
         try {
             applicationArguments.add("15");
             applicationArguments.add("FilePath");
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw an invalid argument exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("tail: wrong argument " + "15", e.getMessage());
         }
     }
 
     @Test
-    public void testInvalidFirsArgumentNotANumber() throws IOException {
+    public void testInvalidFirsArgumentNotANumber() {
         try {
             applicationArguments.add("-n");
             applicationArguments.add("I'm not a number!");
             applicationArguments.add("FilePath");
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw a wrong argument exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("tail: wrong argument " + "I'm not a number!", e.getMessage());
         }
     }
 
     @Test  
-    public void testInvalidFilePath() throws IOException {
+    public void testInvalidFilePath() {
         try {
             applicationArguments.add("-n");
             applicationArguments.add("15");
             applicationArguments.add("InvalidPath");
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw an invalig argument exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("tail: " + "InvalidPath" + " does not exist", e.getMessage());
         }
     }
 
     @Test
-    public void testValidPathToDirectoryNotFile() throws IOException {
+    public void testValidPathToDirectoryNotFile() {
         try {
             applicationArguments.add("-n");
             applicationArguments.add("6");
             applicationArguments.add("/tmp/Documents/Eng");
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw a cannot read input exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("tail: cannot read input", e.getMessage());
         }
     }
 
     @Test
-    public void testDefaultNumberOfLinesFromAbsolutePath() throws IOException {
+    public void testDefaultNumberOfLinesFromAbsolutePath() throws JshException {
         applicationArguments.add("/tmp/Documents/Eng/Test");
         String expectedOutput = new String();
         for(int i = 10; i < 20; ++ i) {
@@ -149,7 +150,7 @@ public class TailTest {
     }
 
     @Test
-    public void testDefaultNumberOfLinesFromRelativePath() throws IOException {
+    public void testDefaultNumberOfLinesFromRelativePath() throws JshException {
         fileSystem.setWorkingDirectory("/tmp/Documents/Eng");
         applicationArguments.add("Test");
         String expectedOutput = new String();
@@ -161,7 +162,7 @@ public class TailTest {
     }
 
     @Test
-    public void testCustomNumberOfLinesLessThanInFile() throws IOException {
+    public void testCustomNumberOfLinesLessThanInFile() throws JshException {
         applicationArguments.add("-n");
         applicationArguments.add("15");
         applicationArguments.add("/tmp/Documents/Eng/Test");
@@ -174,7 +175,7 @@ public class TailTest {
     }
 
     @Test
-    public void testCustomNumberOfLinesMoreThanInFile() throws IOException {
+    public void testCustomNumberOfLinesMoreThanInFile() throws JshException {
         applicationArguments.add("-n");
         applicationArguments.add("55");
         applicationArguments.add("/tmp/Documents/Eng/Test");
@@ -187,7 +188,7 @@ public class TailTest {
     }
 
     @Test
-    public void testCustomNumberOfLinesNegativeNumber() throws IOException {
+    public void testCustomNumberOfLinesNegativeNumber() throws JshException {
         applicationArguments.add("-n");
         applicationArguments.add("-15");
         applicationArguments.add("/tmp/Documents/Eng/Test");
@@ -196,14 +197,14 @@ public class TailTest {
     }
 
     @Test
-    public void testReadFromEmptyFile() throws IOException {
+    public void testReadFromEmptyFile() throws JshException {
         applicationArguments.add("/tmp/Documents/Proj.txt");
         tailApplication.execute(applicationArguments, null, outputStream);
         assertEquals("", outputStream.toString());
     }
 
     @Test
-    public void testReadFromInputStream() throws IOException {
+    public void testReadFromInputStream() throws IOException, JshException {
         ByteArrayOutputStream aux = new ByteArrayOutputStream();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
         String expectedOutput = "Hello world" + lineSeparator + "I am here!" + lineSeparator;
@@ -217,7 +218,7 @@ public class TailTest {
 
 
     @Test
-    public void testReadFromInputStreamWithCustomNumberOfLines() throws IOException {
+    public void testReadFromInputStreamWithCustomNumberOfLines() throws IOException, JshException {
         ByteArrayOutputStream aux = new ByteArrayOutputStream();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
         String expectedOutput = "First line" + lineSeparator;

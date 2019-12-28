@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Ls;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -49,19 +50,19 @@ public class LsTest {
     }   
 
     @Test 
-    public void testMoreArguments() throws IOException {
+    public void testMoreArguments() {
         applicationArguments.add("/");
         applicationArguments.add("..");
         try {
             lsApplication.execute(applicationArguments, System.in, outputStream);
             fail("ls did not throw a too many arguments exception");
-        } catch(RuntimeException e) {
+        } catch(JshException e) {
            assertEquals("ls: too many arguments", e.getMessage());
         }
     }
 
     @Test
-    public void testCurrentDirectory() throws IOException {
+    public void testCurrentDirectory() throws JshException {
         // The filesystem's current working directory will be /tmp/Documents
         fileSystem.setWorkingDirectory("/tmp/Documents");
         lsApplication.execute(applicationArguments, System.in, outputStream);
@@ -70,7 +71,7 @@ public class LsTest {
     }
 
     @Test
-    public void testArgumentDirectoryRelativePath() throws IOException {
+    public void testArgumentDirectoryRelativePath() throws JshException {
         // The filesystem's current working directory will be /tmp, but the argument will point to /tmp/Documents
         applicationArguments.add("Documents"); 
         lsApplication.execute(applicationArguments, System.in, outputStream);
@@ -79,7 +80,7 @@ public class LsTest {
     }
 
     @Test
-    public void testArgumentDirectoryAbsolutePath() throws IOException {
+    public void testArgumentDirectoryAbsolutePath() throws JshException {
         applicationArguments.add("/tmp/Documents/Eng");
         lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Code" + "\t" + "Test" + "\t" + "Plan" + lineSeparator;
@@ -87,7 +88,7 @@ public class LsTest {
     }
 
     @Test
-    public void testIgnoreDotFiles() throws IOException {
+    public void testIgnoreDotFiles() throws JshException {
         applicationArguments.add("/tmp/Other");
         lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Oth1" + "\t" + "Empty" + "\t" + "Oth2" + lineSeparator;
@@ -95,7 +96,7 @@ public class LsTest {
     }
 
     @Test
-    public void testEmptyDirectory() throws IOException {
+    public void testEmptyDirectory() throws JshException {
         applicationArguments.add("/tmp/Other/Empty");
         lsApplication.execute(applicationArguments, System.in, outputStream);
         assertEqualStrings("", outputStream.toString());

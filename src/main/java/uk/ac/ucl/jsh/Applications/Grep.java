@@ -1,6 +1,8 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
@@ -23,7 +25,7 @@ public class Grep implements Application {
         this.fileSystem = fileSystem;
     }
 
-    private void readAndMatch(BufferedReader reader, OutputStreamWriter writer, Pattern pattern, String fileName) {
+    private void readAndMatch(BufferedReader reader, OutputStreamWriter writer, Pattern pattern, String fileName) throws JshException {
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
@@ -37,21 +39,21 @@ public class Grep implements Application {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("grep: cannot read input");
+            throw new JshException("grep: cannot read input");
         }
     }
 
-    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         if (applicationArguments.isEmpty()) {
-            throw new RuntimeException("grep: missing arguments");
+            throw new JshException("grep: missing arguments");
         }
         if (applicationArguments.size() == 1 && inputStream == null) {
-            throw new RuntimeException("grep: missing input");
+            throw new JshException("grep: missing input");
         }
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         checkArguments(applicationArguments, inputStream, outputStream);
         Path filePath;
         Pattern grepPattern;
@@ -62,7 +64,7 @@ public class Grep implements Application {
         try {
             grepPattern = Pattern.compile(applicationArguments.get(0));
         } catch (PatternSyntaxException e) {
-            throw new RuntimeException("grep: " + applicationArguments.get(0) + "is an invalid pattern");
+            throw new JshException("grep: " + applicationArguments.get(0) + "is an invalid pattern");
         } 
 
         if (applicationArguments.size() > 1) {
@@ -75,7 +77,7 @@ public class Grep implements Application {
                     filePath = Paths.get(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + currentFileName);
                 }
                 if (Files.isDirectory(filePath) || !Files.isReadable(filePath)) {
-                    throw new RuntimeException("grep: cannot open " + currentFileName);
+                    throw new JshException("grep: cannot open " + currentFileName);
                 }
                 filePathArray[i] = filePath;
             }
@@ -84,7 +86,7 @@ public class Grep implements Application {
                 try (BufferedReader reader = Files.newBufferedReader(filePathArray[j], StandardCharsets.UTF_8)) {
                     readAndMatch(reader, writer, grepPattern, applicationArguments.get(j+1));
                 } catch (IOException e) {
-                    throw new RuntimeException("grep: cannot open " + applicationArguments.get(j + 1));
+                    throw new JshException("grep: cannot open " + applicationArguments.get(j + 1));
                 }
             }
         }

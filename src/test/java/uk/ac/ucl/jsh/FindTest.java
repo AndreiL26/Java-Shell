@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Find;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -59,29 +60,29 @@ public class FindTest {
     }   
     
     @Test
-    public void testMissingArguments() throws IOException {
+    public void testMissingArguments() {
         try {
             findApplication.execute(applicationArguments, null, outputStream);
             fail("find did not throw a missing arguments exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
            assertEquals("find: missing arguments", e.getMessage());
         }
     }
 
     @Test 
-    public void testMissingPattern() throws IOException {
+    public void testMissingPattern() {
         try {
             applicationArguments.add("/lib");
             applicationArguments.add("-name");
             findApplication.execute(applicationArguments, null, outputStream);
             fail("find did not throw a wrong argument exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("find: wrong argument", e.getMessage());
         }
     }
 
     @Test
-    public void testTooManyArguments() throws IOException {
+    public void testTooManyArguments() {
         try {
             applicationArguments.add("one");
             applicationArguments.add("two");
@@ -89,52 +90,52 @@ public class FindTest {
             applicationArguments.add("four");
             findApplication.execute(applicationArguments, null, outputStream);
             fail("find did not throw a too many arguments exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("find: too many arguments", e.getMessage());
         }
     }
     
     @Test
-    public void testFindFromInvalidPath() throws IOException {
+    public void testFindFromInvalidPath() {
         try {
             applicationArguments.add("InvalidPath");
             applicationArguments.add("-name");
             applicationArguments.add("Invalid");
             findApplication.execute(applicationArguments, null, outputStream);
             fail("find did not throw a cannot open directory exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("find: could not open InvalidPath", e.getMessage());
         }
     }
 
     @Test
-    public void testFindFromFilePath() throws IOException {
+    public void testFindFromFilePath() {
         try {
             applicationArguments.add("Soft");
             applicationArguments.add("-name");
             applicationArguments.add("Invalid");
             findApplication.execute(applicationArguments, null, outputStream);
             fail("find did not throw a cannot open directory exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("find: could not open " + "Soft", e.getMessage());
         }
     }
 
     @Test
-    public void testInvalidArgumentsMissingDashName() throws IOException {
+    public void testInvalidArgumentsMissingDashName() {
         try {
             applicationArguments.add("Documents");
             applicationArguments.add("NotName");
             applicationArguments.add("FindMe");
             findApplication.execute(applicationArguments, null, outputStream);
             fail("find did not throw an invalid argument exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("find: invalid argument " + "NotName", e.getMessage());
         }
     }
 
     @Test
-    public void testFindOneFileFromCurrentDirectory() throws IOException {
+    public void testFindOneFileFromCurrentDirectory() throws JshException {
         applicationArguments.add("-name");
         applicationArguments.add("Soft");
         findApplication.execute(applicationArguments, null, outputStream);
@@ -142,7 +143,7 @@ public class FindTest {
     }
 
     @Test
-    public void testFindDirectoryFromCurrentDirectory() throws IOException {
+    public void testFindDirectoryFromCurrentDirectory() throws JshException {
         applicationArguments.add("-name");
         applicationArguments.add("Documents");
         findApplication.execute(applicationArguments, null, outputStream);
@@ -150,7 +151,7 @@ public class FindTest {
     }
 
     @Test 
-    public void testFindMultipleFilesFromRelativePath() throws IOException {
+    public void testFindMultipleFilesFromRelativePath() throws JshException {
         applicationArguments.add("Other");
         applicationArguments.add("-name");
         applicationArguments.add("Oth*");
@@ -162,7 +163,7 @@ public class FindTest {
     }
 
     @Test
-    public void testPatterMatching() throws IOException {
+    public void testPatterMatching() throws JshException {
         applicationArguments.add("Other");
         applicationArguments.add("-name");
         applicationArguments.add("*h*");
@@ -174,7 +175,7 @@ public class FindTest {
     }
 
     @Test
-    public void testFindFileFromAbsolutePath() throws IOException {
+    public void testFindFileFromAbsolutePath() throws JshException {
         applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng");
         applicationArguments.add("-name");
         applicationArguments.add("T*");
@@ -183,7 +184,7 @@ public class FindTest {
     }
 
     @Test
-    public void testNoMatchingFile() throws IOException {
+    public void testNoMatchingFile() throws JshException {
         applicationArguments.add("-name");
         applicationArguments.add("NoMatch!");
         findApplication.execute(applicationArguments, null, outputStream);
@@ -191,7 +192,7 @@ public class FindTest {
     }
 
     @Test
-    public void testFindFileFromLowerLeverInTree() throws IOException {
+    public void testFindFileFromLowerLeverInTree() throws JshException {
         applicationArguments.add("-name");
         applicationArguments.add("Code");
         findApplication.execute(applicationArguments, null, outputStream);

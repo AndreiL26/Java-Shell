@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
+
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.File;
@@ -79,27 +81,27 @@ public class Sed implements Application {
         return true;
     }
 
-    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         int numberOfArguments = applicationArguments.size();
         if (numberOfArguments <= 0) {
-            throw new RuntimeException("sed: missing arguments");
+            throw new JshException("sed: missing arguments");
         }   
 
         if (numberOfArguments > 2){
-            throw new RuntimeException("sed: too many arguments");
+            throw new JshException("sed: too many arguments");
         }
 
         if (numberOfArguments == 1 && inputStream == null) {
-            throw new RuntimeException("sed: missing input");
+            throw new JshException("sed: missing input");
         }
 
         if(isValid(applicationArguments.get(0)) == false) {
-            throw new RuntimeException("sed: invalid first argument");
+            throw new JshException("sed: invalid first argument");
         } 
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         checkArguments(applicationArguments, inputStream, outputStream);
         boolean replaceAll = false;
         File sedFile = null;
@@ -120,16 +122,20 @@ public class Sed implements Application {
             }
 
             if(!sedFile.exists()) {
-                throw new RuntimeException("sed: cannot open " + filePath);
+                throw new JshException("sed: cannot open " + filePath);
             }
         }
-    
-        if(sedFile != null)  {
-            Path filePath = Paths.get(sedFile.getAbsolutePath());
-            reader = Files.newBufferedReader(filePath,StandardCharsets.UTF_8);
-        }
-        else {
-            reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        
+        try {
+            if(sedFile != null)  {
+                Path filePath = Paths.get(sedFile.getAbsolutePath());
+                reader = Files.newBufferedReader(filePath,StandardCharsets.UTF_8);
+            }
+            else {
+                reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            }
+        } catch (IOException e) {
+            throw new JshException("sed: cannot read input");
         }
         try {
             String line = null;
@@ -143,7 +149,7 @@ public class Sed implements Application {
                 writer.flush();
             }
         } catch (IOException e) {
-            throw new RuntimeException("sed: cannot read input");
+            throw new JshException("sed: cannot read input");
         }
     }
 
