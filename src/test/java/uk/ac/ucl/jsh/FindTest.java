@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-
-
 public class FindTest {
     private static Find findApplication;
     private static FileSystem fileSystem;
@@ -34,7 +32,6 @@ public class FindTest {
         assertEquals(expectedTokens, actualTokens);
     }
 
-    
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();

@@ -47,5 +47,6 @@ public class ApplicationManager {
         applicationMap.put("grep", new Grep(fileSystem));
         applicationMap.put("sed",  new Sed(fileSystem));
         applicationMap.put("find", new Find(fileSystem));
+        applicationMap.put("history", new History(fileSystem));
     }
 }
