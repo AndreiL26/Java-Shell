@@ -294,7 +294,7 @@ class TestJSH(unittest.TestCase):
         self.assertEqual(result, "CCC")
 
     def test_input_redirection_infront(self):
-        cmdline = "< dir1/file2.txt cat"
+        cmdline = "<dir1/file2.txt cat"
         stdout = self.eval(cmdline)
         result = stdout.strip()
         self.assertEqual(result, "CCC")

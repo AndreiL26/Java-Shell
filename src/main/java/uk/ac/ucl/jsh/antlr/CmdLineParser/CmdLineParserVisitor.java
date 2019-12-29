@@ -51,12 +51,29 @@ public interface CmdLineParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSeqBase(CmdLineParserParser.SeqBaseContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code simpleCall}
-	 * labeled alternative in {@link CmdLineParserParser#call}.
+	 * Visit a parse tree produced by {@link CmdLineParserParser#call}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSimpleCall(CmdLineParserParser.SimpleCallContext ctx);
+	T visitCall(CmdLineParserParser.CallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#inRedirection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInRedirection(CmdLineParserParser.InRedirectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#outRedirection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOutRedirection(CmdLineParserParser.OutRedirectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CmdLineParserParser#inoutRedirection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInoutRedirection(CmdLineParserParser.InoutRedirectionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link CmdLineParserParser#call_content}.
 	 * @param ctx the parse tree
