@@ -80,6 +80,7 @@ public class Sed extends Application {
 
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+        applicationArguments = globArguments(applicationArguments, 0);
         checkArguments(applicationArguments, inputStream, outputStream);
         boolean replaceAll = false;
         File sedFile = null;

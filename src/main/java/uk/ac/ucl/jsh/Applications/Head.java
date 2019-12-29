@@ -36,7 +36,7 @@ public class Head extends Application{
 
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        applicationArguments = this.globArguments(applicationArguments);
+        applicationArguments = this.globArguments(applicationArguments, -1);
         checkArguments(applicationArguments, inputStream, outputStream);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         File headFile;
