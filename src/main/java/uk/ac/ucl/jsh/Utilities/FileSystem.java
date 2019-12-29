@@ -60,6 +60,7 @@ public class FileSystem {
          Path wareFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Ware"));
          Path projFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Proj.txt"));
          Path testDocumentFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "test.txt"));
+         Path cannotOpenFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "cannotopen.txt"));
          
          // Create Eng's children
          Path testFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Test"));
@@ -76,6 +77,8 @@ public class FileSystem {
          Files.write(softFilePath, generateFileText().getBytes(), StandardOpenOption.APPEND);
          Files.write(wareFilePath, generateFileText().getBytes(), StandardOpenOption.APPEND);
          Files.write(testDocumentFilePath, "hello\n".getBytes(), StandardOpenOption.APPEND);
+         byte[] byteArray = hexStringToByteArray("CAFEBABE0000003700FD07000201001B");
+         Files.write(cannotOpenFilePath, byteArray, StandardOpenOption.APPEND);
     }
 
     public void deleteTestFileHierarchy() throws IOException {
@@ -86,5 +89,15 @@ public class FileSystem {
         deleteDirectory(new File(tmpPath+fileSeparator+"Documents"));
         deleteDirectory(new File(tmpPath+fileSeparator+"Other"));
         Files.deleteIfExists(Paths.get(tmpPath + fileSeparator + "Soft"));
+    }
+
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                                 + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
     }
 }

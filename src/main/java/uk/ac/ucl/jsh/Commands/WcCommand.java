@@ -1,7 +1,6 @@
 package uk.ac.ucl.jsh.Commands;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.io.File;
 import java.nio.file.Files;
@@ -11,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.io.InputStreamReader;
 
 public class WcCommand extends Command {
 
@@ -20,9 +20,6 @@ public class WcCommand extends Command {
 
     @Override
     public void runCommand(ArrayList<String> commandArguments) {
-        if (commandArguments.isEmpty()) {
-            throw new RuntimeException("wc: missing arguments");
-        }
         ArrayList<String> flags = new ArrayList<String>();
         for (String commandArgument : commandArguments) {
             if (stringIsAValidFileName(commandArgument)) {
@@ -32,9 +29,31 @@ public class WcCommand extends Command {
                 flags.add(commandArgument);
             }
         }
-        if (!flags.isEmpty()) {
-            runOnce(flags, "");
+        if (!flags.isEmpty() || commandArguments.isEmpty()) {
+            runOnce(flags, null);
         }
+    }
+
+    private BufferedReader createBufferedReader(String filename) {
+        BufferedReader reader;
+        String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
+        String filepathString = currentDirectoryPath + File.separator + filename;
+        File currFile = new File(filepathString);
+        if (filename == null) {
+            InputStreamReader in = new InputStreamReader(System.in);
+            reader = new BufferedReader(in);
+        } else {
+            if (!currFile.exists()) {
+                throw new RuntimeException("wc: file does not exist");
+            }
+            Path filePath = Paths.get(filepathString);
+            try {
+                reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                throw new RuntimeException("wc: cannot open " + filename);
+            }
+        }
+        return reader;
     }
 
     public void runOnce(ArrayList<String> flags, String filename) {
@@ -42,61 +61,43 @@ public class WcCommand extends Command {
         commandArguments.add(filename);
         checkArguments(commandArguments);
 
-        String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
-        Charset encoding = StandardCharsets.UTF_8;
+        int charCount = 0;
+        int wordCount = 0;
+        int lineCount = 0;
 
-        String filepathString = currentDirectoryPath + File.separator + filename;
+        BufferedReader reader = createBufferedReader(filename);
 
-        File currFile = new File(filepathString);
-        if (currFile.exists()) {
-            Path filePath = Paths.get(filepathString);
-            int charCount = 0;
-            int wordCount = 0;
-            int lineCount = 0;
-
-            try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
-
-                int characterRead;
-                while ((characterRead = reader.read()) != -1) {
-                    charCount++;
+            int characterRead = 0;
+            while (characterRead != -1) {
+                try {
+                    if ((characterRead = reader.read()) != -1) {
+                        charCount++;
+                    }
+                } catch (Exception e) {
+                    break;
                 }
-            } catch (IOException e) {
-                throw new RuntimeException("wc: cannot open " + filename);
             }
 
-            try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
+        reader = createBufferedReader(filename);
 
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (!line.equals("")) {
-                        String[] words = line.split("\\s+");
-                        for (String word : words) {
-                            if (stringIsWord(word)) {
-                                wordCount++;
+            String line = "";
+                try {
+                    while ((line = reader.readLine()) != null) {
+                        lineCount++;
+                        if (!line.equals("")) {
+                            String[] words = line.split("\\s+");
+                            for (String word : words) {
+                                if (stringIsWord(word)) {
+                                    wordCount++;
+                                }
                             }
                         }
                     }
-
+                } catch (Exception e) {
+                    throw new RuntimeException("wc: cannot read " + filename);
                 }
-            } catch (IOException e) {
-                throw new RuntimeException("wc: cannot open " + filename);
-            }
 
-            try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    lineCount++;
-                }
-            } catch (IOException e) {
-                throw new RuntimeException("wc: cannot open " + filename);
-            }
-
-            printCount(charCount, wordCount, lineCount, flags, filename);
-
-        } else {
-            throw new RuntimeException("wc: file does not exist");
-        }
+        printCount(charCount, wordCount, lineCount, flags, filename);
 
     }
 
@@ -142,7 +143,8 @@ public class WcCommand extends Command {
     }
 
     private boolean stringIsAValidFileName(String name) {
-        return (name.charAt(0) != '-');
+        // check for null because if there is no file name we use stdin
+        return (name == null || name.charAt(0) != '-');
     }
 
     private boolean stringIsValidFlag(String name) {
@@ -161,20 +163,10 @@ public class WcCommand extends Command {
     }
 
     public void checkArguments(ArrayList<String> commandArguments) {
-        if (commandArguments.isEmpty()) {
-            throw new RuntimeException("wc: missing arguments");
-        }
-
-        ArrayList<String> flags = copyArray(commandArguments, 0, commandArguments.size() - 1);
-        String filename = commandArguments.get(commandArguments.size() - 1);
-
-        for (String flag : flags) {
-            if (!stringIsValidFlag(flag)) {
-                throw new RuntimeException("wc: invalid flag");
-            }
-        }
-        if (!stringIsAValidFileName(filename)) {
-            throw new RuntimeException("wc: invalid file name");
+        for (String commandArgument : commandArguments) {
+            if (!stringIsAValidFileName(commandArgument) && !stringIsValidFlag(commandArgument)) {
+                throw new RuntimeException("wc: invalid arguments");
+            } 
         }
     }
 }

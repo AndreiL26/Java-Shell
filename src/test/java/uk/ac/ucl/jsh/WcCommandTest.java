@@ -99,7 +99,8 @@ public class WcCommandTest {
             command.checkArguments(array);
             fail("fail, accepts wrong flag");
         } catch (RuntimeException e) {
-
+            String expectedOutput = "wc: invalid arguments";
+            assertEquals(expectedOutput, e.getMessage());
         }
     }
 
@@ -113,63 +114,35 @@ public class WcCommandTest {
             command.checkArguments(array);
             fail("fail, uppercase flag not allowed");
         } catch (RuntimeException e) {
-
+            String expectedOutput = "wc: invalid arguments";
+            assertEquals(expectedOutput, e.getMessage());
         }
     }
 
     @Test
-    public void testUppercaseFlagW() throws IOException{
-        WcCommand command = new WcCommand(fileSystem, writer);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-W");
-        array.add(1, CommandManager.encodePath("Documents/test.txt"));
-        try {
-            command.checkArguments(array);
-            fail("fail, uppercase flag not allowed");
-        } catch (RuntimeException e) {
-
-        }
-    }
-
-    @Test
-    public void testUppercaseFlagL() throws IOException{
-        WcCommand command = new WcCommand(fileSystem, writer);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-L");
-        array.add(1, CommandManager.encodePath("Documents/test.txt"));
-        try {
-            command.checkArguments(array);
-            fail("fail, uppercase flag not allowed");
-        } catch (RuntimeException e) {
-
-        }
-    }
-
-    @Test
-    public void testFlagWithoutDash() throws IOException{
+    public void testFilenameIsFlag() throws IOException{
         WcCommand command = new WcCommand(fileSystem, writer);
         ArrayList<String> array = new ArrayList<String>();
         array.add(0, "m");
         array.add(1, CommandManager.encodePath("Documents/test.txt"));
         try {
             command.checkArguments(array);
-            fail("fail, no - in -m");
         } catch (RuntimeException e) {
-
+            fail("wc should not throw an exception");
         }
     }
 
     @Test
-    public void testFlagWithoutDashSecondVersion() throws IOException{
+    public void testFileDoesNotExistNoFlag() throws IOException{
         WcCommand command = new WcCommand(fileSystem, writer);
         ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "m");
-        array.add(1, CommandManager.encodePath("Documents/test.txt"));
+        array.add(0, "w");
         try {
             command.runCommand(array);
-            fail("fail, no - in -m");
+            fail("wc should throw an exception");
         } catch (RuntimeException e) {
-
+            String expectedOutput = "wc: file does not exist";
+            assertEquals(expectedOutput, e.getMessage());
         }
     }
 
@@ -339,31 +312,19 @@ public class WcCommandTest {
         }
     }
 
-    @Test
-    public void testMissingArguments() throws IOException{
-        WcCommand command = new WcCommand(fileSystem, writer);
-        ArrayList<String> array = new ArrayList<String>();
-        try {
-            command.checkArguments(array);
-            fail("wc did not throw an exception");
-        } catch (RuntimeException e) {
-            String expectedOutput = "wc: missing arguments";
-            assertEquals(expectedOutput, e.getMessage());
-        }
-    }
+    // need redirection to test
 
-    @Test
-    public void testMissingArgumentsSecondVersion() throws IOException{
-        WcCommand command = new WcCommand(fileSystem, writer);
-        ArrayList<String> array = new ArrayList<String>();
-        try {
-            command.runCommand(array);
-            fail("wc did not throw an exception");
-        } catch (RuntimeException e) {
-            String expectedOutput = "wc: missing arguments";
-            assertEquals(expectedOutput, e.getMessage());
-        }
-    }
+    // @Test
+    // public void testMissingArgumentsStdin() throws IOException{
+    //     WcCommand command = new WcCommand(fileSystem, writer);
+    //     ArrayList<String> array = new ArrayList<String>();
+    //     try {
+    //         command.checkArguments(array);
+    //     } catch (RuntimeException e) {
+    //         fail("wc should give stdin");
+    //     }
+    // }
+
 
     @Test
     public void fileDoesNotExist() throws IOException{
@@ -377,6 +338,44 @@ public class WcCommandTest {
         } catch (RuntimeException e) {
             String expectedOutput = "wc: file does not exist";
             assertEquals(expectedOutput, e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void checkInvalidFileName() throws IOException{
+        WcCommand command = new WcCommand(fileSystem, writer);
+        ArrayList<String> array = new ArrayList<String>();
+        array.add(0, "-l");
+        array.add(1, CommandManager.encodePath("-test.txt"));
+        try {
+            command.checkArguments(array);
+            fail("wc did not throw an exception");
+        } catch (RuntimeException e) {
+            String expectedOutput = "wc: invalid arguments";
+            assertEquals(expectedOutput, e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCannotOpenFile() throws IOException{
+        WcCommand command = new WcCommand(fileSystem, writer);
+        ArrayList<String> array = new ArrayList<String>();
+        array.add(0, "");
+        array.add(1, CommandManager.encodePath("Documents/cannotopen.txt"));
+        ArrayList<String> flags = new ArrayList<String>();
+        flags.add(0, "-m");
+        flags.add(1, "-w");
+        flags.add(2, "-l");
+        for (String flag : flags) {
+            array.set(0, flag);
+            try {
+                command.runCommand(array);
+                fail("wc did not throw an exception");
+            } catch (RuntimeException e) {
+                String expectedOutput = "wc: cannot read " + CommandManager.encodePath("Documents/cannotopen.txt");
+                assertEquals(expectedOutput, e.getMessage());
+            }
         }
     }
 
