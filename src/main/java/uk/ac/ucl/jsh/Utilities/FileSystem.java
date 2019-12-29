@@ -22,12 +22,21 @@ public class FileSystem {
         crtDirectory.delete();
     }
 
-    private String generateFileText () {
+    private String generateFileText() {
         String resultString = new String();
         String lineSeparator = System.getProperty("line.separator");
         resultString += "This is a test" + lineSeparator;
         resultString += "This is a test of another test" + lineSeparator;
         resultString += lineSeparator;
+        return resultString;
+    }
+
+    private String generateLongFileText(int lines) {
+        String resultString = new String();
+        String lineSeparator = System.getProperty("line.separator");
+        for(int i = 0; i < lines; ++ i) {
+            resultString += "Line number: " + Integer.toString(i) + lineSeparator;
+        }
         return resultString;
     }
 
@@ -74,8 +83,9 @@ public class FileSystem {
          Path emptyDirPath = Files.createDirectory(Paths.get(otherPath + fileSeparator + "Empty"));
 
          // Write to the created files
-         Files.write(softFilePath, generateFileText().getBytes(), StandardOpenOption.APPEND);
-         Files.write(wareFilePath, generateFileText().getBytes(), StandardOpenOption.APPEND);
+         Files.write(softFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
+         Files.write(wareFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
+         Files.write(testFilePath, generateLongFileText(20).getBytes(), StandardOpenOption.APPEND);
          Files.write(testDocumentFilePath, "hello\n".getBytes(), StandardOpenOption.APPEND);
          byte[] byteArray = hexStringToByteArray("CAFEBABE0000003700FD07000201001B");
          Files.write(cannotOpenFilePath, byteArray, StandardOpenOption.APPEND);

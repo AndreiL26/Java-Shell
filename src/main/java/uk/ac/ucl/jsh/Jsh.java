@@ -1,25 +1,35 @@
 package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Parser.Node;
-import uk.ac.ucl.jsh.Utilities.*;
 import uk.ac.ucl.jsh.Parser.Parser;
+import uk.ac.ucl.jsh.Utilities.*;
+
+
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jsh {
     private static final FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));;
-    private static CommandManager commandManager;   // Might want to make this final as well if Outputstream will always remain System.out
+    public static ApplicationManager applicationManager = new ApplicationManager(fileSystem);   // Might want to make this final as well if Outputstream will always remain System.out
+    
+    private static ArrayList<String> history = new ArrayList<>();
 
-    public static void eval(String cmdline, OutputStream output) throws IOException {
-        OutputStreamWriter writer = new OutputStreamWriter(output);
-        commandManager = new CommandManager(fileSystem, writer);
-        Node cmdTree = Parser.getCmdTree(cmdline);
-        cmdTree.accept(new EvalVisitor(commandManager));
+    public static ArrayList<String> getHistory() {
+        return history;
     }
 
-    public static void main(String[] args) {
+    public static void clearHistory() {
+        history.clear();
+    }
+
+    public static void eval(String cmdline, OutputStream output) throws IOException {
+        Node cmdTree = Parser.parserCmdLine(cmdline);
+        cmdTree.accept(new EvalVisitor(applicationManager), null, System.out);
+    }
+
+    public static void main(String[] args) throws Exception {
         if (args.length > 0) {
             if (args.length != 2) {
                 System.out.println("jsh: wrong number of arguments");
@@ -33,6 +43,7 @@ public class Jsh {
             } catch (Exception e) {
                 System.out.println("jsh: " + e.getMessage());
             }
+            //eval(args[1], System.out);
         } else {
             System.out.println("Hello World!");
             Scanner input = new Scanner(System.in);
@@ -42,6 +53,7 @@ public class Jsh {
                     System.out.print(prompt);
                     try {
                         String cmdline = input.nextLine();
+                        history.add(cmdline);
                         eval(cmdline, System.out);
                     } catch (Exception e) {
                         System.out.println("jsh: " + e.getMessage());

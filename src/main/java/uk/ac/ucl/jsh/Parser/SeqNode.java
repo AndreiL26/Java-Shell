@@ -1,5 +1,8 @@
 package uk.ac.ucl.jsh.Parser;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import uk.ac.ucl.jsh.Utilities.TreeVisitor;
 
 public class SeqNode implements Node {
@@ -25,7 +28,7 @@ public class SeqNode implements Node {
         return right;
     }
     
-    public void accept(TreeVisitor testVisitor) {
-        testVisitor.visit(this);
+    public <T> T accept(TreeVisitor<T> testVisitor, InputStream inputStream, OutputStream outputStream) {
+        return testVisitor.visit(this, inputStream, outputStream);
     }
 }

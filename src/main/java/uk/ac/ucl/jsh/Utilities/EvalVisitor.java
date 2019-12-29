@@ -1,34 +1,70 @@
 package uk.ac.ucl.jsh.Utilities;
 
 import uk.ac.ucl.jsh.Parser.*;
-import java.io.IOException;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import java.util.ArrayList;
 
-public class EvalVisitor implements TreeVisitor {
-    private CommandManager commandManager;
+public class EvalVisitor implements TreeVisitor<Void> {
+    private ApplicationManager applicationManager;
 
-    public EvalVisitor(CommandManager commandManager) {
-        this.commandManager = commandManager;
+    public EvalVisitor(ApplicationManager applicationManager) {
+        this.applicationManager = applicationManager;
     }
 
-    public void visit(CallNode callNode) {
+    public Void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
+        ArrayList<String> tokens = Parser.parseCallCommand(callNode.getCmdString());
+        applicationManager.executeApplication(tokens, inputStream, outputStream);
+        
+        return null;
+    }
+
+    public Void visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream) {
+        ByteArrayOutputStream newStream = new ByteArrayOutputStream();
+        pipeNode.getLeft().accept(this, inputStream, newStream);
+        ByteArrayInputStream newInputStream = new ByteArrayInputStream(newStream.toByteArray());
+        pipeNode.getRight().accept(this, newInputStream, outputStream);
+
+        return null;
+    }
+
+    public Void visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) {
+        seqNode.getLeft().accept(this, inputStream, outputStream);
+        if(seqNode.getRight() != null) {
+            seqNode.getRight().accept(this, inputStream,  outputStream);
+        }
+
+        return null;
+    }
+
+    public Void visit(InRedirectionNode inRedirectionNode, InputStream inputStream, OutputStream outputStream) {
         try {
-            ArrayList<String> tokens = Parser.getTokens(callNode.getCmdString(), 
-                                                        commandManager.getFileSystem().getWorkingDirectoryPath());
-            commandManager.executeCommand(tokens);
+            inputStream = new FileInputStream(inRedirectionNode.getFile());
+            inRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
+        } catch (FileNotFoundException fileNotFoundException) {
+            System.out.println(fileNotFoundException.toString());
+            throw new RuntimeException("File not found: " + inRedirectionNode.getFile());
         }
-        catch (IOException ioException) {
-            throw new RuntimeException(callNode + " could not be executed");
-        }
+
+        return null;
     }
 
-    public void visit(PipeNode pipeNode) {
-        pipeNode.getLeft().accept(this);
-        pipeNode.getRight().accept(this);
-    }
+    public Void visit(OutRedirectionNode outRedirectionNode, InputStream inputStream, OutputStream outputStream) {
+        try {
+            outputStream = new FileOutputStream(outRedirectionNode.getFile());
+            outRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
+        } catch (FileNotFoundException fileNotFoundException) {
+            throw new RuntimeException("Could not write to file: " + outRedirectionNode.getFile());
+        }
 
-    public void visit(SeqNode seqNode) {
-        seqNode.getLeft().accept(this);
-        seqNode.getRight().accept(this);
+        return null;
     }
 }

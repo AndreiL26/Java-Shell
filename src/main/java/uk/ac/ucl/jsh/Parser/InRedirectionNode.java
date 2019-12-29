@@ -5,15 +5,21 @@ import java.io.OutputStream;
 
 import uk.ac.ucl.jsh.Utilities.TreeVisitor;
 
-public class CallNode implements Node {
-    private String cmdString;
+public class InRedirectionNode implements Node {
+    private Node cmdNode;
+    private String file;
 
-    public CallNode(String cmdString) {
-        this.cmdString = cmdString;
+    public InRedirectionNode(Node cmdNode, String file) {
+        this.cmdNode = cmdNode;
+        this.file = file;
     }
 
-    public String getCmdString() {
-        return cmdString;
+    public Node getCmdNode() {
+        return cmdNode;
+    }
+
+    public String getFile() {
+        return file;
     }
 
     public <T> T accept(TreeVisitor<T> treeVisitor, InputStream inputStream, OutputStream outputStream) {
