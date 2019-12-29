@@ -84,4 +84,43 @@ public class HistoryTest {
         assertEquals(expectedString, outputStream.toString());
     }
 
+    @Test
+    public void zeroArgumentsCap500Test() throws IOException {
+        ArrayList<String> history = Jsh.getHistory();
+        for (int index = 0; index < 200; ++index) {
+            history.add("abc");
+        }
+
+        StringBuilder expectedString = new StringBuilder();
+        for (int index = 200; index < 700; ++index) {
+            history.add("abc");
+            expectedString.append(Integer.toString(index + 1) + ". abc" + lineSeparator);
+        }
+
+        historyApplication.execute(applicationArguments, null, outputStream);
+        assertEquals(expectedString.toString(), outputStream.toString());
+    }
+
+    @Test
+    public void NegativeHistoryTest() throws IOException {
+        applicationArguments.add("-1");
+        try {
+            historyApplication.execute(applicationArguments, null, outputStream);
+        } catch (RuntimeException e) {
+            assertEquals("history: invalid option", e.getMessage());
+        }   
+    }
+
+    @Test
+    public void TooManyArgumentsHistoryTest() throws IOException {
+        applicationArguments.add("abc");
+        applicationArguments.add("def");
+
+        try {
+            historyApplication.execute(applicationArguments, null, outputStream);
+        } catch (RuntimeException e) {
+            assertEquals("history: too many arguments", e.getMessage());
+        }   
+    }
+
 }

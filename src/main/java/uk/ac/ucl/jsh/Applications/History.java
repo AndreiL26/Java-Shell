@@ -42,7 +42,7 @@ public class History extends Application {
         }
 
         if (numberOfElementsToPrint < 0) {
-            throw new RuntimeException("History: invalid option");
+            throw new RuntimeException("history: invalid option");
         }
 
         for (int index = history.size() - numberOfElementsToPrint; index < history.size(); ++index) {
