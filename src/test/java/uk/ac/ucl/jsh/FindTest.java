@@ -19,7 +19,7 @@ import java.util.Collections;
 
 
 public class FindTest {
-    /*private static Find findApplication;
+    private static Find findApplication;
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
@@ -27,8 +27,8 @@ public class FindTest {
     private String lineSeparator = System.getProperty("line.separator");
     
     private void assertEqualStrings(String expectedString, String actualString) {
-        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split("\t")));
-        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split("\t")));
+        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split(lineSeparator)));
+        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split(lineSeparator)));
         Collections.sort(expectedTokens);
         Collections.sort(actualTokens);
         assertEquals(expectedTokens, actualTokens);
@@ -196,6 +196,6 @@ public class FindTest {
         applicationArguments.add("Code");
         findApplication.execute(applicationArguments, null, outputStream);
         assertEqualStrings("." + fileSeparator + "Documents" + fileSeparator + "Eng"  + fileSeparator + "Code" + lineSeparator, outputStream.toString());
-    }*/
+    }
 
 }
