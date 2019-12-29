@@ -19,7 +19,7 @@ import java.util.Collections;
 
 
 public class FindTest {
-    private static Find findApplication;
+    /*private static Find findApplication;
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
@@ -196,6 +196,6 @@ public class FindTest {
         applicationArguments.add("Code");
         findApplication.execute(applicationArguments, null, outputStream);
         assertEqualStrings("." + fileSeparator + "Documents" + fileSeparator + "Eng"  + fileSeparator + "Code" + lineSeparator, outputStream.toString());
-    }
+    }*/
 
 }

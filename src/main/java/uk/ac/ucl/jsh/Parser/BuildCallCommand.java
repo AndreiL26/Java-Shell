@@ -78,13 +78,13 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 	
     @Override 
     public ArrayList<String> visitBackquoted(CallParserParser.BackquotedContext ctx) { 
-        String cmdSubstitutionStirng = ctx.content.getText();
-        if (cmdSubstitutionStirng == "") {
+        String cmdSubstitutionString = ctx.content.getText();
+        if (cmdSubstitutionString == "") {
             return new ArrayList<>(List.of(""));
         }
         
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ArrayList<String> tokens = Parser.parseCallCommand(cmdSubstitutionStirng);
+        ArrayList<String> tokens = Parser.parseCallCommand(cmdSubstitutionString);
         Jsh.applicationManager.executeApplication(tokens, null, outputStream);
         return new ArrayList<>(List.of(outputStream.toString().trim()));
     }
