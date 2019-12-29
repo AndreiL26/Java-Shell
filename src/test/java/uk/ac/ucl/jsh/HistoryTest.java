@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import uk.ac.ucl.jsh.Applications.History;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 public class HistoryTest {
     private static History historyApplication;
@@ -46,7 +47,7 @@ public class HistoryTest {
     }  
     
     @Test
-    public void zeroArgumentsHistoryTest() throws IOException {
+    public void zeroArgumentsHistoryTest() throws JshException {
         ArrayList<String> history = Jsh.getHistory();
         history.add("abc");
         history.add("xyz");
@@ -57,7 +58,7 @@ public class HistoryTest {
     }
 
     @Test
-    public void oneArgumentHistoryTest() throws IOException {
+    public void oneArgumentHistoryTest() throws JshException {
         applicationArguments.add("2");
 
         ArrayList<String> history = Jsh.getHistory();
@@ -71,7 +72,7 @@ public class HistoryTest {
     }
 
     @Test
-    public void oneArgumentTooBigHistoryTest() throws IOException {
+    public void oneArgumentTooBigHistoryTest() throws JshException {
         applicationArguments.add("10");
 
         ArrayList<String> history = Jsh.getHistory();

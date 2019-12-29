@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,18 +10,29 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class History extends Application {
+public class History implements Application {
+    private FileSystem fileSystem;
+
     public History(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     private String indexHistoryElement(int index, String historyElement) {
         return Integer.toString(index) + ". " + historyElement;
     }
 
+    private void checkArguments(ArrayList<String> applicationArguments, 
+                               InputStream inputStream, 
+                               OutputStream outpustream) {
+        if (applicationArguments.size() > 1) {
+            throw new RuntimeException("history: too many arguments");
+        }
+    } 
+
+    @Override
     public void execute(ArrayList<String> applicationArguments, 
                         InputStream inputStream, 
-                        OutputStream outputStream) throws IOException {
+                        OutputStream outputStream) throws JshException {
 
         checkArguments(applicationArguments, inputStream, outputStream);
         ArrayList<String> historyToPrint = new ArrayList<>();
@@ -42,7 +54,7 @@ public class History extends Application {
         }
 
         if (numberOfElementsToPrint < 0) {
-            throw new RuntimeException("History: invalid option");
+            throw new JshException("history: invalid option");
         }
 
         for (int index = history.size() - numberOfElementsToPrint; index < history.size(); ++index) {
@@ -50,19 +62,13 @@ public class History extends Application {
         }
         
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-        for (String historyElement: historyToPrint) {
-            writer.write(historyElement + System.getProperty("line.separator"));
-            writer.flush();
+        try {
+            for (String historyElement: historyToPrint) {
+                writer.write(historyElement + System.getProperty("line.separator"));
+                writer.flush();
+            }
+        } catch (IOException e) {
+            throw new JshException("history: cannot write output");
         }
     }
-    
-    public void checkArguments(ArrayList<String> applicationArguments, 
-                               InputStream inputStream, 
-                               OutputStream outpustream) {
-        if (applicationArguments.size() > 1) {
-            throw new RuntimeException("history: too many arguments");
-        }
-    } 
-
-
 }
