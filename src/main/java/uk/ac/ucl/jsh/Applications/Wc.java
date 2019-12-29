@@ -123,7 +123,9 @@ public class Wc extends Application {
         if (arrayContains(flags, "-l") || flags.isEmpty()) {
             output += lineCount + " ";
         }
-        output += filename;
+        if (filename != null) {
+            output += filename;
+        }
 
         try {
             OutputStreamWriter writer = new OutputStreamWriter(outputstream);
