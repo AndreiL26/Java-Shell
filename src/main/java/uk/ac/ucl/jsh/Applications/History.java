@@ -23,9 +23,9 @@ public class History implements Application {
 
     private void checkArguments(ArrayList<String> applicationArguments, 
                                InputStream inputStream, 
-                               OutputStream outpustream) {
+                               OutputStream outpustream) throws JshException {
         if (applicationArguments.size() > 1) {
-            throw new RuntimeException("history: too many arguments");
+            throw new JshException("history: too many arguments");
         }
     } 
 
