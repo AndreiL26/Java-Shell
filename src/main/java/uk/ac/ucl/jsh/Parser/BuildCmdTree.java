@@ -50,11 +50,11 @@ public class BuildCmdTree extends CmdLineParserBaseVisitor<Node> {
     }
 	
 	public Node visitInRedirection(CmdLineParserParser.InRedirectionContext ctx) {
-        return new InRedirectionNode(new CallNode(ctx.cmd.getText()), ctx.file.getText().trim());
+        return new InRedirectionNode(new CallNode(ctx.cmd.getText().trim()), ctx.file.getText().trim());
     }
 
 	public Node visitOutRedirection(CmdLineParserParser.OutRedirectionContext ctx) {
-        return new OutRedirectionNode(new CallNode(ctx.cmd.getText()), ctx.file.getText().trim());
+        return new OutRedirectionNode(new CallNode(ctx.cmd.getText().trim()), ctx.file.getText().trim());
     }
 	
 	public Node visitInoutRedirection(CmdLineParserParser.InoutRedirectionContext ctx) {
