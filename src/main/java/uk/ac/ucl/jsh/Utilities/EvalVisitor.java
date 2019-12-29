@@ -21,7 +21,7 @@ public class EvalVisitor implements TreeVisitor<Void> {
         try {
             applicationManager.executeApplication(tokens, inputStream, outputStream);
         } catch (JshException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("");
         }
         
         return null;

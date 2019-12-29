@@ -43,7 +43,7 @@ public class ApplicationManager {
                 throw new RuntimeException(applicationName + ": unknown application");
             }
         } catch (JshException e) {
-            throw new RuntimeException(applicationName + ": can't execute!");
+            //throw new RuntimeException(applicationName + ": can't execute!");
         }
 
     }

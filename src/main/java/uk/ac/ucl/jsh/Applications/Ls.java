@@ -62,7 +62,7 @@ public class Ls implements Application {
                 throw new JshException("ls: could not write output");
             }
         } catch (NullPointerException e) {
-            throw new RuntimeException("ls: no such directory");
+            throw new JshException("ls: no such directory");
         }
     }
 
