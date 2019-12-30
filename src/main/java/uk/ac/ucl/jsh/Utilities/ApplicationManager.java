@@ -24,28 +24,24 @@ public class ApplicationManager {
         String applicationName = tokens.get(0);
         boolean unsafeVersion = false;
         ArrayList<String> applicationArguments = new ArrayList<String>(tokens.subList(1, tokens.size()));
-        try {
-            if(applicationName.startsWith("_")) {
-                applicationName = applicationName.subSequence(1, applicationName.length()).toString();
-                unsafeVersion = true;
-            }
-            if(applicationMap.containsKey(applicationName)) {
-                Application currentApplication = applicationMap.get(applicationName);
-                if(unsafeVersion) {
-                    UnsafeApplicationDecorator unsafeApplication = new UnsafeApplicationDecorator(currentApplication);
-                    unsafeApplication.execute(applicationArguments, inputStream, outputStream);
-                }
-                else {
-                    currentApplication.execute(applicationArguments, inputStream, outputStream);
-                }
-            } 
-            else {
-                throw new RuntimeException(applicationName + ": unknown application");
-            }
-        } catch (JshException e) {
-            //throw new RuntimeException(applicationName + ": can't execute!");
+        
+        if(applicationName.startsWith("_")) {
+            applicationName = applicationName.subSequence(1, applicationName.length()).toString();
+            unsafeVersion = true;
         }
-
+        if(applicationMap.containsKey(applicationName)) {
+            Application currentApplication = applicationMap.get(applicationName);
+            if(unsafeVersion) {
+                UnsafeApplicationDecorator unsafeApplication = new UnsafeApplicationDecorator(currentApplication);
+                unsafeApplication.execute(applicationArguments, inputStream, outputStream);
+            }
+            else {
+                currentApplication.execute(applicationArguments, inputStream, outputStream);
+            }
+        } 
+        else {
+            throw new RuntimeException(applicationName + ": unknown application");
+        }
     }
     
     private  void createApplications() {
