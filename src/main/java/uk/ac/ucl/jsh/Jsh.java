@@ -41,7 +41,7 @@ public class Jsh {
             try {
                 eval(args[1], System.out);
             } catch (Exception e) {
-                System.out.println("jsh: " + e.getMessage());
+                System.out.println(e.getMessage());
             }
             //eval(args[1], System.out);
         } else {
@@ -56,7 +56,7 @@ public class Jsh {
                         history.add(cmdline);
                         eval(cmdline, System.out);
                     } catch (Exception e) {
-                        System.out.println("jsh: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
             } finally {
