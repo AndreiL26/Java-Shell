@@ -233,4 +233,15 @@ public class HeadTest {
         headApplication.execute(applicationArguments, testInput, outputStream);
         assertEquals("First line" + lineSeparator + "Second line" + lineSeparator, outputStream.toString());
     }
+
+    @Test
+    public void testGlobbedPathFile() throws IOException {
+        applicationArguments.add("/tmp/Documents/Eng/T*t");
+        String expectedOutput = new String();
+        for(int i = 0; i < 10; ++ i) {
+            expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
+        }
+        headApplication.execute(applicationArguments, null, outputStream);
+        assertEquals(expectedOutput, outputStream.toString());
+    }
 }

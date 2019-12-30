@@ -101,6 +101,14 @@ public class LsTest {
         assertEqualStrings("", outputStream.toString());
     }
 
+    @Test
+    public void testGlobbedPath() throws IOException {
+        applicationArguments.add("/tmp/D*s/E*g");
+        lsApplication.execute(applicationArguments, System.in, outputStream);
+        String expectedOutput = "Code" + "\t" + "Test" + "\t" + "Plan" + lineSeparator;
+        assertEqualStrings(expectedOutput, outputStream.toString());
+    }
+
     private void assertEqualStrings(String expectedString, String actualString) {
         ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split("\t")));
         ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split("\t")));

@@ -233,4 +233,15 @@ public class TailTest {
         tailApplication.execute(applicationArguments, testInput, outputStream);
         assertEquals("Third line" + lineSeparator + "Fourth line" + lineSeparator, outputStream.toString());
     }
+
+    @Test
+    public void testFromGlobbedPath() throws IOException {
+        applicationArguments.add("/tmp/Doc*ts/Eng/Test");
+        String expectedOutput = new String();
+        for(int i = 10; i < 20; ++ i) {
+            expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
+        }
+        tailApplication.execute(applicationArguments, null, outputStream);
+        assertEquals(expectedOutput, outputStream.toString());
+    }
 }

@@ -359,6 +359,44 @@ public class SedTest {
         expectedOutput += "world" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
+    
+    @Test
+    public void testGlobbedPath() throws IOException {
+        applicationArguments.add("s/test/repl/g");
+        applicationArguments.add("S*t");
+        sedApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "This is a repl" + lineSeparator;
+        expectedOutput += "This is a repl of another repl" + lineSeparator;
+        expectedOutput += lineSeparator;
+        
+        assertEquals(expectedOutput, outputStream.toString());
+    }
 
+    @Test
+    public void testRegexArgument() throws IOException {
+        applicationArguments.add("s/t+est/repl/g");
+        applicationArguments.add("Soft");
+        sedApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "This is a repl" + lineSeparator;
+        expectedOutput += "This is a repl of another repl" + lineSeparator;
+        expectedOutput += lineSeparator;
+        
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    public void testGlobbedArguments() throws IOException {
+        applicationArguments.add("s/test/repl*/g");
+        applicationArguments.add("Soft");
+        sedApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "This is a repl*" + lineSeparator;
+        expectedOutput += "This is a repl* of another repl*" + lineSeparator;
+        expectedOutput += lineSeparator;
+        
+        assertEquals(expectedOutput, outputStream.toString());
+    }
     
 }

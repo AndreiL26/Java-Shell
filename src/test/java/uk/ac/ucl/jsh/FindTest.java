@@ -198,4 +198,24 @@ public class FindTest {
         assertEqualStrings("." + fileSeparator + "Documents" + fileSeparator + "Eng"  + fileSeparator + "Code" + lineSeparator, outputStream.toString());
     }
 
+    @Test
+    public void testFindFileFromGlobbedPath() throws IOException {
+        applicationArguments.add(fileSeparator + "t*p" + fileSeparator + "Doc*s" + fileSeparator + "Eng");
+        applicationArguments.add("-name");
+        applicationArguments.add("Test");
+        findApplication.execute(applicationArguments, null, outputStream);
+        assertEqualStrings(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test" + lineSeparator, outputStream.toString());
+    }
+
+    @Test
+    public void testGlobbedPathAndPattern() throws IOException {
+        applicationArguments.add("Ot*");
+        applicationArguments.add("-name");
+        applicationArguments.add("Oth*");
+        findApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "Other" + fileSeparator + "Oth1" + lineSeparator;
+        expectedOutput += "Other" + fileSeparator + "Oth2" + lineSeparator;
+        assertEqualStrings(expectedOutput, outputStream.toString());
+    }
 }

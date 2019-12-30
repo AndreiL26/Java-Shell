@@ -16,6 +16,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 
 
@@ -192,4 +194,49 @@ public class GrepTest {
         assertEquals(expectedOutput, outputStream.toString());
     }
 
+
+    @Test
+    public void testReadFromGlobbedPath() throws IOException {
+        applicationArguments.add("Line");
+        applicationArguments.add("/tmp/Docu*s/Eng/Test");
+        grepApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        for(int i = 0; i < 20; ++ i) {
+            expectedOutput += "/tmp/Documents/Eng/Test: " + "Line number: " + Integer.toString(i) + lineSeparator;
+        }
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    public void testWithGlobbedArguments() throws IOException {
+        applicationArguments.add("L*e");
+        applicationArguments.add("/tmp/Docu*s/Eng/Test");
+        grepApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        for(int i = 0; i < 20; ++ i) {
+            expectedOutput += "/tmp/Documents/Eng/Test: " + "Line number: " + Integer.toString(i) + lineSeparator;
+        }
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    public void testMultipleFIlesFromGlobbedArgument() throws IOException {
+        applicationArguments.add("test");
+        applicationArguments.add("/tmp/Other/Oth*");
+        grepApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "/tmp/Other/Oth1: This is a test" + lineSeparator;
+        expectedOutput += "/tmp/Other/Oth1: This is a test of another test" + lineSeparator;
+        expectedOutput += "/tmp/Other/Oth2: This is a test" + lineSeparator;
+        expectedOutput += "/tmp/Other/Oth2: This is a test of another test" + lineSeparator;
+        assertEqualStrings(expectedOutput, outputStream.toString());
+    }
+
+    private void assertEqualStrings(String expectedString, String actualString) {
+        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split("\t")));
+        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split("\t")));
+        Collections.sort(expectedTokens);
+        Collections.sort(actualTokens);
+        assertEquals(expectedTokens, actualTokens);
+    }
 }

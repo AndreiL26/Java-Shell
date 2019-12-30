@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,18 +18,7 @@ public abstract class Application {
         this.fileSystem = fileSystem;     
     }
 
-    private String findGlobbingPath(String argument) {
-        String fileSeparator = System.getProperty("file.separator");
-        if(argument.startsWith(fileSeparator)) {
-            return argument.substring(0, argument.lastIndexOf(fileSeparator, argument.indexOf('*'))).toString();
-        }
-
-        return fileSystem.getWorkingDirectoryPath() + fileSeparator + argument.substring(0, argument.lastIndexOf(fileSeparator, argument.indexOf('*'))).toString();
-    }
-
-
-    private void globArgument(String argument, String currentPath, ArrayList<String> globbedArguments) {
-        /// Must throw JSH Exception!
+    private void globArgument(String argument, String currentPath, ArrayList<String> globbedArguments, String startingPath) {
         if(argument != "") {
             String currentPart, remainingArgument;
             String fileSeparator = System.getProperty("file.separator");
@@ -49,27 +37,28 @@ public abstract class Application {
                 PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + currentPart);
                 for(File file: fileArray) {
                     if(matcher.matches(Paths.get(file.getName()))) {
-                        globArgument(remainingArgument, currentPath + fileSeparator + file.getName(), globbedArguments);
+                        globArgument(remainingArgument, currentPath + fileSeparator + file.getName(), globbedArguments, startingPath);
                     }
                 }
             }
             else {
-                globArgument(remainingArgument, currentPath, globbedArguments);
+                globArgument(remainingArgument, currentPath + fileSeparator + currentPart, globbedArguments, startingPath);
             }
 
         }
         else {
-            if(Files.exists(Paths.get(currentPath))) {
-                globbedArguments.add(currentPath);
+            String globbedPath = Paths.get(startingPath).relativize(Paths.get(currentPath)).toString();
+            if (startingPath == "/") {
+                globbedPath = "/" + globbedPath;
             }
+            globbedArguments.add(globbedPath);
         }
     }
 
-    protected ArrayList<String> globArguments(ArrayList<String> applicationArguments, int ignoreIndex) {
+    public ArrayList<String> globArguments(ArrayList<String> applicationArguments, int ignoreIndex) {
         ArrayList<String> globbedArguments = new ArrayList<String>();
         String fileSeparator = System.getProperty("file.separator");
-        fileSystem.setWorkingDirectory("/");
-
+            
         if(applicationArguments.size() == 0) {
             return globbedArguments;
         }
@@ -85,10 +74,10 @@ public abstract class Application {
 
             if(currentArgument.contains("*")) {
                 if(currentArgument.startsWith(fileSeparator)) {
-                    globArgument(currentArgument, "", globbedArguments);
+                    globArgument(currentArgument, "", globbedArguments, "/");
                 }
                 else {
-                    globArgument(currentArgument, fileSystem.getWorkingDirectoryPath(), globbedArguments);
+                    globArgument(currentArgument, fileSystem.getWorkingDirectoryPath(), globbedArguments, fileSystem.getWorkingDirectoryPath());
                 }
                 if(crtSize == globbedArguments.size()) {
                     globbedArguments.add(applicationArguments.get(i));

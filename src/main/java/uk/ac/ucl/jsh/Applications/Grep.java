@@ -42,7 +42,7 @@ public class Grep extends Application {
 
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
-        applicationArguments = globArguments(applicationArguments, 0);
+        applicationArguments = this.globArguments(applicationArguments, 0);
         checkArguments(applicationArguments, inputStream, outputStream);
         Path filePath;
         Pattern grepPattern;

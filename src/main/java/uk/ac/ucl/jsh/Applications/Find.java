@@ -41,7 +41,7 @@ public class Find extends Application {
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
         String searchRootDirectory;
         String resolvedPath = ".";
-        applicationArguments = globArguments(applicationArguments, applicationArguments.size() - 1);
+        applicationArguments = this.globArguments(applicationArguments, applicationArguments.size() - 1);
         checkArguments(applicationArguments, inputStream, outputStream);
         writer = new OutputStreamWriter(outputStream);
 

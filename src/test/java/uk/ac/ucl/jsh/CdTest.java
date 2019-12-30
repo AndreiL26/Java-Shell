@@ -47,16 +47,27 @@ public class CdTest {
 
     @Test 
     public void testMoreArguments() throws IOException {
-        applicationArguments.add("..");
-        applicationArguments.add("..");
         try {
+            applicationArguments.add("..");
+            applicationArguments.add("..");
             cdApplication.execute(applicationArguments, System.in, outputStream);
             fail("cd did not throw a too many arguments exception");
 
         } catch(RuntimeException e) {
            assertEquals("cd: too many arguments", e.getMessage());
-         }
-         
+        }
+    }
+
+    @Test 
+    public void testMoreArgumentsFromGlobbing() throws IOException {
+        try {
+            applicationArguments.add("*t*");
+            cdApplication.execute(applicationArguments, System.in, outputStream);
+            fail("cd did not throw a too many arguments exception");
+
+        } catch(RuntimeException e) {
+           assertEquals("cd: too many arguments", e.getMessage());
+        }
     }
 
 	@Test
@@ -71,8 +82,8 @@ public class CdTest {
 
     @Test 
     public void testInvalidPath() throws IOException {
-        applicationArguments.add("invalid" + fileSeparator + "Path");
         try {
+            applicationArguments.add("invalid" + fileSeparator + "Path");
             cdApplication.execute(applicationArguments, System.in, outputStream);
             fail("cd did not throw an invalid path exception");
         } catch(RuntimeException e) {
@@ -83,8 +94,8 @@ public class CdTest {
 
     @Test 
     public void testFilePath() throws IOException {
-        applicationArguments.add(fileSeparator + "Soft");
         try {
+            applicationArguments.add(fileSeparator + "Soft");
             cdApplication.execute(applicationArguments, System.in, outputStream);
             fail("cd did not throw an invalid path exception");
         } catch(RuntimeException e) {
@@ -134,11 +145,19 @@ public class CdTest {
     }
 
     @Test
-   public void testAbsolutePathToDirectory() throws IOException {
+    public void testAbsolutePathToDirectory() throws IOException {
        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Other");
        cdApplication.execute(applicationArguments, System.in, outputStream);
        String expectedOutput = fileSeparator + "tmp" + fileSeparator + "Other";
        assertEquals(expectedOutput, fileSystem.getWorkingDirectoryPath());
-   }
+    }
+
+    @Test
+    public void testGlobbedAbsolutePathToDirectory() throws IOException {
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "O*r");
+        cdApplication.execute(applicationArguments, System.in, outputStream);
+        String expectedOutput = fileSeparator + "tmp" + fileSeparator + "Other";
+        assertEquals(expectedOutput, fileSystem.getWorkingDirectoryPath());
+     }
 
 }

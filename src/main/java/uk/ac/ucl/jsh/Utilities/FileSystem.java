@@ -83,7 +83,10 @@ public class FileSystem {
          // Write to the created files
          Files.write(softFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
          Files.write(wareFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
+         Files.write(oth1FilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
+         Files.write(oth2FilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
          Files.write(testFilePath, generateLongFileText(20).getBytes(), StandardOpenOption.APPEND);
+        
     }
 
     public void deleteTestFileHierarchy() throws IOException {

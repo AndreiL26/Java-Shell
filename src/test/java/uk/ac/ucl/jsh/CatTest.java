@@ -63,8 +63,8 @@ public class CatTest {
 
     @Test 
     public void testInvalidPath() throws IOException {
-        applicationArguments.add("/InvalidPath");
         try {
+            applicationArguments.add("/InvalidPath");
             catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw an invalid path exception");
         } catch(RuntimeException e) {
@@ -75,8 +75,8 @@ public class CatTest {
 
     @Test
     public void testDirectoryPath() throws IOException {
-        applicationArguments.add("Documents");
         try {
+            applicationArguments.add("Documents");
             catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw a directory path exception");
         } catch(RuntimeException e) {
@@ -126,6 +126,35 @@ public class CatTest {
     public void testMultipleFiles() throws IOException {
         applicationArguments.add("Documents" + fileSeparator + "Ware");
         applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Soft");
+        catApplication.execute(applicationArguments, System.in, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
+        expectedOutput += lineSeparator;
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
+        expectedOutput += lineSeparator;
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    public void testMultipleFilesFromTwoGlobArguments() throws IOException {
+        applicationArguments.add("Docu*s" + fileSeparator + "Wa*e");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "S*t");
+        catApplication.execute(applicationArguments, System.in, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
+        expectedOutput += lineSeparator;
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
+        expectedOutput += lineSeparator;
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    public void testMultipleFilesFromGlobArgument() throws IOException {
+        applicationArguments.add("Other" + fileSeparator + "Ot*");
         catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
