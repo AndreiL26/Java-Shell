@@ -1,8 +1,8 @@
 package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Application;
-import uk.ac.ucl.jsh.Applications.Cd;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,19 +12,13 @@ import java.util.Collections;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
 public class GlobbingTest {
-    private static FileSystem fileSystem;
+    private static FileSystem fileSystem = Jsh.getFileSystem();
     private String fileSeparator = System.getProperty("file.separator");
     
-
-    @BeforeClass
-    public static void setClass() {
-        fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
-    }
 
     @Before
     // Create the test hierarchy
@@ -48,10 +42,9 @@ public class GlobbingTest {
     @Test
     public void testGlobAll() {
         fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir") + fileSeparator + "Documents");
-        Application application = new Cd(fileSystem);
         ArrayList<String> argumentsBeforeGlobbing = new ArrayList<>();
         argumentsBeforeGlobbing.add("*");
-        ArrayList<String> globbingResult = application.globArguments(argumentsBeforeGlobbing, -1);
+        ArrayList<String> globbingResult = Application.globArguments(argumentsBeforeGlobbing, -1);
         ArrayList<String> expectedResult = new ArrayList<>();
         expectedResult.add("Eng");
         expectedResult.add("Ware");
@@ -61,10 +54,9 @@ public class GlobbingTest {
 
     @Test
     public void testBasicGlobbingRelativePath() {
-        Application application = new Cd(fileSystem);
         ArrayList<String> argumentsBeforeGlobbing = new ArrayList<>();
         argumentsBeforeGlobbing.add("Doc*");
-        ArrayList<String> globbingResult = application.globArguments(argumentsBeforeGlobbing, -1);
+        ArrayList<String> globbingResult = Application.globArguments(argumentsBeforeGlobbing, -1);
         ArrayList<String> expectedResult = new ArrayList<>();
         expectedResult.add("Documents");
         assertEqualsArrayLists(expectedResult, globbingResult);
@@ -72,10 +64,9 @@ public class GlobbingTest {
 
     @Test
     public void testBasicGlobbingAbsolutePath() {
-        Application application = new Cd(fileSystem);
         ArrayList<String> argumentsBeforeGlobbing = new ArrayList<>();
         argumentsBeforeGlobbing.add(fileSeparator + "tmp" + fileSeparator + "Doc*");
-        ArrayList<String> globbingResult = application.globArguments(argumentsBeforeGlobbing, -1);
+        ArrayList<String> globbingResult = Application.globArguments(argumentsBeforeGlobbing, -1);
         ArrayList<String> expectedResult = new ArrayList<>();
         expectedResult.add(fileSeparator + "tmp" + fileSeparator + "Documents");
         assertEqualsArrayLists(expectedResult, globbingResult);
@@ -83,10 +74,9 @@ public class GlobbingTest {
 
     @Test
     public void testNoMatches() {
-        Application application = new Cd(fileSystem);
         ArrayList<String> argumentsBeforeGlobbing = new ArrayList<>();
         argumentsBeforeGlobbing.add("No*Match");
-        ArrayList<String> globbingResult = application.globArguments(argumentsBeforeGlobbing, -1);
+        ArrayList<String> globbingResult = Application.globArguments(argumentsBeforeGlobbing, -1);
         ArrayList<String> expectedResult = new ArrayList<>();
         expectedResult.add("No*Match");
         assertEqualsArrayLists(expectedResult, globbingResult);    
@@ -94,10 +84,9 @@ public class GlobbingTest {
 
     @Test
     public void testIgnoreIndex() {
-        Application application = new Cd(fileSystem);
         ArrayList<String> argumentsBeforeGlobbing = new ArrayList<>();
         argumentsBeforeGlobbing.add("Doc*");
-        ArrayList<String> globbingResult = application.globArguments(argumentsBeforeGlobbing, 0);
+        ArrayList<String> globbingResult = Application.globArguments(argumentsBeforeGlobbing, 0);
         ArrayList<String> expectedResult = new ArrayList<>();
         expectedResult.add("Doc*");
         assertEqualsArrayLists(expectedResult, globbingResult);
@@ -105,11 +94,10 @@ public class GlobbingTest {
 
     @Test
     public void testNoGlobbing() {
-        Application application = new Cd(fileSystem);
         ArrayList<String> argumentsBeforeGlobbing = new ArrayList<>();
         argumentsBeforeGlobbing.add("No");
         argumentsBeforeGlobbing.add("Globbing");
-        ArrayList<String> globbingResult = application.globArguments(argumentsBeforeGlobbing, -1);
+        ArrayList<String> globbingResult = Application.globArguments(argumentsBeforeGlobbing, -1);
         ArrayList<String> expectedResult = new ArrayList<>();
         expectedResult.add("No");
         expectedResult.add("Globbing");
@@ -118,11 +106,10 @@ public class GlobbingTest {
 
     @Test
     public void testMultipleGlobbingArguments() {
-        Application application = new Cd(fileSystem);
         ArrayList<String> argumentsBeforeGlobbing = new ArrayList<>();
         argumentsBeforeGlobbing.add("Doc*");
         argumentsBeforeGlobbing.add("S*t");
-        ArrayList<String> globbingResult = application.globArguments(argumentsBeforeGlobbing, -1);
+        ArrayList<String> globbingResult = Application.globArguments(argumentsBeforeGlobbing, -1);
         ArrayList<String> expectedResult = new ArrayList<>();
         expectedResult.add("Documents");
         expectedResult.add("Soft");
@@ -130,12 +117,11 @@ public class GlobbingTest {
     }
 
     @Test
-    public void testComplexAbsolutePathGlobbing() {
-        Application application = new Cd(fileSystem);
+    public void testComplexAbsolutePathGlobbing() throws JshException {
         ArrayList<String> argumentsBeforeGlobbing = new ArrayList<>();
         argumentsBeforeGlobbing.add(fileSeparator + "tmp" + fileSeparator + "Doc*" + fileSeparator + "*g" + fileSeparator + "Co*");
         argumentsBeforeGlobbing.add(fileSeparator + "tmp" + fileSeparator + "Oth*" + fileSeparator + "Ot*");
-        ArrayList<String> globbingResult = application.globArguments(argumentsBeforeGlobbing, -1);
+        ArrayList<String> globbingResult = Application.globArguments(argumentsBeforeGlobbing, -1);
         ArrayList<String> expectedResult = new ArrayList<>();
         expectedResult.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Code");
         expectedResult.add(fileSeparator + "tmp" + fileSeparator + "Other" + fileSeparator + "Oth1");

@@ -1,8 +1,8 @@
 grammar CmdLineParser;
 
 compileUnit
-    :   seq
-    |   command
+    :   seq EOF
+    |   command EOF
     ;
 
 command
@@ -21,7 +21,25 @@ seq
     ;
 
 call
-    :   call_content                          #simpleCall
+    :   call_content                                    
+    |   inRedirection                  
+    |   outRedirection                    
+    |   inoutRedirection 
+    ;
+
+inRedirection
+    :   cmd = call_content LT file = call_content
+    |   LT file = call_content WS+ cmd = call_content
+    ;
+
+outRedirection
+    :   cmd = call_content GT file = call_content
+    |   GT file = call_content WS+ cmd = call_content
+    ;
+
+inoutRedirection
+    :   inRedirection GT file = call_content
+    |   GT file = call_content WS+ inRedirection
     ;
 
 call_content    :   (NON_KEYWORD | single_quoted | double_quoted | backquoted | WS)+;

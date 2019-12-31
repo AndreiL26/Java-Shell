@@ -7,16 +7,30 @@ import uk.ac.ucl.jsh.Utilities.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jsh {
-    private static final FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));;
-    public static ApplicationManager applicationManager = new ApplicationManager(fileSystem);   // Might want to make this final as well if Outputstream will always remain System.out
+    private static  FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));
+    public static final ApplicationManager applicationManager = new ApplicationManager(fileSystem);  
+    
+    private static ArrayList<String> history = new ArrayList<>();
+
+    public static ArrayList<String> getHistory() {
+        return history;
+    }
+
+    public static void clearHistory() {
+        history.clear();
+    }
 
     public static void eval(String cmdline, OutputStream output) throws IOException {
-        //applicationManager = new ApplicationManager(fileSystem);
         Node cmdTree = Parser.parserCmdLine(cmdline);
         cmdTree.accept(new EvalVisitor(applicationManager), null, System.out);
+    }
+
+    public static FileSystem getFileSystem() {
+        return Jsh.fileSystem;
     }
 
     public static void main(String[] args) throws Exception {
@@ -31,7 +45,7 @@ public class Jsh {
             try {
                 eval(args[1], System.out);
             } catch (Exception e) {
-                System.out.println("jsh: " + e.getMessage());
+                System.out.println(e.getMessage());
             }
             //eval(args[1], System.out);
         } else {
@@ -43,9 +57,10 @@ public class Jsh {
                     System.out.print(prompt);
                     try {
                         String cmdline = input.nextLine();
+                        history.add(cmdline);
                         eval(cmdline, System.out);
                     } catch (Exception e) {
-                        System.out.println("jsh: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
             } finally {

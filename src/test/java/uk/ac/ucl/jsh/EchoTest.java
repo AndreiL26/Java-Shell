@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Echo;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,7 +19,7 @@ import java.util.Collections;
 
 public class EchoTest {
     private static Echo echoApplication;
-    private static FileSystem fileSystem;
+    private static FileSystem fileSystem = Jsh.getFileSystem();
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
@@ -26,7 +27,6 @@ public class EchoTest {
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
-        fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
         echoApplication = new Echo(fileSystem);
     }
@@ -47,14 +47,14 @@ public class EchoTest {
     }     
 
     @Test
-    public void testOneArgument() throws IOException {
+    public void testOneArgument() throws JshException {
         applicationArguments.add("hello world");
         echoApplication.execute(applicationArguments, System.in, outputStream);
         assertEquals("hello world" + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testMultipleArguments() throws IOException {
+    public void testMultipleArguments() throws JshException {
         applicationArguments.add("first");
         applicationArguments.add("second");
         applicationArguments.add("third");
@@ -63,13 +63,13 @@ public class EchoTest {
     }
 
     @Test
-    public void testNoArguments() throws IOException {
+    public void testNoArguments() throws JshException {
         echoApplication.execute(applicationArguments, null, outputStream);
         assertEquals("", outputStream.toString());
     }
 
     @Test
-    public void testMultipleArgumentsFromGlobbing() throws IOException {
+    public void testMultipleArgumentsFromGlobbing() throws JshException {
         fileSystem.setWorkingDirectory(System.getProperty("file.separator") + "tmp" + System.getProperty("file.separator") + "Other");
         System.out.println(fileSystem.getWorkingDirectoryPath());
         applicationArguments.add("*");

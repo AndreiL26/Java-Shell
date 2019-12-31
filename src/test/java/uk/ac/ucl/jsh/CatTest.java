@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Cat;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -52,34 +53,34 @@ public class CatTest {
 
 
     @Test 
-    public void testMissingInput() throws IOException {
+    public void testMissingInput() {
         try {
             catApplication.execute(applicationArguments, null, outputStream);
             fail("cat did not throw a missing input exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("cat: missing input", e.getMessage());
         }
     }
 
     @Test 
-    public void testInvalidPath() throws IOException {
+    public void testInvalidPath() {
         try {
             applicationArguments.add("/InvalidPath");
             catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw an invalid path exception");
-        } catch(RuntimeException e) {
+        } catch(JshException e) {
            String expectedMessage = "cat: file does not exist";
            assertEquals(expectedMessage, e.getMessage());
          }
     }
 
     @Test
-    public void testDirectoryPath() throws IOException {
+    public void testDirectoryPath() {
         try {
             applicationArguments.add("Documents");
             catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw a directory path exception");
-        } catch(RuntimeException e) {
+        } catch(JshException e) {
             String expectedMessage = "cat: " + "Documents" + " is a directory";
             assertEquals(expectedMessage, e.getMessage());
         }
@@ -87,7 +88,7 @@ public class CatTest {
 
     
     @Test
-    public void testReadingFromInputStream () throws IOException {
+    public void testReadingFromInputStream () throws IOException, JshException {
         ByteArrayOutputStream aux = new ByteArrayOutputStream();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
         String expectedOutput = "Hello world" + lineSeparator + "I am here!" + lineSeparator;
@@ -101,7 +102,7 @@ public class CatTest {
 
 
     @Test
-    public void testFileAbsolutePath() throws IOException {
+    public void testFileAbsolutePath() throws JshException {
         applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Ware");
         catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();
@@ -112,7 +113,7 @@ public class CatTest {
     }  
     
     @Test
-    public void testFileRelativePath() throws IOException {
+    public void testFileRelativePath() throws JshException {
         applicationArguments.add("Documents" + fileSeparator + "Ware");
         catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();
@@ -123,7 +124,7 @@ public class CatTest {
     }
 
     @Test
-    public void testMultipleFiles() throws IOException {
+    public void testMultipleFiles() throws JshException {
         applicationArguments.add("Documents" + fileSeparator + "Ware");
         applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Soft");
         catApplication.execute(applicationArguments, System.in, outputStream);
@@ -138,7 +139,7 @@ public class CatTest {
     }
 
     @Test
-    public void testMultipleFilesFromTwoGlobArguments() throws IOException {
+    public void testMultipleFilesFromTwoGlobArguments() throws JshException {
         applicationArguments.add("Docu*s" + fileSeparator + "Wa*e");
         applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "S*t");
         catApplication.execute(applicationArguments, System.in, outputStream);
@@ -153,7 +154,7 @@ public class CatTest {
     }
 
     @Test
-    public void testMultipleFilesFromGlobArgument() throws IOException {
+    public void testMultipleFilesFromGlobArgument() throws JshException {
         applicationArguments.add("Other" + fileSeparator + "Ot*");
         catApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = new String();

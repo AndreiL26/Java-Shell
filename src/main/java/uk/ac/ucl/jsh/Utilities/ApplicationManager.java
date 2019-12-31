@@ -3,7 +3,6 @@ package uk.ac.ucl.jsh.Utilities;
 import uk.ac.ucl.jsh.Applications.*;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -21,21 +20,30 @@ public class ApplicationManager {
         return fileSystem;
     }
 
-    public void executeApplication(ArrayList<String> tokens, InputStream inputStream, OutputStream outputStream) {
+    public void executeApplication(ArrayList<String> tokens, InputStream inputStream, OutputStream outputStream) throws JshException {
         String applicationName = tokens.get(0);
+        boolean unsafeVersion = false;
         ArrayList<String> applicationArguments = new ArrayList<String>(tokens.subList(1, tokens.size()));
-        try {
-            if(applicationMap.containsKey(applicationName)) {
-                Application currentApplication = applicationMap.get(applicationName);
-                currentApplication.execute(applicationArguments, inputStream, outputStream);
-            } else {
-                throw new RuntimeException(applicationName + ": unknown application");
+        
+        if(applicationName.startsWith("_")) {
+            applicationName = applicationName.subSequence(1, applicationName.length()).toString();
+            unsafeVersion = true;
+        }
+        if(applicationMap.containsKey(applicationName)) {
+            Application currentApplication = applicationMap.get(applicationName);
+            if(unsafeVersion) {
+                UnsafeApplicationDecorator unsafeApplication = new UnsafeApplicationDecorator(currentApplication);
+                unsafeApplication.execute(applicationArguments, inputStream, outputStream);
             }
-        }catch (IOException e) {
-            throw new RuntimeException(applicationName + ": can't execute!");
+            else {
+                currentApplication.execute(applicationArguments, inputStream, outputStream);
+            }
+        } 
+        else {
+            throw new RuntimeException(applicationName + ": unknown application");
         }
     }
-
+    
     private  void createApplications() {
         applicationMap.put("pwd",  new Pwd(fileSystem));
         applicationMap.put("cd",   new Cd(fileSystem));
@@ -47,5 +55,6 @@ public class ApplicationManager {
         applicationMap.put("grep", new Grep(fileSystem));
         applicationMap.put("sed",  new Sed(fileSystem));
         applicationMap.put("find", new Find(fileSystem));
+        applicationMap.put("history", new History(fileSystem));
     }
 }

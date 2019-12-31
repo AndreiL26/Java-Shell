@@ -1,6 +1,8 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
+
 import java.nio.charset.StandardCharsets;
 import java.io.File;
 import java.nio.file.Files;
@@ -14,12 +16,14 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class Head extends Application{
+public class Head implements Application{
+    private FileSystem fileSystem;
+
     public Head(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
-    private void readAndWrite(BufferedReader reader, OutputStreamWriter writer, int headLines) {
+    private void readAndWrite(BufferedReader reader, OutputStreamWriter writer, int headLines) throws JshException{
         int count = 0;
         try {
             String line = null;
@@ -30,14 +34,29 @@ public class Head extends Application{
             }
         }
         catch (IOException e) {
-            throw new RuntimeException("head: cannot read input");
+            throw new JshException("head: cannot read input");
+        }
+    }
+
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
+        if ((applicationArguments.isEmpty()) && inputStream == null) {
+            throw new JshException("head: missing input");
+        }
+        if (applicationArguments.size() > 3) {
+            throw new JshException("head: too many arguments");
+        } 
+        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
+            throw new JshException("head: wrong argument " + applicationArguments.get(0));
+        }
+        if (applicationArguments.size() == 2 && inputStream == null) {
+            throw new JshException("head: missing input");
         }
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        applicationArguments = this.globArguments(applicationArguments, -1);
-        checkArguments(applicationArguments, inputStream, outputStream);
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException{
+        applicationArguments = Application.globArguments(applicationArguments, -1);
+        checkArguments(applicationArguments, inputStream);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         File headFile;
         Path filePath;
@@ -50,7 +69,7 @@ public class Head extends Application{
                     /// What to do in tbis case, throw an error or let it execute, not printing anything?
                 } 
             } catch (Exception e) {
-                throw new RuntimeException("head: wrong argument " + applicationArguments.get(1));
+                throw new JshException("head: wrong argument " + applicationArguments.get(1));
             }
         }    
         
@@ -68,31 +87,15 @@ public class Head extends Application{
                     readAndWrite(reader, writer, headLines);
                 }
                 catch (IOException e) {
-                    throw new RuntimeException("head: cannot open file");
+                    throw new JshException("head: cannot open file");
                 }
             }
             else {
-                throw new RuntimeException("head: " + headArg + " does not exist");
+                throw new JshException("head: " + headArg + " does not exist");
             }
         } else {
             readAndWrite(new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)), writer, headLines);
         }
     }
 
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if ((applicationArguments.isEmpty()) && inputStream == null) {
-            throw new RuntimeException("head: missing input");
-        }
-        if (applicationArguments.size() > 3) {
-            throw new RuntimeException("head: too many arguments");
-        } 
-        if (applicationArguments.size() > 1 && !applicationArguments.get(0).equals("-n")) {
-            throw new RuntimeException("head: wrong argument " + applicationArguments.get(0));
-        }
-        if (applicationArguments.size() == 2 && inputStream == null) {
-            throw new RuntimeException("head: missing input");
-        }
-       
-       
-    }
 }

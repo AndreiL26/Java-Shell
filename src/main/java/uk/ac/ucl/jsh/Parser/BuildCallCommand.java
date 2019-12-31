@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.ac.ucl.jsh.Jsh;
+import uk.ac.ucl.jsh.Utilities.JshException;
 import uk.ac.ucl.jsh.antlr.CallParser.*;
 
 public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
@@ -78,14 +79,18 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 	
     @Override 
     public ArrayList<String> visitBackquoted(CallParserParser.BackquotedContext ctx) { 
-        String cmdSubstitutionStirng = ctx.content.getText();
-        if (cmdSubstitutionStirng == "") {
+        String cmdSubstitutionString = ctx.content.getText();
+        if (cmdSubstitutionString == "") {
             return new ArrayList<>(List.of(""));
         }
         
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ArrayList<String> tokens = Parser.parseCallCommand(cmdSubstitutionStirng);
-        Jsh.applicationManager.executeApplication(tokens, null, outputStream);
+        ArrayList<String> tokens = Parser.parseCallCommand(cmdSubstitutionString);
+        try {
+            Jsh.applicationManager.executeApplication(tokens, null, outputStream);
+        } catch (JshException e) {
+            throw new RuntimeException(e.getMessage());
+        }
         return new ArrayList<>(List.of(outputStream.toString().trim()));
     }
 }

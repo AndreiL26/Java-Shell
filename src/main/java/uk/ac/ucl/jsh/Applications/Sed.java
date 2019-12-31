@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
+
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,12 +16,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
-public class Sed extends Application {
+public class Sed implements Application {
+    private FileSystem fileSystem;
     private String regex;
     private String replacement;
 
     public Sed(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     private boolean isValid(String argument) { 
@@ -78,10 +81,29 @@ public class Sed extends Application {
         return true;
     }
 
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
+        int numberOfArguments = applicationArguments.size();
+        if (numberOfArguments <= 0) {
+            throw new JshException("sed: missing arguments");
+        }   
+
+        if (numberOfArguments > 2){
+            throw new JshException("sed: too many arguments");
+        }
+
+        if (numberOfArguments == 1 && inputStream == null) {
+            throw new JshException("sed: missing input");
+        }
+
+        if(isValid(applicationArguments.get(0)) == false) {
+            throw new JshException("sed: invalid first argument");
+        } 
+    }
+
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
-        applicationArguments = this.globArguments(applicationArguments, 0);
-        checkArguments(applicationArguments, inputStream, outputStream);
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
+        applicationArguments = Application.globArguments(applicationArguments, 0);
+        checkArguments(applicationArguments, inputStream);
         boolean replaceAll = false;
         File sedFile = null;
         BufferedReader reader;
@@ -101,16 +123,20 @@ public class Sed extends Application {
             }
 
             if(!sedFile.exists()) {
-                throw new RuntimeException("sed: cannot open " + filePath);
+                throw new JshException("sed: cannot open " + filePath);
             }
         }
-    
-        if(sedFile != null)  {
-            Path filePath = Paths.get(sedFile.getAbsolutePath());
-            reader = Files.newBufferedReader(filePath,StandardCharsets.UTF_8);
-        }
-        else {
-            reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+        
+        try {
+            if(sedFile != null)  {
+                Path filePath = Paths.get(sedFile.getAbsolutePath());
+                reader = Files.newBufferedReader(filePath,StandardCharsets.UTF_8);
+            }
+            else {
+                reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            }
+        } catch (IOException e) {
+            throw new JshException("sed: cannot read input");
         }
         try {
             String line = null;
@@ -124,27 +150,8 @@ public class Sed extends Application {
                 writer.flush();
             }
         } catch (IOException e) {
-            throw new RuntimeException("sed: cannot read input");
+            throw new JshException("sed: cannot read input");
         }
-    }
-
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        int numberOfArguments = applicationArguments.size();
-        if (numberOfArguments <= 0) {
-            throw new RuntimeException("sed: missing arguments");
-        }   
-
-        if (numberOfArguments > 2){
-            throw new RuntimeException("sed: too many arguments");
-        }
-
-        if (numberOfArguments == 1 && inputStream == null) {
-            throw new RuntimeException("sed: missing input");
-        }
-
-        if(isValid(applicationArguments.get(0)) == false) {
-            throw new RuntimeException("sed: invalid first argument");
-        } 
     }
 
 }

@@ -9,7 +9,7 @@ public class JshTest {
  
     @Test
     public void testJsh() throws Exception {
-       Jsh.eval("echo ``", System.out);
+       //Jsh.eval("cat < tst.txt", System.out);
 
     }
 }

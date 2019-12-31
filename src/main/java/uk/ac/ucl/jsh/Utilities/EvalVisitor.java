@@ -4,6 +4,9 @@ import uk.ac.ucl.jsh.Parser.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -18,7 +21,11 @@ public class EvalVisitor implements TreeVisitor<Void> {
 
     public Void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
         ArrayList<String> tokens = Parser.parseCallCommand(callNode.getCmdString());
-        applicationManager.executeApplication(tokens, inputStream, outputStream);
+        try {
+            applicationManager.executeApplication(tokens, inputStream, outputStream);
+        } catch (JshException e) {
+            throw new RuntimeException("");
+        }
         
         return null;
     }
@@ -36,6 +43,29 @@ public class EvalVisitor implements TreeVisitor<Void> {
         seqNode.getLeft().accept(this, inputStream, outputStream);
         if(seqNode.getRight() != null) {
             seqNode.getRight().accept(this, inputStream,  outputStream);
+        }
+
+        return null;
+    }
+
+    public Void visit(InRedirectionNode inRedirectionNode, InputStream inputStream, OutputStream outputStream) {
+        try {
+            inputStream = new FileInputStream(inRedirectionNode.getFile());
+            inRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
+        } catch (FileNotFoundException fileNotFoundException) {
+            System.out.println(fileNotFoundException.toString());
+            throw new RuntimeException("File not found: " + inRedirectionNode.getFile());
+        }
+
+        return null;
+    }
+
+    public Void visit(OutRedirectionNode outRedirectionNode, InputStream inputStream, OutputStream outputStream) {
+        try {
+            outputStream = new FileOutputStream(outRedirectionNode.getFile());
+            outRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
+        } catch (FileNotFoundException fileNotFoundException) {
+            throw new RuntimeException("Could not write to file: " + outRedirectionNode.getFile());
         }
 
         return null;
