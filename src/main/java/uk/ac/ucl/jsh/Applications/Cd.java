@@ -32,21 +32,17 @@ public class Cd implements Application {
         File dir;
         String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
 
-        if(dirString.startsWith(System.getProperty("file.separator"))) {
-            dir = new File(dirString);
-        }
-        else {
-            dir = new File(currentDirectoryPath, dirString);
-
-        } 
+        dir = FileSystem.getInstance().getFile(dirString);
         if (!dir.isDirectory()) {
             throw new JshException("cd: " + dirString + " is not an existing directory");
         }
+        
         try {
             currentDirectoryPath = dir.getCanonicalPath();
         } catch (IOException e) {
             throw new JshException("cd: could not get path");
         }
+
         fileSystem.setWorkingDirectory(currentDirectoryPath);
     }
 

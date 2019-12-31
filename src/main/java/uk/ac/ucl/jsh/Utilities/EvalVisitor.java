@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Utilities;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Parser.*;
 
 import java.io.ByteArrayInputStream;
@@ -50,7 +51,7 @@ public class EvalVisitor implements TreeVisitor<Void> {
 
     public Void visit(InRedirectionNode inRedirectionNode, InputStream inputStream, OutputStream outputStream) {
         try {
-            inputStream = new FileInputStream(inRedirectionNode.getFile());
+            inputStream = new FileInputStream(FileSystem.getInstance().getFile(inRedirectionNode.getFile()));
             inRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
         } catch (FileNotFoundException fileNotFoundException) {
             System.out.println(fileNotFoundException.toString());
@@ -62,7 +63,7 @@ public class EvalVisitor implements TreeVisitor<Void> {
 
     public Void visit(OutRedirectionNode outRedirectionNode, InputStream inputStream, OutputStream outputStream) {
         try {
-            outputStream = new FileOutputStream(outRedirectionNode.getFile());
+            outputStream = new FileOutputStream(FileSystem.getInstance().getFile(outRedirectionNode.getFile()));
             outRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
         } catch (FileNotFoundException fileNotFoundException) {
             throw new RuntimeException("Could not write to file: " + outRedirectionNode.getFile());

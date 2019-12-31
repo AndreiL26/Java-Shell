@@ -22,11 +22,13 @@ public class HistoryTest {
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
+
+    private String initialWorkingDirectoryPath;
     
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
-        fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
+        fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
         historyApplication = new History(fileSystem);
     }
@@ -34,9 +36,10 @@ public class HistoryTest {
     @Before
     // Create the test hierarchy
     public void beforeTest() throws IOException {
-       fileSystem.createTestFileHierarchy();
-       fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
-       Jsh.clearHistory();
+        initialWorkingDirectoryPath = fileSystem.getWorkingDirectoryPath();
+        fileSystem.createTestFileHierarchy();
+        fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
+        Jsh.clearHistory();
     }
 
     @After
@@ -45,6 +48,7 @@ public class HistoryTest {
         fileSystem.deleteTestFileHierarchy();
         applicationArguments.clear();
         outputStream.reset();
+        fileSystem.setWorkingDirectory(initialWorkingDirectoryPath);
     }  
     
     @Test

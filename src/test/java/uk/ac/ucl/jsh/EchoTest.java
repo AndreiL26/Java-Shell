@@ -5,6 +5,7 @@ import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -20,13 +21,18 @@ public class EchoTest {
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
+
+    private static String initialWorkingDirectoryPath;
   
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
-        fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
         echoApplication = new Echo(fileSystem);
+
+        fileSystem = FileSystem.getInstance();
+        initialWorkingDirectoryPath = fileSystem.getWorkingDirectoryPath();
+        fileSystem.setWorkingDirectory("java.io.tmpdir");
     }
 
     @After
@@ -35,6 +41,11 @@ public class EchoTest {
         applicationArguments.clear();
         outputStream.reset();
     }   
+
+    @AfterClass
+    public static void afterClass() {
+        fileSystem.setWorkingDirectory(initialWorkingDirectoryPath);
+    }
 
     @Test
     public void testOneArgument() throws JshException {

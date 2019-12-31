@@ -74,12 +74,8 @@ public class Head implements Application{
         
         if(applicationArguments.size() == 1 || applicationArguments.size() == 3) {
             headArg = applicationArguments.get(applicationArguments.size() - 1); 
-            if (headArg.startsWith(System.getProperty("file.separator"))) {
-                headFile = new File(headArg);
-            }
-            else {
-                headFile = new File(fileSystem.getWorkingDirectoryPath() + File.separator + headArg);
-            }
+            headFile = FileSystem.getInstance().getFile(headArg);
+            
             if(headFile.exists()) {
                 filePath = Paths.get(headFile.getAbsolutePath());
                 try(BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {

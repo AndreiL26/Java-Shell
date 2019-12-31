@@ -32,12 +32,7 @@ public class Ls implements Application {
             currDir = new File(fileSystem.getWorkingDirectoryPath());
         } 
         else {
-            if(applicationArguments.get(0).startsWith(System.getProperty("file.separator"))) {
-                currDir = new File(applicationArguments.get(0));
-            }
-            else {
-                currDir = new File(fileSystem.getWorkingDirectoryPath(), applicationArguments.get(0));
-            }
+            currDir = FileSystem.getInstance().getFile(applicationArguments.get(0));
         }
         try{
             File[] listOfFiles = currDir.listFiles();

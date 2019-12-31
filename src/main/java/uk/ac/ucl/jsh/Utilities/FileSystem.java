@@ -8,9 +8,13 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 
-public class FileSystem {
+public final class FileSystem {
+    private static final FileSystem INSTANCE = new FileSystem(System.getProperty("user.dir"));
     private String workingDirectoryPath;
 
+    public static FileSystem getInstance() {
+        return INSTANCE;
+    }
 
     private void deleteDirectory(File crtDirectory) {
         File[] files = crtDirectory.listFiles();
@@ -40,7 +44,7 @@ public class FileSystem {
         return resultString;
     }
 
-    public FileSystem(String workingDirectoryPath) {
+    private FileSystem(String workingDirectoryPath) {
         this.setWorkingDirectory(workingDirectoryPath);
 
     }
@@ -52,6 +56,18 @@ public class FileSystem {
     public void setWorkingDirectory(String workingDirectoryPath) {
         // The workingDirectoryPath must be an absolute Path, change the function to reflect this fact!
         this.workingDirectoryPath = workingDirectoryPath;
+    }
+
+    public File getFile(String filePath) {
+        return new File(getFilePath(filePath));
+    }
+
+    public String getFilePath(String filePath) {
+        if(filePath.startsWith(System.getProperty("file.separator"))) {
+            return filePath;
+        }
+        
+        return workingDirectoryPath + System.getProperty("file.separator") + filePath;
     }
 
     public void createTestFileHierarchy() throws IOException {

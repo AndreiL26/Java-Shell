@@ -49,13 +49,8 @@ public class Find implements Application {
             }
         }
         if(applicationArguments.size() == 3) {
-            File rootSearchDirectory;
-            if(applicationArguments.get(0).startsWith(fileSeparator)) {
-                rootSearchDirectory = new File(applicationArguments.get(0));
-            }
-            else {
-                rootSearchDirectory = new File(fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0));
-            }
+            File rootSearchDirectory = FileSystem.getInstance().getFile(applicationArguments.get(0));
+        
             if(!rootSearchDirectory.isDirectory()) {
                 throw new JshException("find: could not open " + applicationArguments.get(0));
             }
@@ -79,12 +74,7 @@ public class Find implements Application {
             searchRootDirectory = fileSystem.getWorkingDirectoryPath();
         }
         else {
-            if(applicationArguments.get(0).startsWith(fileSeparator)) {
-                searchRootDirectory = applicationArguments.get(0);
-            }
-            else {
-                searchRootDirectory = fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0);
-            }
+            searchRootDirectory = FileSystem.getInstance().getFilePath(applicationArguments.get(0));
             resolvedPath = applicationArguments.get(0);
         }
         matcher = FileSystems.getDefault().getPathMatcher("glob:" + applicationArguments.get(applicationArguments.size() - 1));

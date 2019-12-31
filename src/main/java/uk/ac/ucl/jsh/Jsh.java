@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jsh {
-    private static final FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));;
-    public static ApplicationManager applicationManager = new ApplicationManager(fileSystem);   // Might want to make this final as well if Outputstream will always remain System.out
+    public static ApplicationManager applicationManager = new ApplicationManager(FileSystem.getInstance());   // Might want to make this final as well if Outputstream will always remain System.out
     
     private static ArrayList<String> history = new ArrayList<>();
 
@@ -47,7 +46,7 @@ public class Jsh {
             Scanner input = new Scanner(System.in);
             try {
                 while (true) {
-                    String prompt = fileSystem.getWorkingDirectoryPath() + "> ";
+                    String prompt = FileSystem.getInstance().getWorkingDirectoryPath() + "> ";
                     System.out.print(prompt);
                     try {
                         String cmdline = input.nextLine();
