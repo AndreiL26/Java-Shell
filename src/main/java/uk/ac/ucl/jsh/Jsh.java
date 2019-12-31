@@ -4,8 +4,6 @@ import uk.ac.ucl.jsh.Parser.Node;
 import uk.ac.ucl.jsh.Parser.Parser;
 import uk.ac.ucl.jsh.Utilities.*;
 
-
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -24,9 +22,9 @@ public class Jsh {
         history.clear();
     }
 
-    public static void eval(String cmdline, OutputStream output) throws IOException {
+    public static void eval(String cmdline, OutputStream outputStream) {
         Node cmdTree = Parser.parserCmdLine(cmdline);
-        cmdTree.accept(new EvalVisitor(applicationManager), null, System.out);
+        cmdTree.accept(new EvalVisitor(applicationManager), null, outputStream);
     }
 
     public static void main(String[] args) throws Exception {

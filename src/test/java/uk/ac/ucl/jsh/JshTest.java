@@ -9,7 +9,7 @@ public class JshTest {
  
     @Test
     public void testJsh() throws Exception {
-       Jsh.eval("eCHo mama", System.out);
+       Jsh.eval("eCHo `echo mama | cat`", System.out);
 
     }
 }
