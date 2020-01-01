@@ -87,7 +87,7 @@ public class FileSystem {
          Files.write(wareFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
          Files.write(testFilePath, generateLongFileText(20).getBytes(), StandardOpenOption.APPEND);
          Files.write(testDocumentFilePath, "hello\n".getBytes(), StandardOpenOption.APPEND);
-         byte[] byteArray = hexStringToByteArray("CAFEBABE0000003700FD07000201001B");
+         byte[] byteArray = new byte[] { (byte)0xCA,(byte)0xFE,(byte)0xBA,(byte)0xBE,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x37,(byte)0x00,(byte)0xFD,(byte)0x07,(byte)0x00,(byte)0x02,(byte)0x01,(byte)0x00,(byte)0x1B};
          Files.write(cannotOpenFilePath, byteArray, StandardOpenOption.APPEND);
     }
 
@@ -101,13 +101,5 @@ public class FileSystem {
         Files.deleteIfExists(Paths.get(tmpPath + fileSeparator + "Soft"));
     }
 
-    public static byte[] hexStringToByteArray(String s) {
-        int len = s.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-                                 + Character.digit(s.charAt(i+1), 16));
-        }
-        return data;
-    }
+
 }
