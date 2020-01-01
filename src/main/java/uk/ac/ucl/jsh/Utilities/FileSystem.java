@@ -85,10 +85,13 @@ public class FileSystem {
          // Write to the created files
          Files.write(softFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
          Files.write(wareFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
+         Files.write(oth1FilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
+         Files.write(oth2FilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
          Files.write(testFilePath, generateLongFileText(20).getBytes(), StandardOpenOption.APPEND);
          Files.write(testDocumentFilePath, "hello\n".getBytes(), StandardOpenOption.APPEND);
          byte[] byteArray = new byte[] { (byte)0xCA,(byte)0xFE,(byte)0xBA,(byte)0xBE,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x37,(byte)0x00,(byte)0xFD,(byte)0x07,(byte)0x00,(byte)0x02,(byte)0x01,(byte)0x00,(byte)0x1B};
          Files.write(cannotOpenFilePath, byteArray, StandardOpenOption.APPEND);
+        
     }
 
     public void deleteTestFileHierarchy() throws IOException {

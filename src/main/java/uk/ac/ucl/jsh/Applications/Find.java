@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,14 +13,15 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class Find extends Application {
+public class Find implements Application {
+    private FileSystem fileSystem;
     private String fileSeparator = System.getProperty("file.separator");
     private String lineSeparator = System.getProperty("line.separator");
     private PathMatcher matcher;
     private OutputStreamWriter writer;
 
     public Find(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
     private void find(String currentDirectoryPath, String currentResolvedPath) throws IOException {
@@ -36,12 +38,41 @@ public class Find extends Application {
             }
         }
     }
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
+        if(applicationArguments.size() < 2) {
+            throw new JshException("find: missing arguments");
+        }
+        if(applicationArguments.size() == 2) {
+            if(applicationArguments.get(0).compareTo("-name") != 0) {
+                throw new JshException("find: wrong argument");
+            }
+        }
+        if(applicationArguments.size() == 3) {
+            File rootSearchDirectory;
+            if(applicationArguments.get(0).startsWith(fileSeparator)) {
+                rootSearchDirectory = new File(applicationArguments.get(0));
+            }
+            else {
+                rootSearchDirectory = new File(fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0));
+            }
+            if(!rootSearchDirectory.isDirectory()) {
+                throw new JshException("find: could not open " + applicationArguments.get(0));
+            }
+            if(applicationArguments.get(1).compareTo("-name") != 0) {
+                throw new JshException("find: invalid argument " + applicationArguments.get(1));
+            }
+        }
+        if(applicationArguments.size() > 3) {
+            throw new JshException("find: too many arguments");
+        }
+    }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         String searchRootDirectory;
         String resolvedPath = ".";
-        checkArguments(applicationArguments, inputStream, outputStream);
+        applicationArguments = Application.globArguments(applicationArguments, applicationArguments.size() - 1);
+        checkArguments(applicationArguments, inputStream);
         writer = new OutputStreamWriter(outputStream);
 
         if(applicationArguments.size() == 2) {
@@ -57,35 +88,10 @@ public class Find extends Application {
             resolvedPath = applicationArguments.get(0);
         }
         matcher = FileSystems.getDefault().getPathMatcher("glob:" + applicationArguments.get(applicationArguments.size() - 1));
-        find(searchRootDirectory, resolvedPath);
-    }
-
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if(applicationArguments.size() < 2) {
-            throw new RuntimeException("find: missing arguments");
-        }
-        if(applicationArguments.size() == 2) {
-            if(applicationArguments.get(0).compareTo("-name") != 0) {
-                throw new RuntimeException("find: wrong argument");
-            }
-        }
-        if(applicationArguments.size() == 3) {
-            File rootSearchDirectory;
-            if(applicationArguments.get(0).startsWith(fileSeparator)) {
-                rootSearchDirectory = new File(applicationArguments.get(0));
-            }
-            else {
-                rootSearchDirectory = new File(fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0));
-            }
-            if(!rootSearchDirectory.isDirectory()) {
-                throw new RuntimeException("find: could not open " + applicationArguments.get(0));
-            }
-            if(applicationArguments.get(1).compareTo("-name") != 0) {
-                throw new RuntimeException("find: invalid argument " + applicationArguments.get(1));
-            }
-        }
-        if(applicationArguments.size() > 3) {
-            throw new RuntimeException("find: too many arguments");
+        try {
+            find(searchRootDirectory, resolvedPath);
+        } catch (IOException e) {
+            throw new JshException("find: could not write output");
         }
     }
 }

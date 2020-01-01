@@ -1,6 +1,8 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
@@ -16,13 +18,14 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class Grep extends Application {
+public class Grep implements Application {
+    private FileSystem fileSystem;
     
     public Grep(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
-    private void readAndMatch(BufferedReader reader, OutputStreamWriter writer, Pattern pattern, String fileName) {
+    private void readAndMatch(BufferedReader reader, OutputStreamWriter writer, Pattern pattern, String fileName) throws JshException {
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
@@ -36,13 +39,23 @@ public class Grep extends Application {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("grep: cannot read input");
+            throw new JshException("grep: cannot read input");
+        }
+    }
+
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
+        if (applicationArguments.isEmpty()) {
+            throw new JshException("grep: missing arguments");
+        }
+        if (applicationArguments.size() == 1 && inputStream == null) {
+            throw new JshException("grep: missing input");
         }
     }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException {
-        checkArguments(applicationArguments, inputStream, outputStream);
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
+        applicationArguments = Application.globArguments(applicationArguments, 0);
+        checkArguments(applicationArguments, inputStream);
         Path filePath;
         Pattern grepPattern;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
@@ -52,7 +65,7 @@ public class Grep extends Application {
         try {
             grepPattern = Pattern.compile(applicationArguments.get(0));
         } catch (PatternSyntaxException e) {
-            throw new RuntimeException("grep: " + applicationArguments.get(0) + "is an invalid pattern");
+            throw new JshException("grep: " + applicationArguments.get(0) + "is an invalid pattern");
         } 
 
         if (applicationArguments.size() > 1) {
@@ -65,7 +78,7 @@ public class Grep extends Application {
                     filePath = Paths.get(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + currentFileName);
                 }
                 if (Files.isDirectory(filePath) || !Files.isReadable(filePath)) {
-                    throw new RuntimeException("grep: cannot open " + currentFileName);
+                    throw new JshException("grep: cannot open " + currentFileName);
                 }
                 filePathArray[i] = filePath;
             }
@@ -74,7 +87,7 @@ public class Grep extends Application {
                 try (BufferedReader reader = Files.newBufferedReader(filePathArray[j], StandardCharsets.UTF_8)) {
                     readAndMatch(reader, writer, grepPattern, applicationArguments.get(j+1));
                 } catch (IOException e) {
-                    throw new RuntimeException("grep: cannot open " + applicationArguments.get(j + 1));
+                    throw new JshException("grep: cannot open " + applicationArguments.get(j + 1));
                 }
             }
         }
@@ -83,12 +96,4 @@ public class Grep extends Application {
         }
     }
 
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if (applicationArguments.isEmpty()) {
-            throw new RuntimeException("grep: missing arguments");
-        }
-        if (applicationArguments.size() == 1 && inputStream == null) {
-            throw new RuntimeException("grep: missing input");
-        }
-    }
 }

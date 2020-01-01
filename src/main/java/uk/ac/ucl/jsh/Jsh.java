@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jsh {
-    private static final FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));;
-    public static ApplicationManager applicationManager = new ApplicationManager(fileSystem);   // Might want to make this final as well if Outputstream will always remain System.out
+    private static  FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));
+    public static final ApplicationManager applicationManager = new ApplicationManager(fileSystem);  
     
     private static ArrayList<String> history = new ArrayList<>();
 
@@ -29,6 +29,10 @@ public class Jsh {
         cmdTree.accept(new EvalVisitor(applicationManager), null, System.out);
     }
 
+    public static FileSystem getFileSystem() {
+        return Jsh.fileSystem;
+    }
+
     public static void main(String[] args) throws Exception {
         if (args.length > 0) {
             if (args.length != 2) {
@@ -41,7 +45,7 @@ public class Jsh {
             try {
                 eval(args[1], System.out);
             } catch (Exception e) {
-                System.out.println("jsh: " + e.getMessage());
+                System.out.println(e.getMessage());
             }
             //eval(args[1], System.out);
         } else {
@@ -56,7 +60,7 @@ public class Jsh {
                         history.add(cmdline);
                         eval(cmdline, System.out);
                     } catch (Exception e) {
-                        System.out.println("jsh: " + e.getMessage());
+                        System.out.println(e.getMessage());
                     }
                 }
             } finally {

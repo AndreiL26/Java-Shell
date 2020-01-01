@@ -4,7 +4,6 @@ import uk.ac.ucl.jsh.Parser.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,7 +21,11 @@ public class EvalVisitor implements TreeVisitor<Void> {
 
     public Void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
         ArrayList<String> tokens = Parser.parseCallCommand(callNode.getCmdString());
-        applicationManager.executeApplication(tokens, inputStream, outputStream);
+        try {
+            applicationManager.executeApplication(tokens, inputStream, outputStream);
+        } catch (JshException e) {
+            throw new RuntimeException("");
+        }
         
         return null;
     }

@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import org.junit.Test;
 
 import uk.ac.ucl.jsh.Applications.History;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 public class HistoryTest {
     private static History historyApplication;
@@ -46,7 +48,7 @@ public class HistoryTest {
     }  
     
     @Test
-    public void zeroArgumentsHistoryTest() throws IOException {
+    public void zeroArgumentsHistoryTest() throws JshException {
         ArrayList<String> history = Jsh.getHistory();
         history.add("abc");
         history.add("xyz");
@@ -57,7 +59,7 @@ public class HistoryTest {
     }
 
     @Test
-    public void oneArgumentHistoryTest() throws IOException {
+    public void oneArgumentHistoryTest() throws JshException {
         applicationArguments.add("2");
 
         ArrayList<String> history = Jsh.getHistory();
@@ -71,7 +73,7 @@ public class HistoryTest {
     }
 
     @Test
-    public void oneArgumentTooBigHistoryTest() throws IOException {
+    public void oneArgumentTooBigHistoryTest() throws JshException {
         applicationArguments.add("10");
 
         ArrayList<String> history = Jsh.getHistory();
@@ -85,7 +87,7 @@ public class HistoryTest {
     }
 
     @Test
-    public void zeroArgumentsCap500Test() throws IOException {
+    public void zeroArgumentsCap500Test() throws JshException {
         ArrayList<String> history = Jsh.getHistory();
         for (int index = 0; index < 200; ++index) {
             history.add("abc");
@@ -102,23 +104,24 @@ public class HistoryTest {
     }
 
     @Test
-    public void NegativeHistoryTest() throws IOException {
+    public void NegativeHistoryTest() {
         applicationArguments.add("-1");
         try {
             historyApplication.execute(applicationArguments, null, outputStream);
-        } catch (RuntimeException e) {
+            fail("history did not throw an invalid option exception");
+        } catch (JshException e) {
             assertEquals("history: invalid option", e.getMessage());
         }   
     }
 
     @Test
-    public void TooManyArgumentsHistoryTest() throws IOException {
+    public void TooManyArgumentsHistoryTest() {
         applicationArguments.add("abc");
         applicationArguments.add("def");
 
         try {
             historyApplication.execute(applicationArguments, null, outputStream);
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("history: too many arguments", e.getMessage());
         }   
     }

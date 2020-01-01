@@ -1,6 +1,8 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.io.File;
@@ -15,13 +17,14 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-public class Cat extends Application{
+public class Cat implements Application{
+    private FileSystem fileSystem;
     
     public Cat(FileSystem fileSystem) {
-        super(fileSystem);
+        this.fileSystem = fileSystem;
     }
 
-    private void readAndWrite(BufferedReader reader, OutputStreamWriter writer) {
+    private void readAndWrite(BufferedReader reader, OutputStreamWriter writer) throws JshException {
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
@@ -30,14 +33,21 @@ public class Cat extends Application{
                 writer.flush();
             }
         } catch (IOException e) {
-            throw new RuntimeException("cat: cannot read input");
+            throw new JshException("cat: cannot read input");
         }
 
     }
+    
+    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
+        if(applicationArguments.isEmpty() && inputStream == null) {
+            throw new JshException("cat: missing input");
+        }
+    }
 
     @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws IOException{
-        checkArguments(applicationArguments, inputStream, outputStream);
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
+        applicationArguments = Application.globArguments(applicationArguments, -1);
+        checkArguments(applicationArguments, inputStream);
         String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         
@@ -62,25 +72,19 @@ public class Cat extends Application{
                             
                         } 
                         catch (IOException e) {
-                            throw new RuntimeException("cat: cannot open " + arg);
+                            throw new JshException("cat: cannot open " + arg);
                         }
                     } 
                     else {
-                        throw new RuntimeException("cat: " + arg + " is a directory");
+                        throw new JshException("cat: " + arg + " is a directory");
                     }
                 } 
                 else {
-                    throw new RuntimeException("cat: file does not exist");
+                    throw new JshException("cat: file does not exist");
                 }
             }
         }
         
-    }
-
-    public void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) {
-        if(applicationArguments.isEmpty() && inputStream == null) {
-            throw new RuntimeException("cat: missing input");
-        }
     }
    
 }

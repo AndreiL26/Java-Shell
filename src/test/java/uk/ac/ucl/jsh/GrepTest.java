@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Grep;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,12 +17,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 
 
 public class GrepTest {
     private static Grep grepApplication;
-    private static FileSystem fileSystem;
+    private static FileSystem fileSystem = Jsh.getFileSystem();
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
@@ -30,7 +33,6 @@ public class GrepTest {
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
-        fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
         outputStream = new ByteArrayOutputStream();
         grepApplication = new Grep(fileSystem);
     }
@@ -51,46 +53,46 @@ public class GrepTest {
     }   
     
     @Test
-    public void testInvalidNumberOfArgumentsMissingArguments() throws IOException {
+    public void testInvalidNumberOfArgumentsMissingArguments() {
         try {
             grepApplication.execute(applicationArguments, null, outputStream);
             fail("grep did not throw a missing arguments exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
            assertEquals("grep: missing arguments", e.getMessage());
         }
     }
 
     @Test
-    public void testMissingInput() throws IOException {
+    public void testMissingInput() {
         try {
             applicationArguments.add("pattern");
             grepApplication.execute(applicationArguments, null, outputStream);
             fail("grep did not throw a missing input exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("grep: missing input", e.getMessage());
         }
     }
 
     @Test
-    public void testInvalidArgumentInvalidPath() throws IOException {
+    public void testInvalidArgumentInvalidPath() {
         try {
             applicationArguments.add("pattern");
             applicationArguments.add("InvalidPath");
             grepApplication.execute(applicationArguments, null, outputStream);
             fail("grep did no throw a cannot open exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("grep: cannot open " + "InvalidPath", e.getMessage());
         }
     }
 
     @Test
-    public void testReadingFromDirectoryPath() throws IOException {
+    public void testReadingFromDirectoryPath() {
         try {
             applicationArguments.add("pattern");
             applicationArguments.add("Documents");
             grepApplication.execute(applicationArguments, null, outputStream);
             fail("grep did not throw a cannot open exception");
-        } catch (RuntimeException e) {
+        } catch (JshException e) {
             assertEquals("grep: cannot open " + "Documents", e.getMessage());
         }
     }
@@ -98,7 +100,7 @@ public class GrepTest {
 
 
     @Test
-    public void testReadFromEmptyFile() throws IOException {
+    public void testReadFromEmptyFile() throws JshException {
         applicationArguments.add(".*");
         applicationArguments.add("/tmp/Documents/Eng/Plan");
         grepApplication.execute(applicationArguments, null, outputStream);
@@ -106,7 +108,7 @@ public class GrepTest {
     }   
 
     @Test
-    public void testReadFromInputStream() throws IOException {
+    public void testReadFromInputStream() throws IOException, JshException {
         ByteArrayOutputStream aux = new ByteArrayOutputStream();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
         String inputString = "Hello world" + lineSeparator + "Hello there" + lineSeparator + "Bye" + lineSeparator + lineSeparator;
@@ -121,7 +123,7 @@ public class GrepTest {
     }
 
     @Test
-    public void testReadFromInputStreamWihComplexRegex() throws IOException {
+    public void testReadFromInputStreamWihComplexRegex() throws IOException, JshException {
         ByteArrayOutputStream aux = new ByteArrayOutputStream();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
         String inputString = "Hello world" + lineSeparator + "Hello there" + lineSeparator + "Bye" + lineSeparator + "Wow, Hello" + lineSeparator + lineSeparator;
@@ -136,7 +138,7 @@ public class GrepTest {
     }
 
     @Test
-    public void testReadFromFileAbsolutePath() throws IOException {
+    public void testReadFromFileAbsolutePath() throws JshException {
         applicationArguments.add("Lin.*");
         applicationArguments.add("/tmp/Documents/Eng/Test");
         grepApplication.execute(applicationArguments, null, outputStream);
@@ -149,7 +151,7 @@ public class GrepTest {
 
 
     @Test
-    public void testReadFromFileRelativePath() throws IOException {
+    public void testReadFromFileRelativePath() throws JshException {
         applicationArguments.add("test");
         applicationArguments.add("Soft");
         grepApplication.execute(applicationArguments, null, outputStream);
@@ -161,7 +163,7 @@ public class GrepTest {
 
 
     @Test
-    public void testReadFromMultipleFiles() throws IOException {
+    public void testReadFromMultipleFiles() throws JshException {
         applicationArguments.add("test");
         applicationArguments.add("/tmp/Soft");
         applicationArguments.add("Documents/Ware");
@@ -175,7 +177,7 @@ public class GrepTest {
     }
 
     @Test
-    public void readFromFileWithInputStreamNotNull() throws IOException {
+    public void readFromFileWithInputStreamNotNull() throws IOException, JshException {
         applicationArguments.add("test");
         applicationArguments.add("/tmp/Soft");
         ByteArrayOutputStream aux = new ByteArrayOutputStream();
@@ -192,4 +194,49 @@ public class GrepTest {
         assertEquals(expectedOutput, outputStream.toString());
     }
 
+
+    @Test
+    public void testReadFromGlobbedPath() throws JshException{
+        applicationArguments.add("Line");
+        applicationArguments.add("/tmp/Docu*s/Eng/Test");
+        grepApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        for(int i = 0; i < 20; ++ i) {
+            expectedOutput += "/tmp/Documents/Eng/Test: " + "Line number: " + Integer.toString(i) + lineSeparator;
+        }
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    public void testWithGlobbedArguments() throws JshException{
+        applicationArguments.add("L*e");
+        applicationArguments.add("/tmp/Docu*s/Eng/Test");
+        grepApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        for(int i = 0; i < 20; ++ i) {
+            expectedOutput += "/tmp/Documents/Eng/Test: " + "Line number: " + Integer.toString(i) + lineSeparator;
+        }
+        assertEquals(expectedOutput, outputStream.toString());
+    }
+
+    @Test
+    public void testMultipleFIlesFromGlobbedArgument() throws JshException {
+        applicationArguments.add("test");
+        applicationArguments.add("/tmp/Other/Oth*");
+        grepApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "/tmp/Other/Oth1: This is a test" + lineSeparator;
+        expectedOutput += "/tmp/Other/Oth1: This is a test of another test" + lineSeparator;
+        expectedOutput += "/tmp/Other/Oth2: This is a test" + lineSeparator;
+        expectedOutput += "/tmp/Other/Oth2: This is a test of another test" + lineSeparator;
+        assertEqualStrings(expectedOutput, outputStream.toString());
+    }
+
+    private void assertEqualStrings(String expectedString, String actualString) {
+        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split("\t")));
+        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split("\t")));
+        Collections.sort(expectedTokens);
+        Collections.sort(actualTokens);
+        assertEquals(expectedTokens, actualTokens);
+    }
 }
