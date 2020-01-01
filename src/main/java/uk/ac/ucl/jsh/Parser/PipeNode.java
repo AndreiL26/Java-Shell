@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import uk.ac.ucl.jsh.Utilities.TreeVisitor;
 
-public class PipeNode implements Node {
+public class PipeNode extends Node {
     private Node left;
     private Node right; 
 

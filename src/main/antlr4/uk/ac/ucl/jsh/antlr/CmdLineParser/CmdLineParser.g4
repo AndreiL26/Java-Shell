@@ -20,29 +20,7 @@ seq
     |   cmd1=command SEMI cmd2=command        #seqBase
     ;
 
-call
-    :   call_content                                    
-    |   inRedirection                  
-    |   outRedirection                    
-    |   inoutRedirection 
-    ;
-
-inRedirection
-    :   cmd = call_content LT file = call_content
-    |   LT file = call_content WS+ cmd = call_content
-    ;
-
-outRedirection
-    :   cmd = call_content GT file = call_content
-    |   GT file = call_content WS+ cmd = call_content
-    ;
-
-inoutRedirection
-    :   inRedirection GT file = call_content
-    |   GT file = call_content WS+ inRedirection
-    ;
-
-call_content    :   (NON_KEYWORD | single_quoted | double_quoted | backquoted | WS)+;
+call    :   (NON_KEYWORD | LT | GT | single_quoted | double_quoted | backquoted | WS)+;
 
 single_quoted   :   '\'' squote_content '\'';
 squote_content  :   (NON_KEYWORD | keyword | WS | '"' | '`')*;

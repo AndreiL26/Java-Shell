@@ -12,6 +12,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import java.util.ArrayList;
+import java.util.Collections;
+
+import netscape.javascript.JSException;
 
 public class EvalVisitor implements TreeVisitor<Void> {
     private ApplicationManager applicationManager;
@@ -20,9 +23,47 @@ public class EvalVisitor implements TreeVisitor<Void> {
         this.applicationManager = applicationManager;
     }
 
+    private InputStream getInputStream(ArrayList<String> tokens, InputStream inputStream) throws JshException {
+        if (Collections.frequency(tokens, "<") > 1) {
+            throw new JshException("Too many files for input redirection");
+        }
+
+        try {
+            int inIndex = tokens.indexOf("<");
+            if (inIndex != -1 && inIndex + 1 < tokens.size()) {
+                inputStream = new FileInputStream(FileSystem.getInstance().getFile(tokens.get(inIndex+1)));
+                tokens.subList(inIndex, inIndex + 2).clear();
+            }
+        } catch (FileNotFoundException e) {
+            throw new JshException(e.getMessage());
+        }
+
+        return inputStream;
+    }
+
+    private OutputStream getOutputStream(ArrayList<String> tokens, OutputStream outputStream) throws JshException {
+        if (Collections.frequency(tokens, ">") > 1) {
+            throw new JSException("Too many files for output redirection");
+        }
+
+        try {
+            int outIndex = tokens.indexOf(">");
+            if (outIndex != -1 && outIndex + 1 < tokens.size()) {
+                outputStream = new FileOutputStream(FileSystem.getInstance().getFile(tokens.get(outIndex+1)));
+                tokens.subList(outIndex, outIndex + 2).clear();
+            }
+        } catch (FileNotFoundException e) {
+            throw new JshException(e.getMessage());
+        }
+
+        return outputStream;
+    }
+
     public Void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
         ArrayList<String> tokens = Parser.parseCallCommand(callNode.getCmdString());
         try {
+            inputStream = getInputStream(tokens, inputStream);
+            outputStream = getOutputStream(tokens, outputStream);
             applicationManager.executeApplication(tokens, inputStream, outputStream);
         } catch (JshException e) {
             throw new RuntimeException("");
@@ -44,29 +85,6 @@ public class EvalVisitor implements TreeVisitor<Void> {
         seqNode.getLeft().accept(this, inputStream, outputStream);
         if(seqNode.getRight() != null) {
             seqNode.getRight().accept(this, inputStream,  outputStream);
-        }
-
-        return null;
-    }
-
-    public Void visit(InRedirectionNode inRedirectionNode, InputStream inputStream, OutputStream outputStream) {
-        try {
-            inputStream = new FileInputStream(FileSystem.getInstance().getFile(inRedirectionNode.getFile()));
-            inRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
-        } catch (FileNotFoundException fileNotFoundException) {
-            System.out.println(fileNotFoundException.toString());
-            throw new RuntimeException("File not found: " + inRedirectionNode.getFile());
-        }
-
-        return null;
-    }
-
-    public Void visit(OutRedirectionNode outRedirectionNode, InputStream inputStream, OutputStream outputStream) {
-        try {
-            outputStream = new FileOutputStream(FileSystem.getInstance().getFile(outRedirectionNode.getFile()));
-            outRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
-        } catch (FileNotFoundException fileNotFoundException) {
-            throw new RuntimeException("Could not write to file: " + outRedirectionNode.getFile());
         }
 
         return null;

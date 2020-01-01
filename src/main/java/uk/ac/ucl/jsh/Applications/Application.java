@@ -8,6 +8,5 @@ import uk.ac.ucl.jsh.Utilities.JshException;
 
 public interface Application {
 
-    public abstract void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outpustream) throws JshException;
-    
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outpustream) throws JshException; 
 }

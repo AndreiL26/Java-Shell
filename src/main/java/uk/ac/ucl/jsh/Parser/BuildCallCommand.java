@@ -17,6 +17,12 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitArguments(CallParserParser.ArgumentsContext ctx) {
         ArrayList<String> result = new ArrayList<>();
         result.addAll(visit(ctx.argument()));
+        if (ctx.LT() != null) {
+            result.add("<");
+        }
+        if (ctx.GT() != null) {
+            result.add(">");
+        }
 
         if (ctx.arguments() != null) {
             result.addAll(visit(ctx.arguments()));
@@ -51,7 +57,7 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 	
     @Override 
     public ArrayList<String> visitSingle_quoted(CallParserParser.Single_quotedContext ctx) {
-        return new ArrayList<>(List.of(ctx.content.getText()));
+        return new ArrayList<>(List.of(ctx.squote_content().getText()));
     }
 	
     @Override 

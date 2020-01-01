@@ -4,35 +4,35 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import uk.ac.ucl.jsh.Parser.CallNode;
-import uk.ac.ucl.jsh.Parser.InRedirectionNode;
-import uk.ac.ucl.jsh.Parser.OutRedirectionNode;
 import uk.ac.ucl.jsh.Parser.PipeNode;
 import uk.ac.ucl.jsh.Parser.SeqNode;
 
 public class ToStringVisitor implements TreeVisitor<String> {
-    public String visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) {
-        String fString = seqNode.getLeft().accept(this, inputStream, outputStream);
-        String sString = seqNode.getRight().accept(this, inputStream, outputStream);
-        return "SeqNode (" + fString + ", " + sString + ")";
+    private StringBuilder shiftSB = new StringBuilder("");
+    
+    public String visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
+        return shiftSB.toString() + "Call node: " + callNode.getCmdString() + "\n";
     }
 
     public String visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream) {
-        String fString = pipeNode.getLeft().accept(this, inputStream, outputStream);
-        String sString = pipeNode.getRight().accept(this, inputStream, outputStream);
-        return "PipeNode (" + fString + ", " + sString + ")";
+        StringBuilder result = new StringBuilder();
+        result.append(shiftSB.toString() + "Pipe Node" + "\n");
+        shiftSB.append("\t");
+        result.append(pipeNode.getLeft().accept(this, inputStream, outputStream));
+        result.append(pipeNode.getRight().accept(this, inputStream, outputStream));
+        shiftSB.setLength(shiftSB.length()-1);
+
+        return result.toString();
     }
 
-    public String visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
-        return callNode.getCmdString();
-    }
+    public String visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) {
+        StringBuilder result = new StringBuilder();
+        result.append(shiftSB.toString() + "Seq Node" + "\n");
+        shiftSB.append("\t");
+        result.append(seqNode.getLeft().accept(this, inputStream, outputStream));
+        result.append(seqNode.getRight().accept(this, inputStream, outputStream));
+        shiftSB.setLength(shiftSB.length()-1);
 
-    public String visit(InRedirectionNode inRedirectionNode, InputStream inputStream, OutputStream outputStream) {
-        String cmdString = inRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
-        return "In (" + cmdString + ", " + inRedirectionNode.getFile() + ")";
-    }
-
-    public String visit(OutRedirectionNode outRedirectionNode, InputStream inputStream, OutputStream outputStream) {
-        String cmdString = outRedirectionNode.getCmdNode().accept(this, inputStream, outputStream);
-        return "Out (" + cmdString + ", " + outRedirectionNode.getFile() + ")";
+        return result.toString();
     }
 }
