@@ -1,6 +1,5 @@
 package uk.ac.ucl.jsh.Utilities;
 
-import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Parser.*;
 
 import java.io.ByteArrayInputStream;

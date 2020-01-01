@@ -19,12 +19,12 @@ public class GlobbingTest {
     private static FileSystem fileSystem;
     private String fileSeparator = System.getProperty("file.separator");
     
-
     @Before
     // Create the test hierarchy
     public void beforeTest() throws IOException {
-       fileSystem.createTestFileHierarchy();
-       fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
+        fileSystem = FileSystem.getInstance();
+        fileSystem.createTestFileHierarchy();
+        fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
     }
 
     @After

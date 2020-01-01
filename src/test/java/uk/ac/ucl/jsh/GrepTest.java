@@ -237,8 +237,8 @@ public class GrepTest {
     }
 
     private void assertEqualStrings(String expectedString, String actualString) {
-        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split("\t")));
-        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split("\t")));
+        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split(lineSeparator)));
+        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split(lineSeparator)));
         Collections.sort(expectedTokens);
         Collections.sort(actualTokens);
         assertEquals(expectedTokens, actualTokens);
