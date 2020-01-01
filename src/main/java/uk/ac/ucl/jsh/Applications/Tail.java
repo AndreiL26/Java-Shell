@@ -82,12 +82,8 @@ public class Tail implements Application {
 
         if(applicationArguments.size() == 1 || applicationArguments.size() == 3) {
             tailArg = applicationArguments.get(applicationArguments.size() - 1);
-            if (tailArg.startsWith(System.getProperty("file.separator"))) {
-                tailFile = new File(tailArg);
-            }
-            else {
-                tailFile = new File(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + tailArg);
-            }
+            tailFile = FileSystem.getInstance().getFile(tailArg);
+            
             if(tailFile.exists()) {
                 Path filePath = Paths.get(tailFile.getAbsolutePath());
                 try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {

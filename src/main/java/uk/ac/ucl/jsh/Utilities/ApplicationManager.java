@@ -21,7 +21,7 @@ public class ApplicationManager {
     }
 
     public void executeApplication(ArrayList<String> tokens, InputStream inputStream, OutputStream outputStream) throws JshException {
-        String applicationName = tokens.get(0);
+        String applicationName = tokens.get(0).toLowerCase();
         boolean unsafeVersion = false;
         ArrayList<String> applicationArguments = new ArrayList<String>(tokens.subList(1, tokens.size()));
         

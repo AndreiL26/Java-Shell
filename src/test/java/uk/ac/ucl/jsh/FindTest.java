@@ -19,11 +19,13 @@ import java.util.Collections;
 
 public class FindTest {
     private static Find findApplication;
-    private static FileSystem fileSystem = Jsh.getFileSystem();
+    private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
     private String fileSeparator = System.getProperty("file.separator");
     private String lineSeparator = System.getProperty("line.separator");
+
+    private String initialWorkingDirectoryPath;
     
     private void assertEqualStrings(String expectedString, String actualString) {
         ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split(lineSeparator)));
@@ -36,6 +38,7 @@ public class FindTest {
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
+        fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
         findApplication = new Find(fileSystem);
     }
@@ -43,6 +46,7 @@ public class FindTest {
     @Before
     // Create the File Hierarchy
     public void createHierarchy() throws IOException {
+        initialWorkingDirectoryPath = fileSystem.getWorkingDirectoryPath();
         fileSystem.createTestFileHierarchy();
         fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
      }
@@ -53,6 +57,7 @@ public class FindTest {
          fileSystem.deleteTestFileHierarchy();
          applicationArguments.clear();
          outputStream.reset();
+         fileSystem.setWorkingDirectory(initialWorkingDirectoryPath);
     }   
     
     @Test

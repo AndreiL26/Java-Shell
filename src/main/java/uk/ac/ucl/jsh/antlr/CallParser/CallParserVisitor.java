@@ -76,4 +76,10 @@ public interface CallParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBquote_content(CallParserParser.Bquote_contentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link CallParserParser#keyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKeyword(CallParserParser.KeywordContext ctx);
 }

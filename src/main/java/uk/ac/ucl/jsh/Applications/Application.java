@@ -10,6 +10,7 @@ import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 public interface Application {
@@ -73,7 +74,7 @@ public interface Application {
                     globArgument("", currentArgument, globbedArguments, "/");
                 }
                 else {
-                    globArgument(Jsh.getFileSystem().getWorkingDirectoryPath(), currentArgument, globbedArguments, Jsh.getFileSystem().getWorkingDirectoryPath());
+                    globArgument(FileSystem.getInstance().getWorkingDirectoryPath(), currentArgument, globbedArguments, FileSystem.getInstance().getWorkingDirectoryPath());
                 }
                 if(crtSize == globbedArguments.size()) {
                     globbedArguments.add(applicationArguments.get(i));

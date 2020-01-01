@@ -5,6 +5,7 @@ import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,11 +27,13 @@ public class CatTest {
     private static ArrayList<String> applicationArguments;
     private String lineSeparator = System.getProperty("line.separator");
     private String fileSeparator = System.getProperty("file.separator");
+
+    private String initialWorkingDirectoryPath;
     
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
-        fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
+        fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
         catApplication = new Cat(fileSystem);
     }
@@ -38,9 +41,9 @@ public class CatTest {
     @Before
     // Create the test hierarchy
     public void beforeTest() throws IOException {
-       fileSystem.createTestFileHierarchy();
-       fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
-
+        initialWorkingDirectoryPath = fileSystem.getWorkingDirectoryPath();
+        fileSystem.createTestFileHierarchy();
+        fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
     }
 
     @After
@@ -49,8 +52,8 @@ public class CatTest {
         fileSystem.deleteTestFileHierarchy();
         applicationArguments.clear();
         outputStream.reset();
+        fileSystem.setWorkingDirectory(initialWorkingDirectoryPath);
     }   
-
 
     @Test 
     public void testMissingInput() {

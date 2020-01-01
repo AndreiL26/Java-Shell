@@ -18,15 +18,18 @@ import java.util.ArrayList;
 
 public class PwdTest {
     private static Pwd pwdApplication;
-    private static FileSystem fileSystem = Jsh.getFileSystem();
+    private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
     private String fileSeparator = System.getProperty("file.separator");
     private String lineSeparator = System.getProperty("line.separator");
+
+    private String initialWorkingDirectoryPath;
     
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
+        fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
         pwdApplication = new Pwd(fileSystem);
     }
@@ -34,9 +37,9 @@ public class PwdTest {
     @Before
     // Create the test hierarchy
     public void beforeTest() throws IOException {
-       fileSystem.createTestFileHierarchy();
-       fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
-
+        initialWorkingDirectoryPath = fileSystem.getWorkingDirectoryPath();
+        fileSystem.createTestFileHierarchy();
+        fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
     }
 
     @After
@@ -45,6 +48,7 @@ public class PwdTest {
         fileSystem.deleteTestFileHierarchy();
         applicationArguments.clear();
         outputStream.reset();
+        fileSystem.setWorkingDirectory(initialWorkingDirectoryPath);
     }   
 
     @Test

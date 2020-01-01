@@ -115,12 +115,7 @@ public class Sed implements Application {
 
         if(applicationArguments.size() == 2){
             String filePath = applicationArguments.get(1);
-            if(filePath.startsWith(System.getProperty("file.separator"))) {
-                sedFile = new File(applicationArguments.get(1));
-            }
-            else {
-                sedFile = new File(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + filePath);
-            }
+            sedFile = FileSystem.getInstance().getFile(filePath);
 
             if(!sedFile.exists()) {
                 throw new JshException("sed: cannot open " + filePath);

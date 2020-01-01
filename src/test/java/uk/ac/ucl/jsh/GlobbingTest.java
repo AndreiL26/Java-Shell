@@ -16,7 +16,7 @@ import org.junit.Test;
 
 
 public class GlobbingTest {
-    private static FileSystem fileSystem = Jsh.getFileSystem();
+    private static FileSystem fileSystem;
     private String fileSeparator = System.getProperty("file.separator");
     
 

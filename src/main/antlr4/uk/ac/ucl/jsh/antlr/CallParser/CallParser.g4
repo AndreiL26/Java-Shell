@@ -7,6 +7,8 @@ compileUnit
 arguments
     :   argument
     |   argument WS+ arguments
+    |   argument WS* GT WS* arguments | GT WS* argument WS+ arguments
+    |   argument WS* LT WS* arguments | LT WS* argument WS+ arguments
     ;
 
 argument
@@ -24,32 +26,23 @@ quoted
     |   backquoted
     ;
 
-single_quoted
-    :   '\'' content = squote_content '\''
-    ;
+single_quoted   :   '\'' squote_content '\'';
+squote_content  :   (NON_KEYWORD | keyword | WS | '"' | '`')*;
 
-squote_content
-    :   (NON_KEYWORD | KEYWORD | WS | '"' | '`')*
-    ;
+double_quoted   :   '"' dquote_content '"';
+dquote_content  :   content = (NON_KEYWORD | SEMI | PIPE | GT | LT | WS | '\'') dquote_content
+                |   backquoted dquote_content
+                |  
+                ;
 
-double_quoted
-    :   '"' content = dquote_content '"'
-    ;
+backquoted      :   '`' content = bquote_content '`';
+bquote_content  :   (NON_KEYWORD | keyword | WS | '"' | '\'')*;
 
-dquote_content 
-    :   content = (NON_KEYWORD | KEYWORD | WS | '\'') dquote_content
-    |   backquoted dquote_content
-    |  
-    ;
-
-backquoted
-    :   '`' content = bquote_content '`'
-    ;
-
-bquote_content
-    :   (NON_KEYWORD | KEYWORD | WS | '"' | '\'')*
-    ;
+keyword : SEMI | PIPE | GT | LT;
 
 WS             : [ \t];
 NON_KEYWORD    : ~[ \t"'`\n\r;|><];
-KEYWORD        : [;|><];
+SEMI           : ';';
+PIPE           : '|';
+GT             : '>';
+LT             : '<';

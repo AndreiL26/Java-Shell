@@ -71,12 +71,7 @@ public class Grep implements Application {
         if (applicationArguments.size() > 1) {
             for (int i = 0; i < numOfFiles; i++) {
                 String currentFileName = applicationArguments.get(i+1);
-                if (currentFileName.startsWith(System.getProperty("file.separator"))) {
-                    filePath = Paths.get(currentFileName);
-                }
-                else {
-                    filePath = Paths.get(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + currentFileName);
-                }
+                filePath = Paths.get(FileSystem.getInstance().getFilePath(currentFileName));
                 if (Files.isDirectory(filePath) || !Files.isReadable(filePath)) {
                     throw new JshException("grep: cannot open " + currentFileName);
                 }
