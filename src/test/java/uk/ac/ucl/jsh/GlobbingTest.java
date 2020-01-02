@@ -14,7 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class GlobbingTest {
     private static FileSystem fileSystem;
     private String fileSeparator = System.getProperty("file.separator");

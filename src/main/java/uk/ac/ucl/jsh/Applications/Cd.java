@@ -8,15 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-
  
 public class Cd implements Application {
-    private FileSystem fileSystem;
-
-    public Cd(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
         if (applicationArguments.isEmpty()) {
             throw new JshException("cd: missing argument");
@@ -31,7 +24,7 @@ public class Cd implements Application {
         checkArguments(applicationArguments, inputStream);
         String dirString = applicationArguments.get(0);
         File dir;
-        String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
+        String currentDirectoryPath = FileSystem.getInstance().getWorkingDirectoryPath();
 
         dir = FileSystem.getInstance().getFile(dirString);
         if (!dir.isDirectory()) {
@@ -44,7 +37,7 @@ public class Cd implements Application {
             throw new JshException("cd: could not get path");
         }
 
-        fileSystem.setWorkingDirectory(currentDirectoryPath);
+        FileSystem.getInstance().setWorkingDirectory(currentDirectoryPath);
     }
 
 }

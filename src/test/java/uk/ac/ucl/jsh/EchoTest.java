@@ -31,7 +31,7 @@ public class EchoTest {
     public static void setClass() {
         applicationArguments = new ArrayList<>();
         outputStream = new ByteArrayOutputStream();
-        echoApplication = new Echo(fileSystem);
+        echoApplication = new Echo();
 
         fileSystem = FileSystem.getInstance();
         initialWorkingDirectoryPath = fileSystem.getWorkingDirectoryPath();

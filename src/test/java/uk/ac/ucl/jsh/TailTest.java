@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-
-
 public class TailTest {
     private static Tail tailApplication;
     private static FileSystem fileSystem;
@@ -34,7 +32,7 @@ public class TailTest {
         applicationArguments = new ArrayList<>();
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        tailApplication = new Tail(fileSystem);
+        tailApplication = new Tail();
     }
 
     @Before

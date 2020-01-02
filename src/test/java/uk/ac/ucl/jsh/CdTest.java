@@ -30,7 +30,7 @@ public class CdTest {
         applicationArguments = new ArrayList<>();
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        cdApplication = new Cd(fileSystem);
+        cdApplication = new Cd();
     }
 
     @Before

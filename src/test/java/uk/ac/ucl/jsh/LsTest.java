@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-
 public class LsTest {
     private static Ls lsApplication;
     private static FileSystem fileSystem;
@@ -32,7 +31,7 @@ public class LsTest {
         applicationArguments = new ArrayList<>();
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        lsApplication = new Ls(fileSystem);
+        lsApplication = new Ls();
     }
 
     @Before

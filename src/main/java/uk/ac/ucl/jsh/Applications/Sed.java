@@ -17,14 +17,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 public class Sed implements Application {
-    private FileSystem fileSystem;
     private String regex;
     private String replacement;
-
-    public Sed(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
+    
     private boolean isValid(String argument) { 
         if(argument == "") {
             return false;

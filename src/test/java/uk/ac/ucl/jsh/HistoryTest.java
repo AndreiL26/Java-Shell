@@ -30,7 +30,7 @@ public class HistoryTest {
         applicationArguments = new ArrayList<>();
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        historyApplication = new History(fileSystem);
+        historyApplication = new History();
     }
 
     @Before

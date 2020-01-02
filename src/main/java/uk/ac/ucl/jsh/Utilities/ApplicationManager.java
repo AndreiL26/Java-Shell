@@ -45,16 +45,16 @@ public class ApplicationManager {
     }
     
     private  void createApplications() {
-        applicationMap.put("pwd",  new Pwd(fileSystem));
-        applicationMap.put("cd",   new Cd(fileSystem));
-        applicationMap.put("ls",   new Ls(fileSystem));
-        applicationMap.put("cat",  new Cat(fileSystem));
-        applicationMap.put("echo", new Echo(fileSystem));
-        applicationMap.put("head", new Head(fileSystem));
-        applicationMap.put("tail", new Tail(fileSystem));
-        applicationMap.put("grep", new Grep(fileSystem));
-        applicationMap.put("sed",  new Sed(fileSystem));
-        applicationMap.put("find", new Find(fileSystem));
-        applicationMap.put("history", new History(fileSystem));
+        applicationMap.put("pwd",  new Pwd());
+        applicationMap.put("cd",   new Cd());
+        applicationMap.put("ls",   new Ls());
+        applicationMap.put("cat",  new Cat());
+        applicationMap.put("echo", new Echo());
+        applicationMap.put("head", new Head());
+        applicationMap.put("tail", new Tail());
+        applicationMap.put("grep", new Grep());
+        applicationMap.put("sed",  new Sed());
+        applicationMap.put("find", new Find());
+        applicationMap.put("history", new History());
     }
 }

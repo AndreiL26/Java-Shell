@@ -17,12 +17,6 @@ import java.util.ArrayList;
 import java.io.OutputStreamWriter;
 
 public class Tail implements Application {
-    private FileSystem fileSystem;
-
-    public Tail(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void readAndWriteLast(BufferedReader reader, OutputStreamWriter writer, int tailLines) throws JshException {
         ArrayList<String> storage = new ArrayList<>();
         String line = null;

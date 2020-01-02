@@ -40,7 +40,7 @@ public class FindTest {
         applicationArguments = new ArrayList<>();
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        findApplication = new Find(fileSystem);
+        findApplication = new Find();
     }
 
     @Before

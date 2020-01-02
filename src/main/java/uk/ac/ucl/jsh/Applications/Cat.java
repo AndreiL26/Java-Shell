@@ -18,12 +18,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Cat implements Application{
-    private FileSystem fileSystem;
-    
-    public Cat(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void readAndWrite(BufferedReader reader, OutputStreamWriter writer) throws JshException {
         String line = null;
         try {
@@ -48,7 +42,7 @@ public class Cat implements Application{
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, -1);
         checkArguments(applicationArguments, inputStream);
-        String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
+        String currentDirectoryPath = FileSystem.getInstance().getWorkingDirectoryPath();
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         
         if(applicationArguments.size() == 0) {

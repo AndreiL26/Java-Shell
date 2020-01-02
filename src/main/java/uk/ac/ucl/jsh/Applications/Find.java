@@ -14,15 +14,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Find implements Application {
-    private FileSystem fileSystem;
     private String fileSeparator = System.getProperty("file.separator");
     private String lineSeparator = System.getProperty("line.separator");
     private PathMatcher matcher;
     private OutputStreamWriter writer;
-
-    public Find(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
 
     private void find(String currentDirectoryPath, String currentResolvedPath) throws IOException {
         File currentFile = new File(currentDirectoryPath);
@@ -71,7 +66,7 @@ public class Find implements Application {
         writer = new OutputStreamWriter(outputStream);
 
         if(applicationArguments.size() == 2) {
-            searchRootDirectory = fileSystem.getWorkingDirectoryPath();
+            searchRootDirectory = FileSystem.getInstance().getWorkingDirectoryPath();
         }
         else {
             searchRootDirectory = FileSystem.getInstance().getFilePath(applicationArguments.get(0));

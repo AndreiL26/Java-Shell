@@ -11,12 +11,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Ls implements Application {
-    private FileSystem fileSystem;
-    
-    public Ls(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
         if(applicationArguments.size() > 1) {
             throw new JshException("ls: too many arguments");
@@ -30,7 +24,7 @@ public class Ls implements Application {
         File currDir = null;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         if (applicationArguments.isEmpty()) {
-            currDir = new File(fileSystem.getWorkingDirectoryPath());
+            currDir = new File(FileSystem.getInstance().getWorkingDirectoryPath());
         } 
         else {
             currDir = FileSystem.getInstance().getFile(applicationArguments.get(0));

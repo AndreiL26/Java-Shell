@@ -34,7 +34,7 @@ public class HeadTest {
         applicationArguments = new ArrayList<>();
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        headApplication = new Head(fileSystem);
+        headApplication = new Head();
     }
 
     @Before

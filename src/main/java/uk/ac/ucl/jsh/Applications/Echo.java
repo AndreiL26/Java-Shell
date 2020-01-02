@@ -1,6 +1,5 @@
 package uk.ac.ucl.jsh.Applications;
 
-import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 import java.io.OutputStreamWriter;
@@ -10,13 +9,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class Echo implements Application {
-    private FileSystem fileSystem;
-    
-    public Echo(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
-
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException{
         applicationArguments = Application.globArguments(applicationArguments, -1);

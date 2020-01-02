@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-
-
 public class SedTest {
     private static Sed sedApplication;
     private static FileSystem fileSystem;
@@ -34,7 +32,7 @@ public class SedTest {
         applicationArguments = new ArrayList<>();
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        sedApplication = new Sed(fileSystem);
+        sedApplication = new Sed();
     }
 
     @Before

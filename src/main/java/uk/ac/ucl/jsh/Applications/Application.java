@@ -1,7 +1,5 @@
 package uk.ac.ucl.jsh.Applications;
 
-import uk.ac.ucl.jsh.Jsh;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +12,6 @@ import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 public interface Application {
-
     private static void globArgument(String currentGlobbedPath, String unglobbedPath, ArrayList<String> globbedArguments, String startingPath) {
         if(unglobbedPath != "") {
             String globbingPattern, remainingUnglobbedPath;

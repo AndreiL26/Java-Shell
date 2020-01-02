@@ -31,7 +31,7 @@ public class PwdTest {
         applicationArguments = new ArrayList<>();
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        pwdApplication = new Pwd(fileSystem);
+        pwdApplication = new Pwd();
     }
 
     @Before

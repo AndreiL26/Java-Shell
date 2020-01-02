@@ -13,7 +13,6 @@ import uk.ac.ucl.jsh.Parser.Node;
 import uk.ac.ucl.jsh.Parser.Parser;
 import uk.ac.ucl.jsh.Parser.PipeNode;
 import uk.ac.ucl.jsh.Parser.SeqNode;
-import uk.ac.ucl.jsh.Utilities.ToStringVisitor;
 
 public class ParserTest {
     @Test

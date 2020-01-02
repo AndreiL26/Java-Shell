@@ -17,12 +17,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Head implements Application{
-    private FileSystem fileSystem;
-
-    public Head(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void readAndWrite(BufferedReader reader, OutputStreamWriter writer, int headLines) throws JshException{
         int count = 0;
         try {

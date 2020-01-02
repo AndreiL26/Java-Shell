@@ -19,12 +19,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Grep implements Application {
-    private FileSystem fileSystem;
-    
-    public Grep(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void readAndMatch(BufferedReader reader, OutputStreamWriter writer, Pattern pattern, String fileName) throws JshException {
         String line = null;
         try {

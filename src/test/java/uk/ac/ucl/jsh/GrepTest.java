@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-
-
 public class GrepTest {
     private static Grep grepApplication;
     private static FileSystem fileSystem;
@@ -36,7 +34,7 @@ public class GrepTest {
         applicationArguments = new ArrayList<>();
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        grepApplication = new Grep(fileSystem);
+        grepApplication = new Grep();
     }
 
     @Before
