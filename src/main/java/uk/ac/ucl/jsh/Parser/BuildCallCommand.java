@@ -17,16 +17,16 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
     @Override 
     public ArrayList<String> visitArguments(CallParserParser.ArgumentsContext ctx) {
         ArrayList<String> result = new ArrayList<>();
+        if (ctx.io_operator != null) {
+            result.addAll(visit(ctx.cmd));
+            result.add(ctx.io_operator.getText());
+            result.addAll(visit(ctx.file));
+            return result;
+        }
+        
         result.addAll(visit(ctx.argument()));
-        if (ctx.LT() != null) {
-            result.add("<");
-        }
-        if (ctx.GT() != null) {
-            result.add(">");
-        }
-
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
+        if (ctx.left_arguments != null) {
+            result.addAll(visit(ctx.left_arguments));
         }
 
         return result;
@@ -67,19 +67,19 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 
     @Override 
     public ArrayList<String> visitDquote_content(CallParserParser.Dquote_contentContext ctx) { 
-        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<String> result = new ArrayList<>();
         if (ctx.backquoted() != null) {
-            stringBuilder.append(visit(ctx.backquoted()).get(0));
+            appendArgument(result, visit(ctx.backquoted()));
         }
         else if (ctx.content != null) {
-            stringBuilder.append(ctx.content.getText());
+            appendArgument(result, new ArrayList<>(Arrays.asList(ctx.content.getText())));
         }
 
         if (ctx.dquote_content() != null) {
-            stringBuilder.append(visit(ctx.dquote_content()).get(0));
+            appendArgument(result, visit(ctx.dquote_content()));
         }
 
-        return new ArrayList<>(List.of(stringBuilder.toString()));
+        return result;
     }
 	
     @Override 

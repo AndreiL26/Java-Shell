@@ -8,7 +8,7 @@ public class JshTest {
  
     @Test
     public void testJsh() throws Exception {
-       //Jsh.eval("echo b`echo a; echo b`a", System.out);
+       //Jsh.eval("< pom.xml cat", System.out);
 
     }
 }

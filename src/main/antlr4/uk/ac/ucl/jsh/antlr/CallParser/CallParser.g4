@@ -6,9 +6,11 @@ compileUnit
 
 arguments
     :   argument
-    |   argument WS+ arguments
-    |   argument WS* GT WS* arguments | GT WS* argument WS+ arguments
-    |   argument WS* LT WS* arguments | LT WS* argument WS+ arguments
+    |   argument WS+ left_arguments = arguments
+    |   cmd = arguments WS* io_operator = GT WS* file = arguments 
+    |   io_operator = GT WS* file = arguments WS+ cmd = arguments
+    |   cmd = arguments WS* io_operator = LT WS* file = arguments  
+    |   io_operator = LT WS* file = arguments WS+ cmd = arguments
     ;
 
 argument
