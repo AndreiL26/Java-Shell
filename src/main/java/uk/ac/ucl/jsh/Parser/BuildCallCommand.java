@@ -2,6 +2,7 @@ package uk.ac.ucl.jsh.Parser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import uk.ac.ucl.jsh.Jsh;
@@ -33,21 +34,20 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 
     @Override 
     public ArrayList<String> visitArgument(CallParserParser.ArgumentContext ctx) {
-        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<String> result = new ArrayList<>();
 
         if (ctx.quoted() != null) {
-            stringBuilder.append(visit(ctx.quoted()).get(0));
+            appendArgument(result, visit(ctx.quoted()));
         }
         else {
-            
-            stringBuilder.append(ctx.non_quote.getText());
+            appendArgument(result, new ArrayList<>(Arrays.asList(ctx.non_quote.getText())));
         }
 
         if (ctx.argument() != null) {
-            stringBuilder.append(visit(ctx.argument()).get(0));
+            appendArgument(result, visit(ctx.argument()));
         }
 
-        return new ArrayList<>(List.of(stringBuilder.toString()));
+        return result;
     }
 
     @Override 
@@ -91,6 +91,21 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
         
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Jsh.eval(cmdSubstitutionString, outputStream);
-        return new ArrayList<>(List.of(outputStream.toString().trim()));
+
+        return new ArrayList<String>(Arrays.asList(outputStream.toString().trim().split(Jsh.lineSeparator)));
+    }
+
+    private void appendArgument(ArrayList<String> result, ArrayList<String> arrToAppend) {
+        if (result.isEmpty()) {
+            result.addAll(arrToAppend);
+            return;
+        }
+
+        if (arrToAppend.isEmpty()) {
+            return;
+        }
+
+        result.set(result.size()-1, result.get(result.size()-1) + arrToAppend.get(0));
+        result.addAll(arrToAppend.subList(1, arrToAppend.size()));
     }
 }
