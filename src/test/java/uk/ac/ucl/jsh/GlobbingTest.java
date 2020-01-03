@@ -16,7 +16,8 @@ import org.junit.Test;
 
 public class GlobbingTest {
     private static FileSystem fileSystem;
-    private String fileSeparator = System.getProperty("file.separator");
+
+    private String fileSeparator = Jsh.fileSeparator;
     
     @Before
     // Create the test hierarchy

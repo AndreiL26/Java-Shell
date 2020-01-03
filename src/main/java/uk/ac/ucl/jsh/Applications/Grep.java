@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -28,7 +29,7 @@ public class Grep implements Application {
                     if(fileName != null) {
                         writer.write(fileName + ": ");
                     }
-                    writer.write(line + System.getProperty("line.separator"));
+                    writer.write(line + Jsh.lineSeparator);
                     writer.flush();
                 }
             }

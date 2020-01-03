@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jsh {
-    public static ApplicationManager applicationManager = new ApplicationManager(FileSystem.getInstance());   // Might want to make this final as well if Outputstream will always remain System.out
-    
+    public static ApplicationManager applicationManager = new ApplicationManager();   // Might want to make this final as well if Outputstream will always remain System.out
     private static ArrayList<String> history = new ArrayList<>();
+
+    public static String fileSeparator = System.getProperty("file.separator");
+    public static String lineSeparator = System.getProperty("line.separator");
 
     public static ArrayList<String> getHistory() {
         return history;

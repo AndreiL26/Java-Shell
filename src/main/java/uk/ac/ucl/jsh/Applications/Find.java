@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -14,8 +15,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Find implements Application {
-    private String fileSeparator = System.getProperty("file.separator");
-    private String lineSeparator = System.getProperty("line.separator");
+    private String fileSeparator = Jsh.fileSeparator;
+    private String lineSeparator = Jsh.lineSeparator;
     private PathMatcher matcher;
     private OutputStreamWriter writer;
 

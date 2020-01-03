@@ -57,7 +57,7 @@ public class History implements Application {
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         try {
             for (String historyElement: historyToPrint) {
-                writer.write(historyElement + System.getProperty("line.separator"));
+                writer.write(historyElement + Jsh.lineSeparator);
                 writer.flush();
             }
         } catch (IOException e) {

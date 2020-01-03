@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -31,7 +32,7 @@ public class Tail implements Application {
                 index = storage.size() - tailLines;
             }
             for (int i = index; i < storage.size(); i++) {
-                writer.write(storage.get(i) + System.getProperty("line.separator"));
+                writer.write(storage.get(i) + Jsh.lineSeparator);
                 writer.flush();
             }     
         } catch (IOException e) {

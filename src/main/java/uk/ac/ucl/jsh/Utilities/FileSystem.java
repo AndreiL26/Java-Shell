@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import uk.ac.ucl.jsh.Jsh;
+
 
 public final class FileSystem {
     private static final FileSystem INSTANCE = new FileSystem(System.getProperty("user.dir"));
@@ -28,18 +30,16 @@ public final class FileSystem {
 
     private String generateFileText() {
         String resultString = new String();
-        String lineSeparator = System.getProperty("line.separator");
-        resultString += "This is a test" + lineSeparator;
-        resultString += "This is a test of another test" + lineSeparator;
-        resultString += lineSeparator;
+        resultString += "This is a test" + Jsh.lineSeparator;
+        resultString += "This is a test of another test" + Jsh.lineSeparator;
+        resultString += Jsh.lineSeparator;
         return resultString;
     }
 
     private String generateLongFileText(int lines) {
         String resultString = new String();
-        String lineSeparator = System.getProperty("line.separator");
         for(int i = 0; i < lines; ++ i) {
-            resultString += "Line number: " + Integer.toString(i) + lineSeparator;
+            resultString += "Line number: " + Integer.toString(i) + Jsh.lineSeparator;
         }
         return resultString;
     }
@@ -63,17 +63,17 @@ public final class FileSystem {
     }
 
     public String getFilePath(String filePath) {
-        if(filePath.startsWith(System.getProperty("file.separator"))) {
+        if(filePath.startsWith(Jsh.fileSeparator)) {
             return filePath;
         }
         
-        return workingDirectoryPath + System.getProperty("file.separator") + filePath;
+        return workingDirectoryPath + Jsh.fileSeparator + filePath;
     }
 
     public void createTestFileHierarchy() throws IOException {
          // Create two utilities Strings
          String tmpPath = System.getProperty("java.io.tmpdir");
-         String fileSeparator = System.getProperty("file.separator");
+         String fileSeparator = Jsh.fileSeparator;
  
          // Create tmp's children
          Path documentsPath = Files.createDirectory(Paths.get(tmpPath + fileSeparator + "Documents"));
@@ -108,10 +108,9 @@ public final class FileSystem {
     public void deleteTestFileHierarchy() throws IOException {
         // Or should we have a function called deleteAddedFiles that removes all the files in tmp except the one that is already there
         String tmpPath = System.getProperty("java.io.tmpdir");
-        String fileSeparator = System.getProperty("file.separator");
 
-        deleteDirectory(new File(tmpPath+fileSeparator+"Documents"));
-        deleteDirectory(new File(tmpPath+fileSeparator+"Other"));
-        Files.deleteIfExists(Paths.get(tmpPath + fileSeparator + "Soft"));
+        deleteDirectory(new File(tmpPath+Jsh.fileSeparator+"Documents"));
+        deleteDirectory(new File(tmpPath+Jsh.fileSeparator+"Other"));
+        Files.deleteIfExists(Paths.get(tmpPath + Jsh.fileSeparator + "Soft"));
     }
 }

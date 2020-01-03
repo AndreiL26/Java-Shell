@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -22,7 +23,7 @@ public class Pwd implements Application {
        checkArguments(applicationArguments, inputStream);
        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
        try {
-            writer.write(FileSystem.getInstance().getWorkingDirectoryPath() + System.getProperty("line.separator"));
+            writer.write(FileSystem.getInstance().getWorkingDirectoryPath() + Jsh.lineSeparator);
             writer.flush();
        } catch (IOException e) {
            throw new JshException("pwd: cannot write output");

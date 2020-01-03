@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -19,7 +21,7 @@ import java.io.OutputStream;
 public class Sed implements Application {
     private String regex;
     private String replacement;
-    
+
     private boolean isValid(String argument) { 
         if(argument == "") {
             return false;
@@ -132,10 +134,10 @@ public class Sed implements Application {
             String line = null;
             while((line = reader.readLine()) != null) {
                 if(replaceAll == true) {
-                    writer.write(line.replaceAll(regex, replacement) + System.getProperty("line.separator"));
+                    writer.write(line.replaceAll(regex, replacement) + Jsh.lineSeparator);
                 }
                 else {
-                    writer.write(line.replaceFirst(regex, replacement) + System.getProperty("line.separator"));
+                    writer.write(line.replaceFirst(regex, replacement) + Jsh.lineSeparator);
                 }
                 writer.flush();
             }

@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 import java.io.OutputStreamWriter;
@@ -25,7 +26,7 @@ public class Echo implements Application {
                 index += 1;
             }
             
-            writer.write(System.getProperty("line.separator"));
+            writer.write(Jsh.lineSeparator);
             writer.flush();
         } catch (IOException e) {
             throw new JshException("echo: could not write output");

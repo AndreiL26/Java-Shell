@@ -22,9 +22,9 @@ public class FindTest {
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
-    private String fileSeparator = System.getProperty("file.separator");
-    private String lineSeparator = System.getProperty("line.separator");
 
+    private String lineSeparator = Jsh.lineSeparator;
+    private String fileSeparator = Jsh.fileSeparator;
     private String initialWorkingDirectoryPath;
     
     private void assertEqualStrings(String expectedString, String actualString) {

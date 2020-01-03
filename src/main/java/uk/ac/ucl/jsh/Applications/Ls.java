@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -45,7 +46,7 @@ public class Ls implements Application {
                 }    
 
                 if (atLeastOnePrinted) {
-                    writer.write(System.getProperty("line.separator"));
+                    writer.write(Jsh.lineSeparator);
                     writer.flush();
                 } 
             } catch (IOException e) {

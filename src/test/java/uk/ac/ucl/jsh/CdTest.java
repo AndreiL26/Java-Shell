@@ -21,8 +21,8 @@ public class CdTest {
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
-    private String fileSeparator = System.getProperty("file.separator");
 
+    private String fileSeparator = Jsh.fileSeparator;
     private String initialWorkingDirectoryPath;
     
     @BeforeClass

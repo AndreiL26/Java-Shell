@@ -23,8 +23,8 @@ public class EchoTest {
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
-    private String lineSeparator = System.getProperty("line.separator");
 
+    private String lineSeparator = Jsh.lineSeparator;
     private static String initialWorkingDirectoryPath;
   
     @BeforeClass
@@ -77,12 +77,12 @@ public class EchoTest {
     @Test
     public void testNoArguments() throws JshException {
         echoApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("", outputStream.toString());
+        assertEquals(lineSeparator, outputStream.toString());
     }
 
     @Test
     public void testMultipleArgumentsFromGlobbing() throws JshException {
-        fileSystem.setWorkingDirectory(System.getProperty("file.separator") + "tmp" + System.getProperty("file.separator") + "Other");
+        fileSystem.setWorkingDirectory(Jsh.fileSeparator + "tmp" + Jsh.fileSeparator + "Other");
         System.out.println(fileSystem.getWorkingDirectoryPath());
         applicationArguments.add("*");
         echoApplication.execute(applicationArguments, null, outputStream);

@@ -8,16 +8,10 @@ import java.io.OutputStream;
 
 public class ApplicationManager {
     private HashMap<String, Application> applicationMap;
-    private FileSystem fileSystem;
 
-    public ApplicationManager(FileSystem fileSystem) {
+    public ApplicationManager() {
         applicationMap = new HashMap<>();
-        this.fileSystem = fileSystem;
         createApplications();
-    }
-
-    public FileSystem getFileSystem() {
-        return fileSystem;
     }
 
     public void executeApplication(ArrayList<String> tokens, InputStream inputStream, OutputStream outputStream) throws JshException {

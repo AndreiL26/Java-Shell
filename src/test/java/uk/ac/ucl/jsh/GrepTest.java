@@ -25,8 +25,8 @@ public class GrepTest {
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
-    private String lineSeparator = System.getProperty("line.separator");
 
+    private String lineSeparator = Jsh.lineSeparator;
     private String initialWorkingDirectoryPath;
     
     @BeforeClass
