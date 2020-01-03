@@ -13,20 +13,20 @@ public class Echo implements Application {
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException{
         applicationArguments = Application.globArguments(applicationArguments, -1);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-        boolean atLeastOnePrinted = false;
+        int index = 0;
         try {
             for (String arg : applicationArguments) {
                 writer.write(arg);
-                if(applicationArguments.get(applicationArguments.size() - 1).compareTo(arg) != 0) {
+                if(index != applicationArguments.size() - 1) {
                     writer.write(" ");
                 }
                 writer.flush();
-                atLeastOnePrinted = true;
+
+                index += 1;
             }
-            if (atLeastOnePrinted) {
-                writer.write(System.getProperty("line.separator"));
-                writer.flush();
-            }
+            
+            writer.write(System.getProperty("line.separator"));
+            writer.flush();
         } catch (IOException e) {
             throw new JshException("echo: could not write output");
         }
