@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Ls;
+import uk.ac.ucl.jsh.Applications.Wc;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 

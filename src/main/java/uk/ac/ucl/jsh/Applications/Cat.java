@@ -69,7 +69,6 @@ public class Cat implements Application{
                         Path filePath = Paths.get(currFile.getPath());
                         try (BufferedReader reader = Files.newBufferedReader(filePath, encoding)) {
                             readAndWrite(reader, writer);
-                            
                         } 
                         catch (IOException e) {
                             throw new JshException("cat: cannot open " + arg);

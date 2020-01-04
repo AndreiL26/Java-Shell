@@ -68,8 +68,6 @@ public class FileSystem {
          Path engPath = Files.createDirectory(Paths.get(documentsPath + fileSeparator + "Eng"));
          Path wareFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Ware"));
          Path projFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Proj.txt"));
-         Path testDocumentFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "test.txt"));
-         Path cannotOpenFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "cannotopen.txt"));
          
          // Create Eng's children
          Path testFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Test"));
@@ -88,9 +86,6 @@ public class FileSystem {
          Files.write(oth1FilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
          Files.write(oth2FilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
          Files.write(testFilePath, generateLongFileText(20).getBytes(), StandardOpenOption.APPEND);
-         Files.write(testDocumentFilePath, "hello\n".getBytes(), StandardOpenOption.APPEND);
-         byte[] byteArray = new byte[] { (byte)0xCA,(byte)0xFE,(byte)0xBA,(byte)0xBE,(byte)0x00,(byte)0x00,(byte)0x00,(byte)0x37,(byte)0x00,(byte)0xFD,(byte)0x07,(byte)0x00,(byte)0x02,(byte)0x01,(byte)0x00,(byte)0x1B};
-         Files.write(cannotOpenFilePath, byteArray, StandardOpenOption.APPEND);
         
     }
 

@@ -2,16 +2,17 @@ package uk.ac.ucl.jsh;
 
 import uk.ac.ucl.jsh.Applications.Wc;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
-import uk.ac.ucl.jsh.Utilities.ApplicationManager;
+import uk.ac.ucl.jsh.Utilities.JshException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,362 +24,196 @@ import java.util.ArrayList;
 
 
 public class WcTest {
-    private static FileSystem fileSystem;
-    private static OutputStreamWriter writer;
-    private static ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    private static Wc wcApplication;
+    private static ArrayList<String> applicationArguments;
+    private static FileSystem fileSystem = Jsh.getFileSystem();
+    private static ByteArrayOutputStream outputStream;
     private String lineSeparator = System.getProperty("line.separator");
-
+    private String fileSeparator = System.getProperty("file.separator");
     
     @BeforeClass
     public static void setClass() {
-        fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
+        applicationArguments = new ArrayList<>();
         outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
-        writer = new OutputStreamWriter(System.out);
+        wcApplication = new Wc(fileSystem);
     }
 
     @Before
-    // Create the test hierarchy
-    public void beforeTest() throws IOException {
-       fileSystem.createTestFileHierarchy();
-       fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
-
-    }
-
-    @After
-    // Delete the test hierarchy, reset the command arguments and reset the outputstream
-    public void afterTest() throws IOException {
-        fileSystem.deleteTestFileHierarchy();
-        outputStream.reset();
+    // Create the File Hierarchy
+    public void createHierarchy() throws IOException {
+        fileSystem.createTestFileHierarchy();
+        fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
+     }
+ 
+     @After
+     // Delete the test hierarchy, reset the command arguments and reset the outputstream
+     public void afterTest() throws IOException {
+         fileSystem.deleteTestFileHierarchy();
+         applicationArguments.clear();
+         outputStream.reset();
     }   
 
     @Test
-    public void testFlagM() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-m");
-        array.add(1, ApplicationManager.encodePath("Documents/test.txt"));
+    public void testInvalidArgument() {
         try {
-            command.checkArguments(array, null, null);
-        } catch (RuntimeException e) {
-            fail("fail, does not recognise correct flag");
+            applicationArguments.add("-q");
+            wcApplication.execute(applicationArguments, null, outputStream);
+            fail("wc did not throw an invalid argument exception");
+        } catch (JshException e) {
+           assertEquals("wc: file does not exist", e.getMessage());
         }
     }
 
     @Test
-    public void testFlagW() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-w");
-        array.add(1, ApplicationManager.encodePath("Documents/test.txt"));
+    public void testOneInvalidPathNonExistant() {
         try {
-            command.checkArguments(array, null, null);
-        } catch (RuntimeException e) {
-            fail("fail, does not recognise correct flag");
+            applicationArguments.add("Soft");
+            applicationArguments.add("InvalidPath");
+            wcApplication.execute(applicationArguments, null, outputStream);
+            fail("wc did not throw an invalid argument exception");
+        } catch (JshException e) {
+           assertEquals("wc: file does not exist", e.getMessage());
         }
     }
 
     @Test
-    public void testFlagL() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-l");
-        array.add(1, ApplicationManager.encodePath("Documents/test.txt"));
+    public void testOneInvalidPathToFolder() {
         try {
-            command.checkArguments(array, null, null);
-        } catch (RuntimeException e) {
-            fail("fail, does not recognise correct flag");
-        }
+            applicationArguments.add("Soft");
+            applicationArguments.add("Documents");
+            wcApplication.execute(applicationArguments, null, outputStream);
+            fail("wc did not throw an invalid argument exception");
+        } catch (JshException e) {
+            assertEquals("wc: " + "Documents" + " is a directory", e.getMessage());
+        } 
     }
-    
+
     @Test
-    public void testInvalidFlag() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-q");
-        array.add(1, ApplicationManager.encodePath("Documents/test.txt"));
+    public void testMissingInput() {
         try {
-            command.checkArguments(array, null, null);
-            fail("fail, accepts wrong flag");
-        } catch (RuntimeException e) {
-            String expectedOutput = "wc: invalid arguments";
-            assertEquals(expectedOutput, e.getMessage());
+            applicationArguments.add("-m");
+            System.out.println(applicationArguments.get(0));
+            wcApplication.execute(applicationArguments, null, outputStream);
+            fail("wc did not throw a missing input exception");
+        } catch (JshException e) {
+           assertEquals("wc: missing input", e.getMessage());
         }
     }
 
     @Test
-    public void testUppercaseFlagM() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-M");
-        array.add(1, ApplicationManager.encodePath("Documents/test.txt"));
-        try {
-            command.checkArguments(array, null, null);
-            fail("fail, uppercase flag not allowed");
-        } catch (RuntimeException e) {
-            String expectedOutput = "wc: invalid arguments";
-            assertEquals(expectedOutput, e.getMessage());
-        }
+    public void testFlagM() throws JshException {
+        applicationArguments.add("-m");
+        applicationArguments.add("Soft");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("35 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testFilenameIsFlag() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "m");
-        array.add(1, ApplicationManager.encodePath("Documents/test.txt"));
-        try {
-            command.checkArguments(array, null, null);
-        } catch (RuntimeException e) {
-            fail("wc should not throw an exception");
-        }
+    public void testFlagW() throws JshException {
+        applicationArguments.add("-w");
+        applicationArguments.add("Soft");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("11 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testFileDoesNotExistNoFlag() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "w");
-        try {
-            command.execute(array, System.in, System.out);
-            fail("wc should throw an exception");
-        } catch (RuntimeException e) {
-            String expectedOutput = "wc: file does not exist";
-            assertEquals(expectedOutput, e.getMessage());
-        }
+    public void testFlagL() throws JshException {
+        applicationArguments.add("-l");
+        applicationArguments.add("Soft");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testCharacterCount() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-m");
-        array.add(1, ApplicationManager.encodePath("Documents/test.txt"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "6" + " " + ApplicationManager.encodePath("Documents/test.txt") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong number of characters");
-        }
+    public void testTwoFlagsInSameArgument() throws JshException {
+        applicationArguments.add("-lw");
+        applicationArguments.add("Soft");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testWordCount() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-w");
-        array.add(1, ApplicationManager.encodePath("Documents/test.txt"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "1" + " " + ApplicationManager.encodePath("Documents/test.txt") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong number of words");
-        }
+    public void testTwoFlagsInDifferentArguments() throws JshException {
+        applicationArguments.add("-l");
+        applicationArguments.add("Soft");
+        applicationArguments.add("-w");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testLineCount() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-l");
-        array.add(1, ApplicationManager.encodePath("Documents/test.txt"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "1" + " " + ApplicationManager.encodePath("Documents/test.txt") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong number of lines");
-        }
+    public void testAllFlagsWithAllOptions() throws JshException {
+        applicationArguments.add("-lwm");
+        applicationArguments.add("Soft");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("35 11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testNoFlagsAsInput() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, ApplicationManager.encodePath("Documents/test.txt"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "6" + " " + "1" + " " + "1" + " " + ApplicationManager.encodePath("Documents/test.txt") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong output");
-        }
+    public void testNoOptions() throws JshException {
+        applicationArguments.add("Soft");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("35 11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testNoFlagsAsInputWare() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, ApplicationManager.encodePath("Documents/Ware"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "47" + " " + "11" + " " + "3" + " " + ApplicationManager.encodePath("Documents/Ware") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong output");
-        }
+    public void testAllFlagsAbsolutePath() throws JshException {
+        applicationArguments.add("-mlw");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Other" + fileSeparator + "Oth1");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("35 11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testCharacterAndWordCount() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-w");
-        array.add(1, "-m");
-        array.add(2, ApplicationManager.encodePath("Documents/test.txt"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "6" + " " + "1" + " " + ApplicationManager.encodePath("Documents/test.txt") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong output");
-        }
+    public void testFlagAppearingMoreThanOnce() throws JshException {
+        applicationArguments.add("-lw");
+        applicationArguments.add("Soft");
+        applicationArguments.add("-w");
+        applicationArguments.add("-w");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testCharacterAndLineCount() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-m");
-        array.add(1, "-l");
-        array.add(2, ApplicationManager.encodePath("Documents/test.txt"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "6" + " " + "1" + " " + ApplicationManager.encodePath("Documents/test.txt") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong output");
-        }
+    public void testReadFromMultipleFiles() throws JshException {
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Other" + fileSeparator + "Oth1");
+        applicationArguments.add("Soft");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("35 11 3 " + lineSeparator + "35 11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testWordAndLineCount() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-l");
-        array.add(1, "-w");
-        array.add(2, ApplicationManager.encodePath("Documents/test.txt"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "1" + " " + "1" + " " + ApplicationManager.encodePath("Documents/test.txt") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong output");
-        }
+    public void testReadFromMultipleGlobbedFiles() throws JshException {
+        applicationArguments.add("Docu*s" + fileSeparator + "Wa*e");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "S*t");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("35 11 3 " + lineSeparator + "35 11 3 " + lineSeparator, outputStream.toString());
+    }
+
+    @Test 
+    public void testReadFromInputStreamWithFlags() throws IOException, JshException {
+        applicationArguments.add("-m");
+        ByteArrayOutputStream aux = new ByteArrayOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
+        String input = "Hello world" + lineSeparator + "I am here!" + lineSeparator;
+        writer.write(input);
+        writer.flush();
+        writer.close();
+        ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
+        wcApplication.execute(applicationArguments, testInput, outputStream);  
+        assertEquals("18 " + lineSeparator, outputStream.toString());
     }
 
     @Test
-    public void testTwoFiles() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-w");
-        array.add(1, "-m");
-        array.add(2, ApplicationManager.encodePath("Documents/test.txt"));
-        array.add(3, "-m");
-        array.add(4, ApplicationManager.encodePath("Documents/Ware"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "6" + " " + "1" + " " + ApplicationManager.encodePath("Documents/test.txt") + lineSeparator + "47" + " " + ApplicationManager.encodePath("Documents/Ware") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong output");
-        }
+    public void testReadFromInputStream() throws IOException, JshException {
+        ByteArrayOutputStream aux = new ByteArrayOutputStream();
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
+        String input = "Hello world" + lineSeparator + "I am here!" + lineSeparator;
+        writer.write(input);
+        writer.flush();
+        writer.close();
+        ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
+        wcApplication.execute(applicationArguments, testInput, outputStream);  
+        assertEquals("18 5 2 " + lineSeparator, outputStream.toString());
     }
-
-    @Test
-    public void testTwoFilesSecondVersion() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-w");
-        array.add(1, "-m");
-        array.add(2, ApplicationManager.encodePath("Documents/test.txt"));
-        array.add(3, ApplicationManager.encodePath("Documents/Ware"));
-        try {
-            String expectedOutput = new String();
-            command.execute(array, System.in, System.out);
-            expectedOutput += "6" + " " + "1" + " " + ApplicationManager.encodePath("Documents/test.txt") + lineSeparator + "47" + " " + "11" + " " + "3" + " " + ApplicationManager.encodePath("Documents/Ware") + lineSeparator;
-            assertEquals(outputStream.toString(), expectedOutput);
-        } catch (RuntimeException e) {
-            fail("fail: wrong output");
-        }
-    }
-
-    // need redirection to test
-
-    // @Test
-    // public void testMissingArgumentsStdin() throws IOException{
-    //     Wc command = new Wc(fileSystem, writer);
-    //     ArrayList<String> array = new ArrayList<String>();
-    //     try {
-    //         command.checkarguments(array, null, null);
-    //     } catch (RuntimeException e) {
-    //         fail("wc should give stdin");
-    //     }
-    // }
-
-
-    @Test
-    public void fileDoesNotExist() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-l");
-        array.add(1, ApplicationManager.encodePath("Documents/NotExist"));
-        try {
-            command.execute(array, System.in, System.out);
-            fail("wc did not throw an exception");
-        } catch (RuntimeException e) {
-            String expectedOutput = "wc: file does not exist";
-            assertEquals(expectedOutput, e.getMessage());
-        }
-    }
-
-
-    @Test
-    public void checkInvalidFileName() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "-l");
-        array.add(1, ApplicationManager.encodePath("-test.txt"));
-        try {
-            command.checkArguments(array, null, null);
-            fail("wc did not throw an exception");
-        } catch (RuntimeException e) {
-            String expectedOutput = "wc: invalid arguments";
-            assertEquals(expectedOutput, e.getMessage());
-        }
-    }
-
-    @Test
-    public void testCannotOpenFile() throws IOException{
-        Wc command = new Wc(fileSystem);
-        ArrayList<String> array = new ArrayList<String>();
-        array.add(0, "");
-        array.add(1, ApplicationManager.encodePath("Documents/cannotopen.txt"));
-        ArrayList<String> flags = new ArrayList<String>();
-        flags.add(0, "-m");
-        flags.add(1, "-w");
-        flags.add(2, "-l");
-        for (String flag : flags) {
-            array.set(0, flag);
-            try {
-                command.execute(array, System.in, System.out);
-                fail("wc did not throw an exception");
-            } catch (RuntimeException e) {
-                String expectedOutput = "wc: cannot read " + ApplicationManager.encodePath("Documents/cannotopen.txt");
-                assertEquals(expectedOutput, e.getMessage());
-            }
-        }
-    }
-
 }
