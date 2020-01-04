@@ -14,9 +14,7 @@ public class History implements Application {
         return Integer.toString(index) + ". " + historyElement;
     }
 
-    private void checkArguments(ArrayList<String> applicationArguments, 
-                               InputStream inputStream, 
-                               OutputStream outpustream) throws JshException {
+    private void checkArguments(ArrayList<String> applicationArguments) throws JshException {
         if (applicationArguments.size() > 1) {
             throw new JshException("history: too many arguments");
         }
@@ -27,7 +25,7 @@ public class History implements Application {
                         InputStream inputStream, 
                         OutputStream outputStream) throws JshException {
 
-        checkArguments(applicationArguments, inputStream, outputStream);
+        checkArguments(applicationArguments);
         ArrayList<String> historyToPrint = new ArrayList<>();
         ArrayList<String> history = Jsh.getHistory();
         int numberOfElementsToPrint;

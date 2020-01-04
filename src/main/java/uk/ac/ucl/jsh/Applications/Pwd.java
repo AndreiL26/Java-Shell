@@ -11,7 +11,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Pwd implements Application {
-    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
+    private void checkArguments(ArrayList<String> applicationArguments) throws JshException {
         if(!applicationArguments.isEmpty()) {
             throw new JshException("pwd: too many arguments");
         }
@@ -20,7 +20,7 @@ public class Pwd implements Application {
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
        applicationArguments = Application.globArguments(applicationArguments, -1);
-       checkArguments(applicationArguments, inputStream);
+       checkArguments(applicationArguments);
        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
        try {
             writer.write(FileSystem.getInstance().getWorkingDirectoryPath() + Jsh.lineSeparator);

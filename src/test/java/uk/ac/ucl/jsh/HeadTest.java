@@ -67,6 +67,19 @@ public class HeadTest {
     }
 
     @Test
+    public void testCustomNumberOfLinesNegativeNumber() {
+        try {
+            applicationArguments.add("-n");
+            applicationArguments.add("-15");
+            applicationArguments.add("/tmp/Documents/Eng/Test");
+            headApplication.execute(applicationArguments, null, outputStream);
+            fail("head did not throw an illegal line count exception");
+        } catch (JshException e) {
+            assertEquals("head: illegal line count -- -15", e.getMessage());
+        }
+    }
+
+    @Test
     public void testMissingInput() {
         try {
             headApplication.execute(applicationArguments, null, outputStream);
@@ -186,15 +199,6 @@ public class HeadTest {
         }
         headApplication.execute(applicationArguments, null, outputStream);
         assertEquals(expectedOutput, outputStream.toString());
-    }
-
-    @Test
-    public void testCustomNumberOfLinesNegativeNumber() throws JshException {
-        applicationArguments.add("-n");
-        applicationArguments.add("-15");
-        applicationArguments.add("/tmp/Documents/Eng/Test");
-        headApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("", outputStream.toString());
     }
 
     @Test

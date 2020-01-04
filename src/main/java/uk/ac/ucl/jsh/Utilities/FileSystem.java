@@ -81,18 +81,18 @@ public final class FileSystem {
          // Create Documents's children
          Path engPath = Files.createDirectory(Paths.get(documentsPath + fileSeparator + "Eng"));
          Path wareFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Ware"));
-         Path projFilePath = Files.createFile(Paths.get(documentsPath + fileSeparator + "Proj.txt"));
+         Files.createFile(Paths.get(documentsPath + fileSeparator + "Proj.txt"));
          
          // Create Eng's children
          Path testFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Test"));
-         Path codeFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Code"));
-         Path planFilePath = Files.createFile(Paths.get(engPath + fileSeparator + "Plan"));
+         Files.createFile(Paths.get(engPath + fileSeparator + "Code"));
+         Files.createFile(Paths.get(engPath + fileSeparator + "Plan"));
  
          // Create Other's children
          Path oth1FilePath = Files.createFile(Paths.get(otherPath + fileSeparator + "Oth1"));
          Path oth2FilePath = Files.createFile(Paths.get(otherPath + fileSeparator + "Oth2"));
-         Path dotFilePath = Files.createFile(Paths.get(otherPath + fileSeparator + ".test"));
-         Path emptyDirPath = Files.createDirectory(Paths.get(otherPath + fileSeparator + "Empty"));
+         Files.createFile(Paths.get(otherPath + fileSeparator + ".test"));
+         Files.createDirectory(Paths.get(otherPath + fileSeparator + "Empty"));
 
          // Write to the created files
          Files.write(softFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);

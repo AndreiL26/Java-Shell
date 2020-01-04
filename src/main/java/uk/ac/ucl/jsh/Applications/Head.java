@@ -34,7 +34,7 @@ public class Head implements Application{
     }
 
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
-        if ((applicationArguments.isEmpty()) && inputStream == null) {
+        if (applicationArguments.isEmpty() && inputStream == null) {
             throw new JshException("head: missing input");
         }
         if (applicationArguments.size() > 3) {
@@ -60,10 +60,10 @@ public class Head implements Application{
         if (applicationArguments.size() > 1) {
             try {
                 headLines = Integer.parseInt(applicationArguments.get(1));
-                if(headLines < 0) {
-                    /// What to do in tbis case, throw an error or let it execute, not printing anything?
+                if(headLines <= 0) {
+                    throw new JshException("head: illegal line count -- " + headLines);
                 } 
-            } catch (Exception e) {
+            } catch (NumberFormatException  e) {
                 throw new JshException("head: wrong argument " + applicationArguments.get(1));
             }
         }    

@@ -12,7 +12,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Ls implements Application {
-    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
+    private void checkArguments(ArrayList<String> applicationArguments) throws JshException {
         if(applicationArguments.size() > 1) {
             throw new JshException("ls: too many arguments");
         }
@@ -21,7 +21,7 @@ public class Ls implements Application {
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, -1);
-        checkArguments(applicationArguments, inputStream);
+        checkArguments(applicationArguments);
         File currDir = null;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         if (applicationArguments.isEmpty()) {

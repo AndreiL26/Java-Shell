@@ -50,7 +50,7 @@ public interface Application {
         }
     }
 
-    public static ArrayList<String> globArguments(ArrayList<String> applicationArguments, int ignoreIndex) {
+    static ArrayList<String> globArguments(ArrayList<String> applicationArguments, int ignoreIndex) {
         ArrayList<String> globbedArguments = new ArrayList<String>();
         String fileSeparator = Jsh.fileSeparator;
             
@@ -85,5 +85,5 @@ public interface Application {
         return globbedArguments;
     }
 
-    public abstract void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outpustream) throws JshException;
+    void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outpustream) throws JshException;
 }

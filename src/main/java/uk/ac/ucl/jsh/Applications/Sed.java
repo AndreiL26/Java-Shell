@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
@@ -39,25 +38,21 @@ public class Sed implements Application {
             return false;
         }
 
-        if(delimiter == 's') {
-            if(delimiterCount != 4) {
-                return false;
-            }
+        if(delimiter == 's' && delimiterCount != 4) {
+            return false;
         }
 
         if(delimiter == 'g') {
             if(delimiterCount != 3 && delimiterCount != 4) {
                 return false;
             }
-            if(delimiterCount == 4 && (argument.charAt(argument.length() - 1) != argument.charAt(argument.length() - 2))) {
+            if(delimiterCount == 4 && argument.charAt(argument.length() - 1) != argument.charAt(argument.length() - 2)) {
                 return false;
             }
         }
 
-        if(delimiter != 's' && delimiter != 'g') {
-            if(delimiterCount != 3) {
-                return false;
-            }
+        if(delimiter != 's' && delimiter != 'g' && delimiterCount != 3) {
+            return false;
         }
 
         int firstDelimiterIndex;

@@ -41,7 +41,7 @@ public class Tail implements Application {
     }
     
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
-        if ((applicationArguments.isEmpty()) && inputStream == null)  {
+        if (applicationArguments.isEmpty() && inputStream == null)  {
             throw new JshException("tail: missing input");
         }
         if (applicationArguments.size() > 3) {
@@ -66,10 +66,10 @@ public class Tail implements Application {
         if (applicationArguments.size() > 1) {
             try {
                 tailLines = Integer.parseInt(applicationArguments.get(1));
-                if (tailLines < 0) {
-                    /// What to do here?
+                if (tailLines <= 0) {
+                    throw new JshException("tail: illegal line count -- " + tailLines);
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 throw new JshException("tail: wrong argument " + applicationArguments.get(1));
             }
         }

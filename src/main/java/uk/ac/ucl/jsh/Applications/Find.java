@@ -34,14 +34,12 @@ public class Find implements Application {
             }
         }
     }
-    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
+    private void checkArguments(ArrayList<String> applicationArguments) throws JshException {
         if(applicationArguments.size() < 2) {
             throw new JshException("find: missing arguments");
         }
-        if(applicationArguments.size() == 2) {
-            if(applicationArguments.get(0).compareTo("-name") != 0) {
-                throw new JshException("find: wrong argument");
-            }
+        if(applicationArguments.size() == 2 && applicationArguments.get(0).compareTo("-name") != 0) {
+            throw new JshException("find: wrong argument");
         }
         if(applicationArguments.size() == 3) {
             File rootSearchDirectory = FileSystem.getInstance().getFile(applicationArguments.get(0));
@@ -63,7 +61,7 @@ public class Find implements Application {
         String searchRootDirectory;
         String resolvedPath = ".";
         applicationArguments = Application.globArguments(applicationArguments, applicationArguments.size() - 1);
-        checkArguments(applicationArguments, inputStream);
+        checkArguments(applicationArguments);
         writer = new OutputStreamWriter(outputStream);
 
         if(applicationArguments.size() == 2) {

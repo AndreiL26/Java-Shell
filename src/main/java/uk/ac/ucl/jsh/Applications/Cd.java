@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
  
 public class Cd implements Application {
-    private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
+    private void checkArguments(ArrayList<String> applicationArguments) throws JshException {
         if (applicationArguments.isEmpty()) {
             throw new JshException("cd: missing argument");
         } else if (applicationArguments.size() > 1) {
@@ -21,7 +21,7 @@ public class Cd implements Application {
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, -1);
-        checkArguments(applicationArguments, inputStream);
+        checkArguments(applicationArguments);
         String dirString = applicationArguments.get(0);
         File dir;
         String currentDirectoryPath = FileSystem.getInstance().getWorkingDirectoryPath();

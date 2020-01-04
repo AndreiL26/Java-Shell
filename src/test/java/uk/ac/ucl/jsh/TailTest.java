@@ -67,6 +67,19 @@ public class TailTest {
     }
 
     @Test
+    public void testCustomNumberOfLinesNegativeNumber() throws JshException {
+        try{
+            applicationArguments.add("-n");
+            applicationArguments.add("-15");
+            applicationArguments.add("/tmp/Documents/Eng/Test");
+            tailApplication.execute(applicationArguments, null, outputStream);
+            fail("tail did not throw a too many arguments exception");
+        } catch (JshException e) {
+           assertEquals("tail: illegal line count -- -15", e.getMessage());
+        }
+    }
+
+    @Test
     public void testMissingInput() {
         try {
             tailApplication.execute(applicationArguments, null, outputStream);
@@ -186,15 +199,6 @@ public class TailTest {
         }
         tailApplication.execute(applicationArguments, null, outputStream);
         assertEquals(expectedOutput, outputStream.toString());
-    }
-
-    @Test
-    public void testCustomNumberOfLinesNegativeNumber() throws JshException {
-        applicationArguments.add("-n");
-        applicationArguments.add("-15");
-        applicationArguments.add("/tmp/Documents/Eng/Test");
-        tailApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("", outputStream.toString());
     }
 
     @Test

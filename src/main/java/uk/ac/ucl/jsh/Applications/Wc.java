@@ -64,7 +64,7 @@ public class Wc implements Application {
         }
     }
 
-    private void solveForInput(BufferedReader reader, OutputStreamWriter writer) throws JshException {
+    private void solveForInput(BufferedReader reader) throws JshException {
         try {
             String currentLine = reader.readLine();
             while (currentLine != null) {
@@ -95,7 +95,7 @@ public class Wc implements Application {
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
 
         if(fileNames.size() == 0) {
-            solveForInput(new BufferedReader(new InputStreamReader(inputStream)), writer);
+            solveForInput(new BufferedReader(new InputStreamReader(inputStream)));
         }
         else {
             for(String fileName: fileNames) {
@@ -103,7 +103,7 @@ public class Wc implements Application {
                 if (currFile.exists()) {
                     if(currFile.isFile()) { 
                         try (BufferedReader reader = Files.newBufferedReader(Paths.get(currFile.getPath()), StandardCharsets.UTF_8)) {
-                            solveForInput(reader, writer);
+                            solveForInput(reader);
                         } 
                         catch (IOException e) {
                             throw new JshException("wc: cannot open " + fileName);
