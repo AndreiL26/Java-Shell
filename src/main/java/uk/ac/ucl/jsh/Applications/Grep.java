@@ -20,15 +20,12 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Grep implements Application {
-    private void readAndMatch(BufferedReader reader, OutputStreamWriter writer, Pattern pattern, String fileName) throws JshException {
+    private void readAndMatch(BufferedReader reader, OutputStreamWriter writer, Pattern pattern) throws JshException {
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
                 Matcher matcher = pattern.matcher(line);
                 if (matcher.find()) {
-                    if(fileName != null) {
-                        writer.write(fileName + ": ");
-                    }
                     writer.write(line + Jsh.lineSeparator);
                     writer.flush();
                 }
@@ -75,14 +72,14 @@ public class Grep implements Application {
 
             for (int j = 0; j < filePathArray.length; j++) {
                 try (BufferedReader reader = Files.newBufferedReader(filePathArray[j], StandardCharsets.UTF_8)) {
-                    readAndMatch(reader, writer, grepPattern, applicationArguments.get(j+1));
+                    readAndMatch(reader, writer, grepPattern);
                 } catch (IOException e) {
                     throw new JshException("grep: cannot open " + applicationArguments.get(j + 1));
                 }
             }
         }
         else {
-            readAndMatch(new BufferedReader(new InputStreamReader(inputStream,StandardCharsets.UTF_8)), writer, grepPattern, null);
+            readAndMatch(new BufferedReader(new InputStreamReader(inputStream,StandardCharsets.UTF_8)), writer, grepPattern);
         }
     }
 

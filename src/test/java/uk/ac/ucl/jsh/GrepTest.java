@@ -146,7 +146,7 @@ public class GrepTest {
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
         for(int i = 0; i < 20; ++ i) {
-            expectedOutput += "/tmp/Documents/Eng/Test: " + "Line number: " + Integer.toString(i) + lineSeparator;
+            expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
         }
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -158,8 +158,8 @@ public class GrepTest {
         applicationArguments.add("Soft");
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
-        expectedOutput += "Soft: This is a test" + lineSeparator;
-        expectedOutput += "Soft: This is a test of another test" + lineSeparator;
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
 
@@ -171,10 +171,10 @@ public class GrepTest {
         applicationArguments.add("Documents/Ware");
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
-        expectedOutput += "/tmp/Soft: This is a test" + lineSeparator;
-        expectedOutput += "/tmp/Soft: This is a test of another test" + lineSeparator;
-        expectedOutput += "Documents/Ware: This is a test" + lineSeparator;
-        expectedOutput += "Documents/Ware: This is a test of another test" + lineSeparator;
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
 
@@ -191,8 +191,8 @@ public class GrepTest {
         ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
         grepApplication.execute(applicationArguments, testInput, outputStream);
         String expectedOutput = new String();
-        expectedOutput += "/tmp/Soft: This is a test" + lineSeparator;
-        expectedOutput += "/tmp/Soft: This is a test of another test" + lineSeparator;
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
         assertEquals(expectedOutput, outputStream.toString());
     }
 
@@ -204,7 +204,7 @@ public class GrepTest {
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
         for(int i = 0; i < 20; ++ i) {
-            expectedOutput += "/tmp/Documents/Eng/Test: " + "Line number: " + Integer.toString(i) + lineSeparator;
+            expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
         }
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -216,7 +216,7 @@ public class GrepTest {
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
         for(int i = 0; i < 20; ++ i) {
-            expectedOutput += "/tmp/Documents/Eng/Test: " + "Line number: " + Integer.toString(i) + lineSeparator;
+            expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
         }
         assertEquals(expectedOutput, outputStream.toString());
     }
@@ -227,10 +227,10 @@ public class GrepTest {
         applicationArguments.add("/tmp/Other/Oth*");
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
-        expectedOutput += "/tmp/Other/Oth1: This is a test" + lineSeparator;
-        expectedOutput += "/tmp/Other/Oth1: This is a test of another test" + lineSeparator;
-        expectedOutput += "/tmp/Other/Oth2: This is a test" + lineSeparator;
-        expectedOutput += "/tmp/Other/Oth2: This is a test of another test" + lineSeparator;
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
+        expectedOutput += "This is a test" + lineSeparator;
+        expectedOutput += "This is a test of another test" + lineSeparator;
         assertEqualStrings(expectedOutput, outputStream.toString());
     }
 

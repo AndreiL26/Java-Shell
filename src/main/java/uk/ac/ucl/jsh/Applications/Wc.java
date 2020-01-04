@@ -123,14 +123,14 @@ public class Wc implements Application {
                 writer.write(charCount + " " + wordCount + " " + lineCount + " ");
             }
             else {
-                if(flags[0] == 1) {
-                    writer.write(charCount + " ");
+                if(flags[2] == 1) {
+                    writer.write(lineCount + " ");
                 } 
                 if(flags[1] == 1) {
                     writer.write(wordCount + " ");
                 }
-                if(flags[2] == 1) {
-                    writer.write(lineCount + " ");
+                if(flags[0] == 1) {
+                    writer.write(charCount + " ");
                 } 
             } 
             writer.write(System.getProperty("line.separator"));
