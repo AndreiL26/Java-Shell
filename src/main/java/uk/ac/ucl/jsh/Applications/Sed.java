@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -17,13 +19,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 public class Sed implements Application {
-    private FileSystem fileSystem;
     private String regex;
     private String replacement;
-
-    public Sed(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
 
     private boolean isValid(String argument) { 
         if(argument == "") {
@@ -34,29 +31,31 @@ public class Sed implements Application {
             return false;
         }
         char delimiter = argument.charAt(1);
-        
+        long delimiterCount = argument.codePoints().filter(ch -> ch == delimiter).count();
         if(argument.charAt(argument.length() - 1) != delimiter && argument.charAt(argument.length()-1) != 'g') {
             return false;
         }
-
-        if(argument.charAt(argument.length() - 1) == 'g' && argument.charAt(argument.length() - 2) != delimiter) {
+        if(delimiter != 'g' && argument.charAt(argument.length() - 1) == 'g' && argument.charAt(argument.length() - 2) != delimiter) {
             return false;
         }
 
         if(delimiter == 's') {
-            if(argument.codePoints().filter(ch -> ch == delimiter).count() != 4) {
+            if(delimiterCount != 4) {
                 return false;
             }
         }
 
         if(delimiter == 'g') {
-            if(argument.codePoints().filter(ch -> ch == delimiter).count() != 3 && argument.codePoints().filter(ch -> ch == delimiter).count() != 4) {
+            if(delimiterCount != 3 && delimiterCount != 4) {
+                return false;
+            }
+            if(delimiterCount == 4 && (argument.charAt(argument.length() - 1) != argument.charAt(argument.length() - 2))) {
                 return false;
             }
         }
 
         if(delimiter != 's' && delimiter != 'g') {
-            if(argument.codePoints().filter(ch -> ch == delimiter).count() != 3) {
+            if(delimiterCount != 3) {
                 return false;
             }
         }
@@ -115,12 +114,7 @@ public class Sed implements Application {
 
         if(applicationArguments.size() == 2){
             String filePath = applicationArguments.get(1);
-            if(filePath.startsWith(System.getProperty("file.separator"))) {
-                sedFile = new File(applicationArguments.get(1));
-            }
-            else {
-                sedFile = new File(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + filePath);
-            }
+            sedFile = FileSystem.getInstance().getFile(filePath);
 
             if(!sedFile.exists()) {
                 throw new JshException("sed: cannot open " + filePath);
@@ -142,10 +136,10 @@ public class Sed implements Application {
             String line = null;
             while((line = reader.readLine()) != null) {
                 if(replaceAll == true) {
-                    writer.write(line.replaceAll(regex, replacement) + System.getProperty("line.separator"));
+                    writer.write(line.replaceAll(regex, replacement) + Jsh.lineSeparator);
                 }
                 else {
-                    writer.write(line.replaceFirst(regex, replacement) + System.getProperty("line.separator"));
+                    writer.write(line.replaceFirst(regex, replacement) + Jsh.lineSeparator);
                 }
                 writer.flush();
             }

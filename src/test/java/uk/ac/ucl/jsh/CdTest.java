@@ -21,21 +21,24 @@ public class CdTest {
     private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
-    private String fileSeparator = System.getProperty("file.separator");
+
+    private String fileSeparator = Jsh.fileSeparator;
+    private String initialWorkingDirectoryPath;
     
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
-        fileSystem = new FileSystem(System.getProperty("java.io.tmpdir"));
+        fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        cdApplication = new Cd(fileSystem);
+        cdApplication = new Cd();
     }
 
     @Before
     // Create the test hierarchy
     public void beforeTest() throws IOException {
-       fileSystem.createTestFileHierarchy();
-       fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
+        initialWorkingDirectoryPath = fileSystem.getWorkingDirectoryPath();
+        fileSystem.createTestFileHierarchy();
+        fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
     }
 
     @After
@@ -44,6 +47,7 @@ public class CdTest {
         fileSystem.deleteTestFileHierarchy();
         applicationArguments.clear();
         outputStream.reset();
+        fileSystem.setWorkingDirectory(initialWorkingDirectoryPath);
     }   
 
     @Test 

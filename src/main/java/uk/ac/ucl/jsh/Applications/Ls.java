@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -11,12 +12,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Ls implements Application {
-    private FileSystem fileSystem;
-    
-    public Ls(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
         if(applicationArguments.size() > 1) {
             throw new JshException("ls: too many arguments");
@@ -30,15 +25,10 @@ public class Ls implements Application {
         File currDir = null;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         if (applicationArguments.isEmpty()) {
-            currDir = new File(fileSystem.getWorkingDirectoryPath());
+            currDir = new File(FileSystem.getInstance().getWorkingDirectoryPath());
         } 
         else {
-            if(applicationArguments.get(0).startsWith(System.getProperty("file.separator"))) {
-                currDir = new File(applicationArguments.get(0));
-            }
-            else {
-                currDir = new File(fileSystem.getWorkingDirectoryPath(), applicationArguments.get(0));
-            }
+            currDir = FileSystem.getInstance().getFile(applicationArguments.get(0));
         }
         try{
             File[] listOfFiles = currDir.listFiles();
@@ -56,7 +46,7 @@ public class Ls implements Application {
                 }    
 
                 if (atLeastOnePrinted) {
-                    writer.write(System.getProperty("line.separator"));
+                    writer.write(Jsh.lineSeparator);
                     writer.flush();
                 } 
             } catch (IOException e) {

@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -17,12 +18,6 @@ import java.util.ArrayList;
 import java.io.OutputStreamWriter;
 
 public class Tail implements Application {
-    private FileSystem fileSystem;
-
-    public Tail(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void readAndWriteLast(BufferedReader reader, OutputStreamWriter writer, int tailLines) throws JshException {
         ArrayList<String> storage = new ArrayList<>();
         String line = null;
@@ -37,7 +32,7 @@ public class Tail implements Application {
                 index = storage.size() - tailLines;
             }
             for (int i = index; i < storage.size(); i++) {
-                writer.write(storage.get(i) + System.getProperty("line.separator"));
+                writer.write(storage.get(i) + Jsh.lineSeparator);
                 writer.flush();
             }     
         } catch (IOException e) {
@@ -82,12 +77,8 @@ public class Tail implements Application {
 
         if(applicationArguments.size() == 1 || applicationArguments.size() == 3) {
             tailArg = applicationArguments.get(applicationArguments.size() - 1);
-            if (tailArg.startsWith(System.getProperty("file.separator"))) {
-                tailFile = new File(tailArg);
-            }
-            else {
-                tailFile = new File(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + tailArg);
-            }
+            tailFile = FileSystem.getInstance().getFile(tailArg);
+            
             if(tailFile.exists()) {
                 Path filePath = Paths.get(tailFile.getAbsolutePath());
                 try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {

@@ -1,7 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Jsh;
-import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 import java.io.IOException;
@@ -11,12 +10,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class History implements Application {
-    private FileSystem fileSystem;
-
-    public History(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private String indexHistoryElement(int index, String historyElement) {
         return Integer.toString(index) + ". " + historyElement;
     }
@@ -64,7 +57,7 @@ public class History implements Application {
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         try {
             for (String historyElement: historyToPrint) {
-                writer.write(historyElement + System.getProperty("line.separator"));
+                writer.write(historyElement + Jsh.lineSeparator);
                 writer.flush();
             }
         } catch (IOException e) {

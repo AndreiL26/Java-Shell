@@ -8,20 +8,14 @@ import java.io.OutputStream;
 
 public class ApplicationManager {
     private HashMap<String, Application> applicationMap;
-    private FileSystem fileSystem;
 
-    public ApplicationManager(FileSystem fileSystem) {
+    public ApplicationManager() {
         applicationMap = new HashMap<>();
-        this.fileSystem = fileSystem;
         createApplications();
     }
 
-    public FileSystem getFileSystem() {
-        return fileSystem;
-    }
-
     public void executeApplication(ArrayList<String> tokens, InputStream inputStream, OutputStream outputStream) throws JshException {
-        String applicationName = tokens.get(0);
+        String applicationName = tokens.get(0).toLowerCase();
         boolean unsafeVersion = false;
         ArrayList<String> applicationArguments = new ArrayList<String>(tokens.subList(1, tokens.size()));
         
@@ -45,18 +39,18 @@ public class ApplicationManager {
     }
     
     private  void createApplications() {
-        applicationMap.put("pwd",  new Pwd(fileSystem));
-        applicationMap.put("cd",   new Cd(fileSystem));
-        applicationMap.put("ls",   new Ls(fileSystem));
-        applicationMap.put("cat",  new Cat(fileSystem));
-        applicationMap.put("echo", new Echo(fileSystem));
-        applicationMap.put("head", new Head(fileSystem));
-        applicationMap.put("tail", new Tail(fileSystem));
-        applicationMap.put("grep", new Grep(fileSystem));
-        applicationMap.put("sed",  new Sed(fileSystem));
-        applicationMap.put("find", new Find(fileSystem));
-        applicationMap.put("history", new History(fileSystem));
-        applicationMap.put("wc", new Wc(fileSystem));
+        applicationMap.put("pwd",     new Pwd());
+        applicationMap.put("cd",      new Cd());
+        applicationMap.put("ls",      new Ls());
+        applicationMap.put("cat",     new Cat());
+        applicationMap.put("echo",    new Echo());
+        applicationMap.put("head",    new Head());
+        applicationMap.put("tail",    new Tail());
+        applicationMap.put("grep",    new Grep());
+        applicationMap.put("sed",     new Sed());
+        applicationMap.put("find",    new Find());
+        applicationMap.put("history", new History());
+        applicationMap.put("wc",      new Wc());
     }
 
     /*

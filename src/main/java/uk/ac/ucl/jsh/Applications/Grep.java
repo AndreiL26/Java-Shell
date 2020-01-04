@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -19,12 +20,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Grep implements Application {
-    private FileSystem fileSystem;
-    
-    public Grep(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void readAndMatch(BufferedReader reader, OutputStreamWriter writer, Pattern pattern, String fileName) throws JshException {
         String line = null;
         try {
@@ -34,7 +29,7 @@ public class Grep implements Application {
                     if(fileName != null) {
                         writer.write(fileName + ": ");
                     }
-                    writer.write(line + System.getProperty("line.separator"));
+                    writer.write(line + Jsh.lineSeparator);
                     writer.flush();
                 }
             }
@@ -71,12 +66,7 @@ public class Grep implements Application {
         if (applicationArguments.size() > 1) {
             for (int i = 0; i < numOfFiles; i++) {
                 String currentFileName = applicationArguments.get(i+1);
-                if (currentFileName.startsWith(System.getProperty("file.separator"))) {
-                    filePath = Paths.get(currentFileName);
-                }
-                else {
-                    filePath = Paths.get(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + currentFileName);
-                }
+                filePath = Paths.get(FileSystem.getInstance().getFilePath(currentFileName));
                 if (Files.isDirectory(filePath) || !Files.isReadable(filePath)) {
                     throw new JshException("grep: cannot open " + currentFileName);
                 }

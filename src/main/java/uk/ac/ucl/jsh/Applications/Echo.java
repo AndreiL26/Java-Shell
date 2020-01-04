@@ -1,6 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
-import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 import java.io.OutputStreamWriter;
@@ -10,31 +10,24 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class Echo implements Application {
-    private FileSystem fileSystem;
-    
-    public Echo(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
-
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException{
         applicationArguments = Application.globArguments(applicationArguments, -1);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-        boolean atLeastOnePrinted = false;
+        int index = 0;
         try {
             for (String arg : applicationArguments) {
                 writer.write(arg);
-                if(applicationArguments.get(applicationArguments.size() - 1).compareTo(arg) != 0) {
+                if(index != applicationArguments.size() - 1) {
                     writer.write(" ");
                 }
                 writer.flush();
-                atLeastOnePrinted = true;
+
+                index += 1;
             }
-            if (atLeastOnePrinted) {
-                writer.write(System.getProperty("line.separator"));
-                writer.flush();
-            }
+            
+            writer.write(Jsh.lineSeparator);
+            writer.flush();
         } catch (IOException e) {
             throw new JshException("echo: could not write output");
         }

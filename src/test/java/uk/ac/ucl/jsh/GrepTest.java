@@ -20,26 +20,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-
-
 public class GrepTest {
     private static Grep grepApplication;
-    private static FileSystem fileSystem = Jsh.getFileSystem();
+    private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
-    private String lineSeparator = System.getProperty("line.separator");
 
+    private String lineSeparator = Jsh.lineSeparator;
+    private String initialWorkingDirectoryPath;
     
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
+        fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        grepApplication = new Grep(fileSystem);
+        grepApplication = new Grep();
     }
 
     @Before
     // Create the File Hierarchy
     public void createHierarchy() throws IOException {
+        initialWorkingDirectoryPath = fileSystem.getWorkingDirectoryPath();
         fileSystem.createTestFileHierarchy();
         fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
      }
@@ -50,6 +51,7 @@ public class GrepTest {
          fileSystem.deleteTestFileHierarchy();
          applicationArguments.clear();
          outputStream.reset();
+         fileSystem.setWorkingDirectory(initialWorkingDirectoryPath);
     }   
     
     @Test
@@ -233,8 +235,8 @@ public class GrepTest {
     }
 
     private void assertEqualStrings(String expectedString, String actualString) {
-        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split("\t")));
-        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split("\t")));
+        ArrayList<String> expectedTokens = new ArrayList<>(Arrays.asList(expectedString.trim().split(lineSeparator)));
+        ArrayList<String> actualTokens = new ArrayList<>(Arrays.asList(actualString.trim().split(lineSeparator)));
         Collections.sort(expectedTokens);
         Collections.sort(actualTokens);
         assertEquals(expectedTokens, actualTokens);

@@ -15,10 +15,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintStream;
 
 import java.util.ArrayList;
 
@@ -26,7 +23,7 @@ import java.util.ArrayList;
 public class WcTest {
     private static Wc wcApplication;
     private static ArrayList<String> applicationArguments;
-    private static FileSystem fileSystem = Jsh.getFileSystem();
+    private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private String lineSeparator = System.getProperty("line.separator");
     private String fileSeparator = System.getProperty("file.separator");
@@ -34,8 +31,9 @@ public class WcTest {
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
+        fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        wcApplication = new Wc(fileSystem);
+        wcApplication = new Wc();
     }
 
     @Before

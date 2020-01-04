@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -18,18 +19,12 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Cat implements Application{
-    private FileSystem fileSystem;
-    
-    public Cat(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void readAndWrite(BufferedReader reader, OutputStreamWriter writer) throws JshException {
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
                 writer.write(String.valueOf(line));
-                writer.write(System.getProperty("line.separator"));
+                writer.write(Jsh.lineSeparator);
                 writer.flush();
             }
         } catch (IOException e) {
@@ -48,7 +43,7 @@ public class Cat implements Application{
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, -1);
         checkArguments(applicationArguments, inputStream);
-        String currentDirectoryPath = fileSystem.getWorkingDirectoryPath();
+        String currentDirectoryPath = FileSystem.getInstance().getWorkingDirectoryPath();
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
         
         if(applicationArguments.size() == 0) {
@@ -58,7 +53,7 @@ public class Cat implements Application{
             for (String arg : applicationArguments) {
                 Charset encoding = StandardCharsets.UTF_8;
                 File currFile;
-                if(arg.startsWith(System.getProperty("file.separator"))) {
+                if(arg.startsWith(Jsh.fileSeparator)) {
                     currFile = new File(arg);
                 } 
                 else {

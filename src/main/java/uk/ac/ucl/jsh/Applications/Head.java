@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -17,19 +18,13 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class Head implements Application{
-    private FileSystem fileSystem;
-
-    public Head(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
     private void readAndWrite(BufferedReader reader, OutputStreamWriter writer, int headLines) throws JshException{
         int count = 0;
         try {
             String line = null;
             while ((line = reader.readLine()) != null && count < headLines) {
                 ++ count;
-                writer.write(line + System.getProperty("line.separator"));
+                writer.write(line + Jsh.lineSeparator);
                 writer.flush();
             }
         }
@@ -75,12 +70,8 @@ public class Head implements Application{
         
         if(applicationArguments.size() == 1 || applicationArguments.size() == 3) {
             headArg = applicationArguments.get(applicationArguments.size() - 1); 
-            if (headArg.startsWith(System.getProperty("file.separator"))) {
-                headFile = new File(headArg);
-            }
-            else {
-                headFile = new File(fileSystem.getWorkingDirectoryPath() + File.separator + headArg);
-            }
+            headFile = FileSystem.getInstance().getFile(headArg);
+            
             if(headFile.exists()) {
                 filePath = Paths.get(headFile.getAbsolutePath());
                 try(BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {

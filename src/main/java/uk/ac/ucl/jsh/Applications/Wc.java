@@ -17,13 +17,6 @@ import java.util.ArrayList;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 public class Wc implements Application {
-    private FileSystem fileSystem;
-
-    public Wc(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
-
-
     private boolean isValidFlag(String argument) {
         if(!argument.startsWith("-")) {
             return false;
@@ -55,7 +48,7 @@ public class Wc implements Application {
 
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream, int[] flags, ArrayList<String> fileNames) throws JshException {
         for(String argument: applicationArguments) {
-            if(argument.startsWith("-") && isValidFlag(argument)) {
+            if(isValidFlag(argument)) {
                 updateFlags(argument, flags);
             }
             else {
@@ -123,13 +116,7 @@ public class Wc implements Application {
         }
         else {
             for(String fileName: fileNames) {
-                File currFile;
-                if(fileName.startsWith(System.getProperty("file.separator"))) {
-                    currFile = new File(fileName);
-                } 
-                else {
-                    currFile = new File(fileSystem.getWorkingDirectoryPath() + System.getProperty("file.separator") + fileName);
-                }
+                File currFile = FileSystem.getInstance().getFile(fileName);
                 if (currFile.exists()) {
                     if(currFile.isFile()) { 
                         try (BufferedReader reader = Files.newBufferedReader(Paths.get(currFile.getPath()), StandardCharsets.UTF_8)) {

@@ -1,5 +1,6 @@
 package uk.ac.ucl.jsh.Applications;
 
+import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
@@ -14,15 +15,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Find implements Application {
-    private FileSystem fileSystem;
-    private String fileSeparator = System.getProperty("file.separator");
-    private String lineSeparator = System.getProperty("line.separator");
+    private String fileSeparator = Jsh.fileSeparator;
+    private String lineSeparator = Jsh.lineSeparator;
     private PathMatcher matcher;
     private OutputStreamWriter writer;
-
-    public Find(FileSystem fileSystem) {
-        this.fileSystem = fileSystem;
-    }
 
     private void find(String currentDirectoryPath, String currentResolvedPath) throws IOException {
         File currentFile = new File(currentDirectoryPath);
@@ -48,13 +44,8 @@ public class Find implements Application {
             }
         }
         if(applicationArguments.size() == 3) {
-            File rootSearchDirectory;
-            if(applicationArguments.get(0).startsWith(fileSeparator)) {
-                rootSearchDirectory = new File(applicationArguments.get(0));
-            }
-            else {
-                rootSearchDirectory = new File(fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0));
-            }
+            File rootSearchDirectory = FileSystem.getInstance().getFile(applicationArguments.get(0));
+        
             if(!rootSearchDirectory.isDirectory()) {
                 throw new JshException("find: could not open " + applicationArguments.get(0));
             }
@@ -76,15 +67,10 @@ public class Find implements Application {
         writer = new OutputStreamWriter(outputStream);
 
         if(applicationArguments.size() == 2) {
-            searchRootDirectory = fileSystem.getWorkingDirectoryPath();
+            searchRootDirectory = FileSystem.getInstance().getWorkingDirectoryPath();
         }
         else {
-            if(applicationArguments.get(0).startsWith(fileSeparator)) {
-                searchRootDirectory = applicationArguments.get(0);
-            }
-            else {
-                searchRootDirectory = fileSystem.getWorkingDirectoryPath() + fileSeparator + applicationArguments.get(0);
-            }
+            searchRootDirectory = FileSystem.getInstance().getFilePath(applicationArguments.get(0));
             resolvedPath = applicationArguments.get(0);
         }
         matcher = FileSystems.getDefault().getPathMatcher("glob:" + applicationArguments.get(applicationArguments.size() - 1));

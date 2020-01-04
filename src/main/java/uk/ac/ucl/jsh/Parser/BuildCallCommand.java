@@ -2,10 +2,10 @@ package uk.ac.ucl.jsh.Parser;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import uk.ac.ucl.jsh.Jsh;
-import uk.ac.ucl.jsh.Utilities.JshException;
 import uk.ac.ucl.jsh.antlr.CallParser.*;
 
 public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
@@ -17,10 +17,16 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
     @Override 
     public ArrayList<String> visitArguments(CallParserParser.ArgumentsContext ctx) {
         ArrayList<String> result = new ArrayList<>();
+        if (ctx.io_operator != null) {
+            result.addAll(visit(ctx.cmd));
+            result.add(ctx.io_operator.getText());
+            result.addAll(visit(ctx.file));
+            return result;
+        }
+        
         result.addAll(visit(ctx.argument()));
-
-        if (ctx.arguments() != null) {
-            result.addAll(visit(ctx.arguments()));
+        if (ctx.left_arguments != null) {
+            result.addAll(visit(ctx.left_arguments));
         }
 
         return result;
@@ -28,21 +34,20 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 
     @Override 
     public ArrayList<String> visitArgument(CallParserParser.ArgumentContext ctx) {
-        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<String> result = new ArrayList<>();
 
         if (ctx.quoted() != null) {
-            stringBuilder.append(visit(ctx.quoted()).get(0));
+            appendArgument(result, visit(ctx.quoted()));
         }
         else {
-            
-            stringBuilder.append(ctx.non_quote.getText());
+            appendArgument(result, new ArrayList<>(Arrays.asList(ctx.non_quote.getText())));
         }
 
         if (ctx.argument() != null) {
-            stringBuilder.append(visit(ctx.argument()).get(0));
+            appendArgument(result, visit(ctx.argument()));
         }
 
-        return new ArrayList<>(List.of(stringBuilder.toString()));
+        return result;
     }
 
     @Override 
@@ -52,7 +57,7 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 	
     @Override 
     public ArrayList<String> visitSingle_quoted(CallParserParser.Single_quotedContext ctx) {
-        return new ArrayList<>(List.of(ctx.content.getText()));
+        return new ArrayList<>(List.of(ctx.squote_content().getText()));
     }
 	
     @Override 
@@ -62,19 +67,19 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
 
     @Override 
     public ArrayList<String> visitDquote_content(CallParserParser.Dquote_contentContext ctx) { 
-        StringBuilder stringBuilder = new StringBuilder();
+        ArrayList<String> result = new ArrayList<>();
         if (ctx.backquoted() != null) {
-            stringBuilder.append(visit(ctx.backquoted()).get(0));
+            appendArgument(result, visit(ctx.backquoted()));
         }
         else if (ctx.content != null) {
-            stringBuilder.append(ctx.content.getText());
+            appendArgument(result, new ArrayList<>(Arrays.asList(ctx.content.getText())));
         }
 
         if (ctx.dquote_content() != null) {
-            stringBuilder.append(visit(ctx.dquote_content()).get(0));
+            appendArgument(result, visit(ctx.dquote_content()));
         }
 
-        return new ArrayList<>(List.of(stringBuilder.toString()));
+        return result;
     }
 	
     @Override 
@@ -85,12 +90,22 @@ public class BuildCallCommand extends CallParserBaseVisitor<ArrayList<String>> {
         }
         
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ArrayList<String> tokens = Parser.parseCallCommand(cmdSubstitutionString);
-        try {
-            Jsh.applicationManager.executeApplication(tokens, null, outputStream);
-        } catch (JshException e) {
-            throw new RuntimeException(e.getMessage());
+        Jsh.eval(cmdSubstitutionString, outputStream);
+
+        return new ArrayList<String>(Arrays.asList(outputStream.toString().trim().split(Jsh.lineSeparator)));
+    }
+
+    private void appendArgument(ArrayList<String> result, ArrayList<String> arrToAppend) {
+        if (result.isEmpty()) {
+            result.addAll(arrToAppend);
+            return;
         }
-        return new ArrayList<>(List.of(outputStream.toString().trim()));
+
+        if (arrToAppend.isEmpty()) {
+            return;
+        }
+
+        result.set(result.size()-1, result.get(result.size()-1) + arrToAppend.get(0));
+        result.addAll(arrToAppend.subList(1, arrToAppend.size()));
     }
 }

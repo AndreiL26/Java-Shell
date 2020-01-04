@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import uk.ac.ucl.jsh.Utilities.TreeVisitor;
 
-public class CallNode implements Node {
+public class CallNode extends Node {
     private String cmdString;
 
     public CallNode(String cmdString) {

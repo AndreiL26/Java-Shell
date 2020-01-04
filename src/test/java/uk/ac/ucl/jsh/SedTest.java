@@ -18,26 +18,27 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-
-
 public class SedTest {
     private static Sed sedApplication;
-    private static FileSystem fileSystem = Jsh.getFileSystem();
+    private static FileSystem fileSystem;
     private static ByteArrayOutputStream outputStream;
     private static ArrayList<String> applicationArguments;
-    private String lineSeparator = System.getProperty("line.separator");
 
+    private String lineSeparator = Jsh.lineSeparator;
+    private String initialWorkingDirectoryPath;
     
     @BeforeClass
     public static void setClass() {
         applicationArguments = new ArrayList<>();
+        fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
-        sedApplication = new Sed(fileSystem);
+        sedApplication = new Sed();
     }
 
     @Before
     // Create the File Hierarchy
     public void createHierarchy() throws IOException {
+        initialWorkingDirectoryPath = fileSystem.getWorkingDirectoryPath();
         fileSystem.createTestFileHierarchy();
         fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
      }
@@ -48,6 +49,7 @@ public class SedTest {
          fileSystem.deleteTestFileHierarchy();
          applicationArguments.clear();
          outputStream.reset();
+         fileSystem.setWorkingDirectory(initialWorkingDirectoryPath);
     }   
     
     @Test
@@ -87,18 +89,6 @@ public class SedTest {
     public void testInvalidFirstArgumentWrongFirstCharacter() {
         try {
             applicationArguments.add("t/Regex/Replace/");
-            applicationArguments.add("Soft");
-            sedApplication.execute(applicationArguments, null, outputStream);
-            fail("sed did not throw an invalid first argument exception");
-        } catch (JshException e) {
-            assertEquals("sed: invalid first argument", e.getMessage());
-        }
-    }
-
-    @Test
-    public void testInvalidFirstArgumentSpecialDelimiter() {
-        try {
-            applicationArguments.add("sgRexgReplaceMeg");
             applicationArguments.add("Soft");
             sedApplication.execute(applicationArguments, null, outputStream);
             fail("sed did not throw an invalid first argument exception");
@@ -226,6 +216,19 @@ public class SedTest {
         } catch (JshException e) {
             assertEquals("sed: too many arguments", e.getMessage());
         }
+    }
+
+    @Test
+    public void testReplaceWithSpecialDelimiter() throws JshException {
+        applicationArguments.add("sgtestgreplg");
+        applicationArguments.add("Soft");
+        sedApplication.execute(applicationArguments, null, outputStream);
+        String expectedOutput = new String();
+        expectedOutput += "This is a repl" + lineSeparator;
+        expectedOutput += "This is a repl of another repl" + lineSeparator;
+        expectedOutput += lineSeparator;
+        
+        assertEquals(expectedOutput, outputStream.toString());
     }
 
     @Test

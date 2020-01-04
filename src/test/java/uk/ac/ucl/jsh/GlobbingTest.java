@@ -14,17 +14,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class GlobbingTest {
-    private static FileSystem fileSystem = Jsh.getFileSystem();
-    private String fileSeparator = System.getProperty("file.separator");
-    
+    private static FileSystem fileSystem;
 
+    private String fileSeparator = Jsh.fileSeparator;
+    
     @Before
     // Create the test hierarchy
     public void beforeTest() throws IOException {
-       fileSystem.createTestFileHierarchy();
-       fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
+        fileSystem = FileSystem.getInstance();
+        fileSystem.createTestFileHierarchy();
+        fileSystem.setWorkingDirectory(System.getProperty("java.io.tmpdir"));
     }
 
     @After

@@ -4,16 +4,15 @@ import uk.ac.ucl.jsh.Parser.Node;
 import uk.ac.ucl.jsh.Parser.Parser;
 import uk.ac.ucl.jsh.Utilities.*;
 
-
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Jsh {
-    private static  FileSystem fileSystem =  new FileSystem(System.getProperty("user.dir"));
-    public static final ApplicationManager applicationManager = new ApplicationManager(fileSystem);  
-    
+    public static String fileSeparator = System.getProperty("file.separator");
+    public static String lineSeparator = System.getProperty("line.separator");
+
+    public static ApplicationManager applicationManager = new ApplicationManager();   // Might want to make this final as well if Outputstream will always remain System.out
     private static ArrayList<String> history = new ArrayList<>();
 
     public static ArrayList<String> getHistory() {
@@ -24,13 +23,9 @@ public class Jsh {
         history.clear();
     }
 
-    public static void eval(String cmdline, OutputStream output) throws IOException {
+    public static void eval(String cmdline, OutputStream outputStream) {
         Node cmdTree = Parser.parserCmdLine(cmdline);
-        cmdTree.accept(new EvalVisitor(applicationManager), null, System.out);
-    }
-
-    public static FileSystem getFileSystem() {
-        return Jsh.fileSystem;
+        cmdTree.accept(new EvalVisitor(applicationManager), null, outputStream);
     }
 
     public static void main(String[] args) throws Exception {
@@ -53,7 +48,7 @@ public class Jsh {
             Scanner input = new Scanner(System.in);
             try {
                 while (true) {
-                    String prompt = fileSystem.getWorkingDirectoryPath() + "> ";
+                    String prompt = FileSystem.getInstance().getWorkingDirectoryPath() + "> ";
                     System.out.print(prompt);
                     try {
                         String cmdline = input.nextLine();
