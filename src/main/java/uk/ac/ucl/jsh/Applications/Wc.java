@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 public class Wc implements Application {
+    private int charCount;
+    private int wordCount;
+    private int lineCount;
+
     private boolean isValidFlag(String argument) {
         if(!argument.startsWith("-")) {
             return false;
@@ -60,26 +64,59 @@ public class Wc implements Application {
         }
     }
 
-    private void solveForInput(BufferedReader reader, OutputStreamWriter writer, int[] flags) throws JshException {
-        int charCount = 0;
-        int wordCount = 0;
-        int lineCount = 0;
+    private void solveForInput(BufferedReader reader, OutputStreamWriter writer) throws JshException {
         try {
             String currentLine = reader.readLine();
             while (currentLine != null) {
                 lineCount++;
+                charCount += currentLine.length() + 1;    // +1 to account for the newline as being the newline
                 String[] words = currentLine.split(" ");
                 if(!words[0].equals("")) {
                     wordCount = wordCount + words.length;
-                }
-
-                for (String word : words) {
-                    charCount = charCount + word.length();
                 }
                 currentLine = reader.readLine();
             }
         } catch (IOException e) {
             throw new JshException("wc: cannot read input");
+        }
+    }
+
+    private void resetCount() {
+        charCount = lineCount = wordCount = 0;
+    }
+
+    @Override
+    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
+        resetCount();
+        int[] flags = new int[] {0,0,0};  //  indexes correspond to {m, w, l}
+        ArrayList<String> fileNames = new ArrayList<>();
+        applicationArguments = Application.globArguments(applicationArguments, -1);
+        checkArguments(applicationArguments, inputStream, flags, fileNames);
+        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+
+        if(fileNames.size() == 0) {
+            solveForInput(new BufferedReader(new InputStreamReader(inputStream)), writer);
+        }
+        else {
+            for(String fileName: fileNames) {
+                File currFile = FileSystem.getInstance().getFile(fileName);
+                if (currFile.exists()) {
+                    if(currFile.isFile()) { 
+                        try (BufferedReader reader = Files.newBufferedReader(Paths.get(currFile.getPath()), StandardCharsets.UTF_8)) {
+                            solveForInput(reader, writer);
+                        } 
+                        catch (IOException e) {
+                            throw new JshException("wc: cannot open " + fileName);
+                        }
+                    } 
+                    else {
+                        throw new JshException("wc: " + fileName + " is a directory");
+                    }
+                } 
+                else {
+                    throw new JshException("wc: file does not exist");
+                }
+            }
         }
         try {
             if(flags[0] == 0 && flags[1] == 0 && flags[2] == 0) {
@@ -100,40 +137,6 @@ public class Wc implements Application {
             writer.flush();
         } catch(IOException e) {
             throw new JshException("wc: cannot write output");
-        }
-    }
-
-    @Override
-    public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
-        int[] flags = new int[] {0,0,0};  //  indexes correspond to {m, w, l}
-        ArrayList<String> fileNames = new ArrayList<>();
-        applicationArguments = Application.globArguments(applicationArguments, -1);
-        checkArguments(applicationArguments, inputStream, flags, fileNames);
-        OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-
-        if(fileNames.size() == 0) {
-            solveForInput(new BufferedReader(new InputStreamReader(inputStream)), writer, flags);
-        }
-        else {
-            for(String fileName: fileNames) {
-                File currFile = FileSystem.getInstance().getFile(fileName);
-                if (currFile.exists()) {
-                    if(currFile.isFile()) { 
-                        try (BufferedReader reader = Files.newBufferedReader(Paths.get(currFile.getPath()), StandardCharsets.UTF_8)) {
-                            solveForInput(reader, writer, flags);
-                        } 
-                        catch (IOException e) {
-                            throw new JshException("wc: cannot open " + fileName);
-                        }
-                    } 
-                    else {
-                        throw new JshException("wc: " + fileName + " is a directory");
-                    }
-                } 
-                else {
-                    throw new JshException("wc: file does not exist");
-                }
-            }
         }
     }
 }

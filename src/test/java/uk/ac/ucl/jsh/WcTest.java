@@ -103,7 +103,7 @@ public class WcTest {
         applicationArguments.add("-m");
         applicationArguments.add("Soft");
         wcApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("35 " + lineSeparator, outputStream.toString());
+        assertEquals("47 " + lineSeparator, outputStream.toString());
     }
 
     @Test
@@ -144,14 +144,14 @@ public class WcTest {
         applicationArguments.add("-lwm");
         applicationArguments.add("Soft");
         wcApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("35 11 3 " + lineSeparator, outputStream.toString());
+        assertEquals("47 11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
     public void testNoOptions() throws JshException {
         applicationArguments.add("Soft");
         wcApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("35 11 3 " + lineSeparator, outputStream.toString());
+        assertEquals("47 11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
@@ -159,7 +159,7 @@ public class WcTest {
         applicationArguments.add("-mlw");
         applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Other" + fileSeparator + "Oth1");
         wcApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("35 11 3 " + lineSeparator, outputStream.toString());
+        assertEquals("47 11 3 " + lineSeparator, outputStream.toString());
     }
 
     @Test
@@ -177,7 +177,7 @@ public class WcTest {
         applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Other" + fileSeparator + "Oth1");
         applicationArguments.add("Soft");
         wcApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("35 11 3 " + lineSeparator + "35 11 3 " + lineSeparator, outputStream.toString());
+        assertEquals("94 22 6 " + lineSeparator, outputStream.toString());
     }
 
     @Test
@@ -185,7 +185,7 @@ public class WcTest {
         applicationArguments.add("Docu*s" + fileSeparator + "Wa*e");
         applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "S*t");
         wcApplication.execute(applicationArguments, null, outputStream);
-        assertEquals("35 11 3 " + lineSeparator + "35 11 3 " + lineSeparator, outputStream.toString());
+        assertEquals("94 22 6 " + lineSeparator, outputStream.toString());
     }
 
     @Test 
@@ -199,7 +199,7 @@ public class WcTest {
         writer.close();
         ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
         wcApplication.execute(applicationArguments, testInput, outputStream);  
-        assertEquals("18 " + lineSeparator, outputStream.toString());
+        assertEquals("23 " + lineSeparator, outputStream.toString());
     }
 
     @Test
@@ -212,6 +212,6 @@ public class WcTest {
         writer.close();
         ByteArrayInputStream testInput = new ByteArrayInputStream(aux.toByteArray());
         wcApplication.execute(applicationArguments, testInput, outputStream);  
-        assertEquals("18 5 2 " + lineSeparator, outputStream.toString());
+        assertEquals("23 5 2 " + lineSeparator, outputStream.toString());
     }
 }
