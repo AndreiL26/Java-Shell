@@ -120,7 +120,7 @@ public class Wc implements Application {
         }
         try {
             if(flags[0] == 0 && flags[1] == 0 && flags[2] == 0) {
-                writer.write(charCount + " " + wordCount + " " + lineCount + " ");
+                writer.write(lineCount + " " + wordCount + " " + charCount + " ");
             }
             else {
                 if(flags[2] == 1) {
