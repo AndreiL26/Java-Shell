@@ -41,8 +41,8 @@ public class Globbing {
         }
         else {
             String resultingGlobbedPath = Paths.get(startingPath).relativize(Paths.get(currentGlobbedPath)).toString();
-            if (startingPath == "/") {
-                resultingGlobbedPath = "/" + resultingGlobbedPath;
+            if (startingPath.equals(fileSeparator)) {
+                resultingGlobbedPath = fileSeparator + resultingGlobbedPath;
             }
             globbedArguments.add(resultingGlobbedPath);
         }
