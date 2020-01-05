@@ -122,7 +122,7 @@ public class HeadTest {
             headApplication.execute(applicationArguments, null, outputStream);
             fail("head did not throw a wrong argument exception");
         } catch (JshException e) {
-            assertEquals("head: wrong argument " + "I'm not a number!", e.getMessage());
+            assertEquals("head: For input string: \"I'm not a number!\"", e.getMessage());
         }
     }
 
@@ -135,7 +135,7 @@ public class HeadTest {
             headApplication.execute(applicationArguments, null, outputStream);
             fail("head did not throw an invalig argument exception");
         } catch (JshException e) {
-            assertEquals("head: " + "InvalidPath" + " does not exist", e.getMessage());
+            assertEquals("head: /tmp/InvalidPath (No such file or directory)", e.getMessage());
         }
     }
 
@@ -148,7 +148,7 @@ public class HeadTest {
             headApplication.execute(applicationArguments, null, outputStream);
             fail("head did not throw a cannot read input exception");
         } catch (JshException e) {
-            assertEquals("head: cannot read input", e.getMessage());
+            assertEquals("head: /tmp/Documents/Eng (Is a directory)", e.getMessage());
         }
     }
 
