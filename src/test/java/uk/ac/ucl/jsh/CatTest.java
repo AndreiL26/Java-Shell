@@ -71,7 +71,7 @@ public class CatTest {
             catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw an invalid path exception");
         } catch(JshException e) {
-           String expectedMessage = "/InvalidPath (No such file or directory)";
+           String expectedMessage = "cat: /InvalidPath (No such file or directory)";
            assertEquals(expectedMessage, e.getMessage());
          }
     }
@@ -83,7 +83,7 @@ public class CatTest {
             catApplication.execute(applicationArguments, System.in, outputStream);
             fail("cat did not throw a directory path exception");
         } catch(JshException e) {
-            String expectedMessage = "/tmp/Documents (Is a directory)";
+            String expectedMessage = "cat: /tmp/Documents (Is a directory)";
             assertEquals(expectedMessage, e.getMessage());
         }
     }

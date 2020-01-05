@@ -21,7 +21,7 @@ public class Cat implements Application{
                 writer.flush();
             }
         } catch (IOException e) {
-            throw new JshException(e.getMessage());
+            throw new JshException("cat: " + e.getMessage());
         }
     }
     
@@ -46,7 +46,7 @@ public class Cat implements Application{
                 try {
                     scanner = new Scanner(FileSystem.getInstance().getFile(filePath));
                 } catch (FileNotFoundException e) {
-                    throw new JshException(e.getMessage());
+                    throw new JshException("cat: " + e.getMessage());
                 }
 
                 readAndWrite(scanner, writer);
