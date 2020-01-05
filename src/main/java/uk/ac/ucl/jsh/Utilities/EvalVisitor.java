@@ -13,8 +13,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import netscape.javascript.JSException;
-
 public class EvalVisitor implements TreeVisitor<Void> {
     private ApplicationManager applicationManager;
 
@@ -42,7 +40,7 @@ public class EvalVisitor implements TreeVisitor<Void> {
 
     private OutputStream getOutputStream(ArrayList<String> tokens, OutputStream outputStream) throws JshException {
         if (Collections.frequency(tokens, ">") > 1) {
-            throw new JSException("Too many files for output redirection");
+            throw new JshException("Too many files for output redirection");
         }
 
         try {
@@ -79,9 +77,7 @@ public class EvalVisitor implements TreeVisitor<Void> {
 
     public Void visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) throws JshException {
         seqNode.getLeft().accept(this, inputStream, outputStream);
-        if(seqNode.getRight() != null) {
-            seqNode.getRight().accept(this, inputStream,  outputStream);
-        }
+        seqNode.getRight().accept(this, inputStream,  outputStream);
 
         return null;
     }

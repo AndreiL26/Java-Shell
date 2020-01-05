@@ -34,7 +34,7 @@ public class ApplicationManager {
             }
         } 
         else {
-            throw new RuntimeException(applicationName + ": unknown application");
+            throw new JshException(applicationName + ": unknown application");
         }
     }
     
