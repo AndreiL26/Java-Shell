@@ -17,7 +17,7 @@ public class UnsafeApplicationDecorator extends ApplicationDecorator {
         try {
             this.application.execute(applicationArguments, inputStream, outpustream);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 }   

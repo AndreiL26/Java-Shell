@@ -25,7 +25,11 @@ public class Jsh {
 
     public static void eval(String cmdline, OutputStream outputStream) {
         Node cmdTree = Parser.parserCmdLine(cmdline);
-        cmdTree.accept(new EvalVisitor(applicationManager), null, outputStream);
+        try {
+            cmdTree.accept(new EvalVisitor(applicationManager), null, outputStream);
+        } catch (JshException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public static void main(String[] args) throws Exception {

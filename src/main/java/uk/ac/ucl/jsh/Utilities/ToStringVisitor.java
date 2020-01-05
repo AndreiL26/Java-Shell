@@ -11,11 +11,11 @@ import uk.ac.ucl.jsh.Parser.SeqNode;
 public class ToStringVisitor implements TreeVisitor<String> {
     private StringBuilder shiftSB = new StringBuilder("");
     
-    public String visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
+    public String visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) throws JshException {
         return shiftSB.toString() + "Call node: " + callNode.getCmdString() + Jsh.lineSeparator;
     }
 
-    public String visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream) {
+    public String visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream) throws JshException {
         StringBuilder result = new StringBuilder();
         result.append(shiftSB.toString() + "Pipe Node" + Jsh.lineSeparator);
         shiftSB.append("\t");
@@ -26,7 +26,7 @@ public class ToStringVisitor implements TreeVisitor<String> {
         return result.toString();
     }
 
-    public String visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) {
+    public String visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) throws JshException {
         StringBuilder result = new StringBuilder();
         result.append(shiftSB.toString() + "Seq Node" + Jsh.lineSeparator);
         shiftSB.append("\t");

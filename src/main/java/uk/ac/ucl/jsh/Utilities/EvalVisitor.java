@@ -58,20 +58,17 @@ public class EvalVisitor implements TreeVisitor<Void> {
         return outputStream;
     }
 
-    public Void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) {
+    public Void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) throws JshException {
         ArrayList<String> tokens = Parser.parseCallCommand(callNode.getCmdString());
-        try {
-            inputStream = getInputStream(tokens, inputStream);
-            outputStream = getOutputStream(tokens, outputStream);
-            applicationManager.executeApplication(tokens, inputStream, outputStream);
-        } catch (JshException e) {
-            throw new RuntimeException("");
-        }
+        
+        inputStream = getInputStream(tokens, inputStream);
+        outputStream = getOutputStream(tokens, outputStream);
+        applicationManager.executeApplication(tokens, inputStream, outputStream);
         
         return null;
     }
 
-    public Void visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream) {
+    public Void visit(PipeNode pipeNode, InputStream inputStream, OutputStream outputStream) throws JshException {
         ByteArrayOutputStream newStream = new ByteArrayOutputStream();
         pipeNode.getLeft().accept(this, inputStream, newStream);
         ByteArrayInputStream newInputStream = new ByteArrayInputStream(newStream.toByteArray());
@@ -80,7 +77,7 @@ public class EvalVisitor implements TreeVisitor<Void> {
         return null;
     }
 
-    public Void visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) {
+    public Void visit(SeqNode seqNode, InputStream inputStream, OutputStream outputStream) throws JshException {
         seqNode.getLeft().accept(this, inputStream, outputStream);
         if(seqNode.getRight() != null) {
             seqNode.getRight().accept(this, inputStream,  outputStream);

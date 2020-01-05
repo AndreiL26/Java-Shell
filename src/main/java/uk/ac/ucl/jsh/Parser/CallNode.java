@@ -3,6 +3,7 @@ package uk.ac.ucl.jsh.Parser;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import uk.ac.ucl.jsh.Utilities.JshException;
 import uk.ac.ucl.jsh.Utilities.TreeVisitor;
 
 public class CallNode extends Node {
@@ -16,7 +17,7 @@ public class CallNode extends Node {
         return cmdString;
     }
 
-    public <T> T accept(TreeVisitor<T> treeVisitor, InputStream inputStream, OutputStream outputStream) {
+    public <T> T accept(TreeVisitor<T> treeVisitor, InputStream inputStream, OutputStream outputStream) throws JshException {
         return treeVisitor.visit(this, inputStream, outputStream);
     }
 }
