@@ -26,7 +26,9 @@ public class Grep implements Application {
                     writer.flush();
                 }
             }
+            scanner.close();
         } catch (IOException e) {
+            scanner.close();
             throw new JshException("grep: " + e.getMessage());
         }
     }

@@ -1,0 +1,9 @@
+What did I do last time?
+- Create ANTLR grammar to parse a command line.
+- Use ANTLR Visitor Class to evaluate a command line.
+
+What do I plan to do now?
+- Create a new ANTLR parser for a call command.
+
+Am I blocked on anything?
+- No

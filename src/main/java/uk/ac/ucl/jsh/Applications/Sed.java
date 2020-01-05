@@ -1,20 +1,15 @@
 package uk.ac.ucl.jsh.Applications;
 
 import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
 import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.File;
+import java.util.Scanner;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 public class Sed implements Application {
@@ -22,56 +17,43 @@ public class Sed implements Application {
     private String replacement;
 
     private boolean isValid(String argument) { 
-        if(argument == "") {
+        if (argument.length() < 5) {
             return false;
         }
 
-        if(argument.charAt(0) != 's') {
+        if (argument.charAt(0) != 's') {
             return false;
         }
+
         char delimiter = argument.charAt(1);
-        long delimiterCount = argument.codePoints().filter(ch -> ch == delimiter).count();
-        if(argument.charAt(argument.length() - 1) != delimiter && argument.charAt(argument.length()-1) != 'g') {
-            return false;
-        }
-        if(delimiter != 'g' && argument.charAt(argument.length() - 1) == 'g' && argument.charAt(argument.length() - 2) != delimiter) {
-            return false;
-        }
+        int delimiterFrequency = (int)argument.substring(1).codePoints().filter(ch -> ch == delimiter).count();
 
-        if(delimiter == 's' && delimiterCount != 4) {
+        if (delimiterFrequency == 4 && delimiter != 'g') {
+            return false;
+        }
+        else if (delimiterFrequency != 3 && delimiterFrequency != 4) {
             return false;
         }
 
-        if(delimiter == 'g') {
-            if(delimiterCount != 3 && delimiterCount != 4) {
-                return false;
-            }
-            if(delimiterCount == 4 && argument.charAt(argument.length() - 1) != argument.charAt(argument.length() - 2)) {
-                return false;
-            }
-        }
-
-        if(delimiter != 's' && delimiter != 'g' && delimiterCount != 3) {
+        if (argument.charAt(argument.length()-1) != delimiter && argument.charAt(argument.length()-1) != 'g') {
             return false;
         }
 
-        int firstDelimiterIndex;
-        if(delimiter != 's') {
-            firstDelimiterIndex = argument.indexOf(delimiter);
-        }
-        else {
-            firstDelimiterIndex = argument.indexOf(delimiter, 1);
-        }
-
+        int firstDelimiterIndex = 1;
         int secondDelimiterIndex = argument.indexOf(delimiter, firstDelimiterIndex + 1);
         int thirdDelimiterIndex = argument.indexOf(delimiter, secondDelimiterIndex + 1);
 
-        this.regex = argument.substring(firstDelimiterIndex + 1, secondDelimiterIndex);
-        this.replacement = argument.substring(secondDelimiterIndex + 1, thirdDelimiterIndex);
+        if (thirdDelimiterIndex != argument.length()-1 && thirdDelimiterIndex != argument.length()-2) {
+            return false;
+        }
+
+        regex = argument.substring(firstDelimiterIndex + 1, secondDelimiterIndex);
+        replacement = argument.substring(secondDelimiterIndex + 1, thirdDelimiterIndex);
 
         if(regex.compareTo("") == 0) {
             return false;
         }
+
         return true;
     }
 
@@ -98,38 +80,29 @@ public class Sed implements Application {
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, 0);
         checkArguments(applicationArguments, inputStream);
-        boolean replaceAll = false;
-        File sedFile = null;
-        BufferedReader reader;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
 
+        boolean replaceAll = false;
         if(applicationArguments.get(0).endsWith("g")) {
             replaceAll = true;
         }
 
+        Scanner scanner;
         if(applicationArguments.size() == 2){
             String filePath = applicationArguments.get(1);
-            sedFile = FileSystem.getInstance().getFile(filePath);
+            try {
+                scanner = new Scanner(FileSystem.getInstance().getFile(filePath));
+            } catch (FileNotFoundException e) {
+                throw new JshException("sed: " + e.getMessage());
+            }
+        }
+        else {
+            scanner = new Scanner(inputStream);
+        }
 
-            if(!sedFile.exists()) {
-                throw new JshException("sed: cannot open " + filePath);
-            }
-        }
-        
         try {
-            if(sedFile != null)  {
-                Path filePath = Paths.get(sedFile.getAbsolutePath());
-                reader = Files.newBufferedReader(filePath,StandardCharsets.UTF_8);
-            }
-            else {
-                reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-            }
-        } catch (IOException e) {
-            throw new JshException("sed: cannot read input");
-        }
-        try {
-            String line = null;
-            while((line = reader.readLine()) != null) {
+            while(scanner.hasNextLine()) {
+                String line = scanner.nextLine();
                 if(replaceAll == true) {
                     writer.write(line.replaceAll(regex, replacement) + Jsh.lineSeparator);
                 }
@@ -138,8 +111,11 @@ public class Sed implements Application {
                 }
                 writer.flush();
             }
+
+            scanner.close();
         } catch (IOException e) {
-            throw new JshException("sed: cannot read input");
+            scanner.close();
+            throw new JshException("sed: " + e.getMessage());
         }
     }
 

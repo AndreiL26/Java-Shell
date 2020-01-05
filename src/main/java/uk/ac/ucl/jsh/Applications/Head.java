@@ -25,7 +25,9 @@ public class Head implements Application{
                 writer.write(line + Jsh.lineSeparator);
                 writer.flush();
             }
+            scanner.close();
         } catch (IOException e) {
+            scanner.close();
             throw new JshException("head: " + e.getMessage());
         }
     }

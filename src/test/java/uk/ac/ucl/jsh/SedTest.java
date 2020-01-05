@@ -201,7 +201,7 @@ public class SedTest {
             sedApplication.execute(applicationArguments, null, outputStream);
             fail("sed did not throw a cannot open file exception");
         } catch (JshException e) {
-            assertEquals("sed: cannot open " + "INVALID PATH", e.getMessage());
+            assertEquals("sed: /tmp/INVALID PATH (No such file or directory)", e.getMessage());
         }
     }
 

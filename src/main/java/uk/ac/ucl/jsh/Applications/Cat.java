@@ -20,7 +20,9 @@ public class Cat implements Application{
                 writer.write(Jsh.lineSeparator);
                 writer.flush();
             }
+            scanner.close();
         } catch (IOException e) {
+            scanner.close();
             throw new JshException("cat: " + e.getMessage());
         }
     }
@@ -52,7 +54,6 @@ public class Cat implements Application{
                 readAndWrite(scanner, writer);
             }
         }
-        
     }
    
 }

@@ -23,7 +23,6 @@ public class Echo implements Application {
                     writer.write(" ");
                 }
                 writer.flush();
-
                 index += 1;
             }
             
