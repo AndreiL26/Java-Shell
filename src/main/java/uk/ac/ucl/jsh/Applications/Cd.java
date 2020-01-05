@@ -22,15 +22,14 @@ public class Cd implements Application {
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, -1);
         checkArguments(applicationArguments);
+        
         String dirString = applicationArguments.get(0);
-        File dir;
-        String currentDirectoryPath = FileSystem.getInstance().getWorkingDirectoryPath();
-
-        dir = FileSystem.getInstance().getFile(dirString);
+        File dir = FileSystem.getInstance().getFile(dirString);
         if (!dir.isDirectory()) {
             throw new JshException("cd: " + dirString + " is not an existing directory");
         }
         
+        String currentDirectoryPath;
         try {
             currentDirectoryPath = dir.getCanonicalPath();
         } catch (IOException e) {
