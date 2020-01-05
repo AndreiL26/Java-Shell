@@ -14,6 +14,7 @@ public class Echo implements Application {
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException{
         applicationArguments = Application.globArguments(applicationArguments, -1);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+
         int index = 0;
         try {
             for (String arg : applicationArguments) {
@@ -22,14 +23,13 @@ public class Echo implements Application {
                     writer.write(" ");
                 }
                 writer.flush();
-
                 index += 1;
             }
             
             writer.write(Jsh.lineSeparator);
             writer.flush();
         } catch (IOException e) {
-            throw new JshException("echo: could not write output");
+            throw new JshException("echo: " + e.getMessage());
         }
     }
 

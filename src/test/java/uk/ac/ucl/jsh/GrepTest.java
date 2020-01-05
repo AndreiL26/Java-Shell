@@ -83,7 +83,7 @@ public class GrepTest {
             grepApplication.execute(applicationArguments, null, outputStream);
             fail("grep did no throw a cannot open exception");
         } catch (JshException e) {
-            assertEquals("grep: cannot open " + "InvalidPath", e.getMessage());
+            assertEquals("grep: /tmp/InvalidPath (No such file or directory)", e.getMessage());
         }
     }
 
@@ -95,7 +95,7 @@ public class GrepTest {
             grepApplication.execute(applicationArguments, null, outputStream);
             fail("grep did not throw a cannot open exception");
         } catch (JshException e) {
-            assertEquals("grep: cannot open " + "Documents", e.getMessage());
+            assertEquals("grep: /tmp/Documents (Is a directory)", e.getMessage());
         }
     }
 

@@ -4,32 +4,31 @@ import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
-import java.nio.charset.StandardCharsets;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Head implements Application{
-    private void readAndWrite(BufferedReader reader, OutputStreamWriter writer, int headLines) throws JshException{
-        int count = 0;
+    private int headLines;
+
+    private void readAndWrite(Scanner scanner, OutputStreamWriter writer) throws JshException{
         try {
-            String line = null;
-            while ((line = reader.readLine()) != null && count < headLines) {
-                ++ count;
+            int count = 0;
+            while (count < headLines && scanner.hasNextLine()) {
+                count += 1;
+                String line = scanner.nextLine();
+
                 writer.write(line + Jsh.lineSeparator);
                 writer.flush();
             }
-        }
-        catch (IOException e) {
-            throw new JshException("head: cannot read input");
+            scanner.close();
+        } catch (IOException e) {
+            scanner.close();
+            throw new JshException("head: " + e.getMessage());
         }
     }
 
@@ -53,10 +52,8 @@ public class Head implements Application{
         applicationArguments = Application.globArguments(applicationArguments, -1);
         checkArguments(applicationArguments, inputStream);
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-        File headFile;
-        Path filePath;
-        int headLines = 10;
-        String headArg;
+
+        headLines = 10;
         if (applicationArguments.size() > 1) {
             try {
                 headLines = Integer.parseInt(applicationArguments.get(1));
@@ -64,28 +61,23 @@ public class Head implements Application{
                     throw new JshException("head: illegal line count -- " + headLines);
                 } 
             } catch (NumberFormatException  e) {
-                throw new JshException("head: wrong argument " + applicationArguments.get(1));
+                throw new JshException("head: " + e.getMessage());
             }
-        }    
+        } 
         
         if(applicationArguments.size() == 1 || applicationArguments.size() == 3) {
-            headArg = applicationArguments.get(applicationArguments.size() - 1); 
-            headFile = FileSystem.getInstance().getFile(headArg);
+            String filePath = applicationArguments.get(applicationArguments.size() - 1); 
             
-            if(headFile.exists()) {
-                filePath = Paths.get(headFile.getAbsolutePath());
-                try(BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
-                    readAndWrite(reader, writer, headLines);
-                }
-                catch (IOException e) {
-                    throw new JshException("head: cannot open file");
-                }
+            Scanner scanner;
+            try {
+                scanner = new Scanner(FileSystem.getInstance().getFile(filePath));
+            } catch (FileNotFoundException e) {
+                throw new JshException("head: " + e.getMessage());
             }
-            else {
-                throw new JshException("head: " + headArg + " does not exist");
-            }
+
+            readAndWrite(scanner, writer);
         } else {
-            readAndWrite(new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)), writer, headLines);
+            readAndWrite(new Scanner(inputStream), writer);
         }
     }
 

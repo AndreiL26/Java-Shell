@@ -22,27 +22,32 @@ public class Ls implements Application {
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, -1);
         checkArguments(applicationArguments);
-        File currDir = null;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+
+        File currDir;
         if (applicationArguments.isEmpty()) {
-            currDir = new File(FileSystem.getInstance().getWorkingDirectoryPath());
+            currDir = FileSystem.getInstance().getFile(FileSystem.getInstance().getWorkingDirectoryPath());
         } 
         else {
             currDir = FileSystem.getInstance().getFile(applicationArguments.get(0));
         }
-        try{
+
+        try {
             File[] listOfFiles = currDir.listFiles();
             boolean atLeastOnePrinted = false;
             try {
+                int index = 0;
                 for (File file : listOfFiles) {
                     if (!file.getName().startsWith(".")) {
                         writer.write(file.getName());
-                        if(file.compareTo(listOfFiles[listOfFiles.length - 1]) != 0) {
+                        if(index + 1 < listOfFiles.length) {
                             writer.write("\t");
                         }
                         writer.flush();
                         atLeastOnePrinted = true;
                     }
+
+                    index += 1;
                 }    
 
                 if (atLeastOnePrinted) {
@@ -50,10 +55,10 @@ public class Ls implements Application {
                     writer.flush();
                 } 
             } catch (IOException e) {
-                throw new JshException("ls: could not write output");
+                throw new JshException("ls: " + e.getMessage());
             }
         } catch (NullPointerException e) {
-            throw new JshException("ls: no such directory");
+            throw new JshException("ls: " + e.getMessage());
         }
     }
 

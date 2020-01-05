@@ -56,8 +56,12 @@ public final class FileSystem {
         this.workingDirectoryPath = workingDirectoryPath;
     }
 
-    public File getFile(String filePath) {
-        return new File(getFilePath(filePath));
+    public File getFile(String filePath) throws JshException {
+        try {
+            return new File(getFilePath(filePath));
+        } catch (NullPointerException e) {
+            throw new JshException(e.getMessage());
+        }
     }
 
     public String getFilePath(String filePath) {

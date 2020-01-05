@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Utilities.JshException;
  
 public class JshTest {
     private static FileSystem fileSystem;
@@ -171,20 +172,24 @@ public class JshTest {
     @Test
     public void testSimpleOutputRedirection() throws IOException {
         Jsh.eval("echo Hello > output.txt", outputStream);
-        File redirectionFile = fileSystem.getFile("output.txt");
-        if(!redirectionFile.exists()) {
-            fail("output redirection did not create the output file");
+        try {
+            File redirectionFile = fileSystem.getFile("output.txt");
+            if(!redirectionFile.exists()) {
+                fail("output redirection did not create the output file");
+            }
+            Scanner scanner = new Scanner(redirectionFile);
+            String fileContent = "";
+            while(scanner.hasNextLine()) {
+                fileContent += scanner.nextLine();
+            }
+            scanner.close();
+            redirectionFile.delete();
+            assertEquals("", outputStream.toString());
+            assertEquals("Hello", fileContent);
+            assertEquals("", errStream.toString());
+        } catch (JshException e) {
+            fail(e.getMessage());
         }
-        Scanner scanner = new Scanner(redirectionFile);
-        String fileContent = "";
-        while(scanner.hasNextLine()) {
-            fileContent += scanner.nextLine();
-        }
-        scanner.close();
-        redirectionFile.delete();
-        assertEquals("", outputStream.toString());
-        assertEquals("Hello", fileContent);
-        assertEquals("", errStream.toString());
     }
 
     @Test
@@ -192,30 +197,38 @@ public class JshTest {
         Jsh.eval("echo Hello > output.txt > tooMany.txt", outputStream);
         assertEquals("", outputStream.toString());
         assertEquals("Too many files for output redirection" + lineSeparator, errStream.toString());
-        File outputFile = fileSystem.getFile("output.txt");
-        File tooManyFile = fileSystem.getFile("tooMany.txt");
-        if(outputFile.exists() || tooManyFile.exists()) {
-            fail("Output redirection created useless files");
+        try {
+            File outputFile = fileSystem.getFile("output.txt");
+            File tooManyFile = fileSystem.getFile("tooMany.txt");
+            if(outputFile.exists() || tooManyFile.exists()) {
+                fail("Output redirection created useless files");
+            }
+        } catch (JshException e) {
+            fail(e.getMessage());
         }
     }
 
     @Test
     public void testInFrontRedirection() throws IOException {
         Jsh.eval("> output.txt echo Hello", outputStream);
-        File redirectionFile = fileSystem.getFile("output.txt");
-        if(!redirectionFile.exists()) {
-            fail("output redirection did not create the output file");
+        try {
+            File redirectionFile = fileSystem.getFile("output.txt");
+            if(!redirectionFile.exists()) {
+                fail("output redirection did not create the output file");
+            }
+            Scanner scanner = new Scanner(redirectionFile);
+            String fileContent = "";
+            while(scanner.hasNextLine()) {
+                fileContent += scanner.nextLine();
+            }
+            scanner.close();
+            redirectionFile.delete();
+            assertEquals("", outputStream.toString());
+            assertEquals("Hello", fileContent);
+            assertEquals("", errStream.toString());
+        } catch (JshException e) {
+            fail(e.getMessage());
         }
-        Scanner scanner = new Scanner(redirectionFile);
-        String fileContent = "";
-        while(scanner.hasNextLine()) {
-            fileContent += scanner.nextLine();
-        }
-        scanner.close();
-        redirectionFile.delete();
-        assertEquals("", outputStream.toString());
-        assertEquals("Hello", fileContent);
-        assertEquals("", errStream.toString());
     }
 
 
@@ -230,35 +243,43 @@ public class JshTest {
     @Test
     public void testInFrontRedirectionInvalid() {
         Jsh.eval("> echo Hello output.txt", outputStream);
-        File outputFile = fileSystem.getFile("output.txt");
-        if(outputFile.exists()) {
-            fail("output redirection created useless files");
+        try {
+            File outputFile = fileSystem.getFile("output.txt");
+            if(outputFile.exists()) {
+                fail("output redirection created useless files");
+            }
+            assertEquals("", outputStream.toString());
+        } catch (JshException e) {
+            fail(e.getMessage());
         }
-        assertEquals("", outputStream.toString());
     }
 
     @Test
     public void testInputAndOutputRedirection() throws IOException {
         Jsh.eval("sed s/test/repl/g < Soft > test.txt", outputStream);
-        File redirectionFile = fileSystem.getFile("test.txt");
-        if(!redirectionFile.exists()) {
-            fail("output redirection did not create the output file");
+        try {
+            File redirectionFile = fileSystem.getFile("test.txt");
+            if(!redirectionFile.exists()) {
+                fail("output redirection did not create the output file");
+            }
+            Scanner scanner = new Scanner(redirectionFile);
+            String fileContent = "";
+            while(scanner.hasNextLine()) {
+                fileContent += scanner.nextLine();
+                fileContent += lineSeparator;
+            }
+            scanner.close();
+            redirectionFile.delete();
+            assertEquals("", outputStream.toString());
+            assertEquals("", errStream.toString());
+            String expectedFileContent = "";
+            expectedFileContent += "This is a repl" + lineSeparator;
+            expectedFileContent += "This is a repl of another repl" + lineSeparator;
+            expectedFileContent += lineSeparator;
+            assertEquals(expectedFileContent, fileContent);
+        } catch (JshException e) {
+            fail(e.getMessage());
         }
-        Scanner scanner = new Scanner(redirectionFile);
-        String fileContent = "";
-        while(scanner.hasNextLine()) {
-            fileContent += scanner.nextLine();
-            fileContent += lineSeparator;
-        }
-        scanner.close();
-        redirectionFile.delete();
-        assertEquals("", outputStream.toString());
-        assertEquals("", errStream.toString());
-        String expectedFileContent = "";
-        expectedFileContent += "This is a repl" + lineSeparator;
-        expectedFileContent += "This is a repl of another repl" + lineSeparator;
-        expectedFileContent += lineSeparator;
-        assertEquals(expectedFileContent, fileContent);
     }
 
     @Test
