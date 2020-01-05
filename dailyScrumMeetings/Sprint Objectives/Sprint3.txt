@@ -1,0 +1,5 @@
+Sprint 3 Objectives
+-------------------
+- Use ANTLR to generate a complete Parser.
+- Make the required changed to implement piping
+- Add Sed command JUnit Tests for the existing commands.

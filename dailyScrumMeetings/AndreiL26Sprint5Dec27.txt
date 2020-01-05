@@ -1,0 +1,12 @@
+What did I do last time?
+- Added JUnit Test that offer 100% branch coverage for the Aplications package
+- Fix series of bugs revealed by the tests
+- Added the last command
+
+What do I plan to do now?
+- Add globbing
+- Add the unsafe versions of applications through a Decorator pattern
+- Test both of the above
+
+Am I blocked on anything?
+- No

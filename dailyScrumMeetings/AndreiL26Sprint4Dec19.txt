@@ -1,0 +1,9 @@
+What did I do last time?
+- Tried to modify the commands and the 'dummy' parser to allow for IO redirection
+
+What do I plan to do now?
+- Integrate the new parser with the existing code
+- Refactor commands for IO redirection
+
+Am I blocked on anything?
+- Yes, on how to modify commands for IO redirection

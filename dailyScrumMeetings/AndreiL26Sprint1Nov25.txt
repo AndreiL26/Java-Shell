@@ -1,0 +1,9 @@
+What did I do last time?
+- Refactored the command logic and split it into multiple classes
+
+What do I plan to do now?
+- Refactor the existing commands based on test driven development
+- Pair programming with Alexandru Niculae to expand the current capabilities of the Parser
+
+Am I blocked on anything?
+ - No

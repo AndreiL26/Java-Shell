@@ -1,0 +1,13 @@
+What did I do last time?
+- Added IO Redirection
+- Added History Command
+- Added 100% branch coverage for history application
+
+What do I plan to do now?
+- Abstract FileSystem using Singleton pattern.
+- Fix Application case sensitive bug.
+- Review and bug fix.
+- Exclude ANTLR generated files from Jacoco report.
+
+Am I blocked on anything?
+- No.

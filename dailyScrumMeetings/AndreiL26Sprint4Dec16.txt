@@ -1,0 +1,11 @@
+What did I do last time?
+- Added the Find command alongside tests for it
+- Added more tests for the existing commands
+
+What do I plan to do now?
+- Add the last command
+- Change the 'dummy' parser to allow IO redirection
+- Refactor the existing commands to allow for IO redirection
+
+Am I blocked on anything?
+ - No

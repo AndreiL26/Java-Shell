@@ -1,0 +1,9 @@
+What did I do last time?
+- Tried to add ANTLR configuration into pom.xml file to work with Docker.
+- Add more logic to ANTLR parser.
+
+What do I plan to do now?
+- Fix pom.xml
+
+Am I blocked on anything?
+- Don't know how to add ANTLR configuration into pom.xml file to work with Docker.

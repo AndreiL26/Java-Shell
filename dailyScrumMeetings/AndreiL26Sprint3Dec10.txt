@@ -1,0 +1,9 @@
+What did I do last time?
+- Changed the implementation of sed, grep, cat, tail and head to allow reading from standard input
+- Added tests for the above mentioned classes to cover reading from standard input
+
+What do I plan to do now?
+- Once again refactor the classes to allow for the implementation of Piping
+
+Am I blocked on anything?
+ - No

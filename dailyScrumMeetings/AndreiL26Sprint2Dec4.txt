@@ -1,0 +1,10 @@
+What did I do last time?
+- I created a Command Manager that holds only one instance of every command class and handles the logic of executing the correct command
+- Added a Utilites package that contains several classes which provide utility methods for the commands and for the Jsh class
+
+What do I plan to do now?
+- Add more of the required commands 
+- Continue testing the existing commands using the new test model
+
+Am I blocked on anything?
+ - No
