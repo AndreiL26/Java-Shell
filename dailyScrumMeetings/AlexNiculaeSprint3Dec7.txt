@@ -1,9 +1,0 @@
-What did I do last time?
-- Created a second ANTLR parser to be able to execute sequence commands correctly.
-- Fixed small bugs to ANTLR command line parser.
-
-What do I plan to do now?
-- Configure pom.xml file to be able to integrate ANTLR with Docker.
-
-Am I blocked on anything?
-- No

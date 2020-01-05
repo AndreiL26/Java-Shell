@@ -1,6 +1,0 @@
-Sprint 2 Objectives
--------------------
-- Implement a basic Parser that would allow testing of the existing commands
-- Design a more powerful Parser using a parser generator.
-- Add suitable Testing environment to allow a more general approach to writing JUnit Tests.
-

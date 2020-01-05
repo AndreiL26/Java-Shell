@@ -1,9 +1,0 @@
-What did I do last time?
-- Pair programmed with Andrei Lazar to create a Tree structure for Parser.
-
-What do I plan to do now?
-- Use a Parser Generator to parse the input.
-- Solve Reverse Engineering exercise to get access to JUnit Tests.
-
-Am I blocked on anything?
-- No
