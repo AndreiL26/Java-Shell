@@ -62,28 +62,28 @@ public class JshTest {
     public void testSimpleFailedSequenceSafeApplicationFirst() throws IOException {
         Jsh.eval("cat InvalidPath; echo hello", outputStream);
         assertEquals("", outputStream.toString());
-        assertEquals("cat: file does not exist" + lineSeparator, errStream.toString());
+        assertEquals("cat: " + fileSeparator + "tmp" + fileSeparator + "InvalidPath (No such file or directory)" + lineSeparator, errStream.toString());
     }
 
     @Test
     public void testSimpleFailedSequenceUnsafeApplicationFirst() throws IOException {
         Jsh.eval("_cat InvalidPath; echo hello", outputStream);
         assertEquals("hello" + lineSeparator, outputStream.toString());
-        assertEquals("cat: file does not exist" + lineSeparator, errStream.toString());
+        assertEquals("cat: " + fileSeparator + "tmp" + fileSeparator + "InvalidPath (No such file or directory)" + lineSeparator, errStream.toString());
     }
     
     @Test
     public void testSimpleFailedSequenceFailedSafeApplicationSecond() throws IOException {
         Jsh.eval("echo hello; ls InvalidPath", outputStream);
         assertEquals("hello" + lineSeparator, outputStream.toString());
-        assertEquals("ls: no such directory" + lineSeparator, errStream.toString());
+        assertEquals("ls: null" + lineSeparator, errStream.toString());
     }
 
     @Test
     public void testSimpleFailedSequenceFailedUnsafeApplicationSecond() throws IOException {
         Jsh.eval("echo hello; _ls InvalidPath", outputStream);
         assertEquals("hello" + lineSeparator, outputStream.toString());
-        assertEquals("ls: no such directory" + lineSeparator, errStream.toString());
+        assertEquals("ls: null" + lineSeparator, errStream.toString());
     }
 
     @Test
@@ -98,7 +98,7 @@ public class JshTest {
         Jsh.eval("echo hello; ls InvalidPath; cd InvalidPath; echo world", outputStream);
         assertEquals("hello" + lineSeparator, outputStream.toString());
         String expectedErrorMessages = "";
-        expectedErrorMessages += "ls: no such directory" + lineSeparator;
+        expectedErrorMessages += "ls: null" + lineSeparator;
         assertEquals(expectedErrorMessages, errStream.toString());
     }
 
@@ -107,7 +107,7 @@ public class JshTest {
         Jsh.eval("echo hello; _ls InvalidPath; _cd InvalidPath; echo world", outputStream);
         assertEquals("hello" + lineSeparator + "world" + lineSeparator, outputStream.toString());
         String expectedErrorMessages = "";
-        expectedErrorMessages += "ls: no such directory" + lineSeparator;
+        expectedErrorMessages += "ls: null" + lineSeparator;
         expectedErrorMessages += "cd: InvalidPath is not an existing directory" + lineSeparator;
         assertEquals(expectedErrorMessages, errStream.toString());
     }
