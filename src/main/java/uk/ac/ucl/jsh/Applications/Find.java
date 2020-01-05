@@ -34,6 +34,7 @@ public class Find implements Application {
             }
         }
     }
+
     private void checkArguments(ArrayList<String> applicationArguments) throws JshException {
         if(applicationArguments.size() < 2) {
             throw new JshException("find: missing arguments");
@@ -58,24 +59,26 @@ public class Find implements Application {
 
     @Override
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
-        String searchRootDirectory;
-        String resolvedPath = ".";
         applicationArguments = Application.globArguments(applicationArguments, applicationArguments.size() - 1);
         checkArguments(applicationArguments);
         writer = new OutputStreamWriter(outputStream);
-
+        
+        String searchRootDirectory;
+        String resolvedPath;
         if(applicationArguments.size() == 2) {
             searchRootDirectory = FileSystem.getInstance().getWorkingDirectoryPath();
+            resolvedPath = ".";
         }
         else {
             searchRootDirectory = FileSystem.getInstance().getFilePath(applicationArguments.get(0));
             resolvedPath = applicationArguments.get(0);
         }
+
         matcher = FileSystems.getDefault().getPathMatcher("glob:" + applicationArguments.get(applicationArguments.size() - 1));
         try {
             find(searchRootDirectory, resolvedPath);
         } catch (IOException e) {
-            throw new JshException("find: could not write output");
+            throw new JshException("find: " + e.getMessage());
         }
     }
 }
