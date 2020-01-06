@@ -166,7 +166,6 @@ public class JshTest {
     public void testInvalidInputRedirection() {
         Jsh.eval("cat < ", outputStream);
         assertEquals("", outputStream.toString());
-        //assertEquals("", errStream.toString());
     }
 
     @Test
@@ -236,7 +235,6 @@ public class JshTest {
     public void testInvalidOutputRedirection() {
         Jsh.eval("cat > ", outputStream);
         assertEquals("", outputStream.toString());
-        //assertEquals("", errStream.toString());
     }
 
 

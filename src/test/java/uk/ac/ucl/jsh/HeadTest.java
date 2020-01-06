@@ -25,6 +25,7 @@ public class HeadTest {
     private static ArrayList<String> applicationArguments;
     
     private String lineSeparator = Jsh.lineSeparator;
+    private String fileSeparator = Jsh.fileSeparator;
     private String initialWorkingDirectoryPath;
     
     @BeforeClass
@@ -71,7 +72,7 @@ public class HeadTest {
         try {
             applicationArguments.add("-n");
             applicationArguments.add("-15");
-            applicationArguments.add("/tmp/Documents/Eng/Test");
+            applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator +  "Test");
             headApplication.execute(applicationArguments, null, outputStream);
             fail("head did not throw an illegal line count exception");
         } catch (JshException e) {
@@ -135,7 +136,7 @@ public class HeadTest {
             headApplication.execute(applicationArguments, null, outputStream);
             fail("head did not throw an invalig argument exception");
         } catch (JshException e) {
-            assertEquals("head: /tmp/InvalidPath (No such file or directory)", e.getMessage());
+            assertEquals("head: " + fileSeparator + "tmp" + fileSeparator + "InvalidPath (No such file or directory)", e.getMessage());
         }
     }
 
@@ -144,17 +145,17 @@ public class HeadTest {
         try {
             applicationArguments.add("-n");
             applicationArguments.add("6");
-            applicationArguments.add("/tmp/Documents/Eng");
+            applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng");
             headApplication.execute(applicationArguments, null, outputStream);
             fail("head did not throw a cannot read input exception");
         } catch (JshException e) {
-            assertEquals("head: /tmp/Documents/Eng (Is a directory)", e.getMessage());
+            assertEquals("head: " + fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng (Is a directory)", e.getMessage());
         }
     }
 
     @Test
     public void testDefaultNumberOfLinesFromAbsolutePath() throws JshException {
-        applicationArguments.add("/tmp/Documents/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test");
         String expectedOutput = new String();
         for(int i = 0; i < 10; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
@@ -165,7 +166,7 @@ public class HeadTest {
 
     @Test
     public void testDefaultNumberOfLinesFromRelativePath() throws JshException {
-        fileSystem.setWorkingDirectory("/tmp/Documents/Eng");
+        fileSystem.setWorkingDirectory(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng");
         applicationArguments.add("Test");
         String expectedOutput = new String();
         for(int i = 0; i < 10; ++ i) {
@@ -179,7 +180,7 @@ public class HeadTest {
     public void testCustomNumberOfLinesLessThanInFile() throws JshException {
         applicationArguments.add("-n");
         applicationArguments.add("15");
-        applicationArguments.add("/tmp/Documents/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test");
         String expectedOutput = new String();
         for(int i = 0; i < 15; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
@@ -192,7 +193,7 @@ public class HeadTest {
     public void testCustomNumberOfLinesMoreThanInFile() throws JshException {
         applicationArguments.add("-n");
         applicationArguments.add("55");
-        applicationArguments.add("/tmp/Documents/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test");
         String expectedOutput = new String();
         for(int i = 0; i < 20; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
@@ -203,7 +204,7 @@ public class HeadTest {
 
     @Test
     public void testReadFromEmptyFile() throws JshException {
-        applicationArguments.add("/tmp/Documents/Proj.txt");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Proj.txt");
         headApplication.execute(applicationArguments, null, outputStream);
         assertEquals("", outputStream.toString());
     }
@@ -242,7 +243,7 @@ public class HeadTest {
 
     @Test
     public void testGlobbedPathFile() throws JshException {
-        applicationArguments.add("/tmp/Documents/Eng/T*t");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "T*t");
         String expectedOutput = new String();
         for(int i = 0; i < 10; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;

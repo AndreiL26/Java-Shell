@@ -72,7 +72,7 @@ public class TailTest {
         try{
             applicationArguments.add("-n");
             applicationArguments.add("-15");
-            applicationArguments.add("/tmp/Documents/Eng/Test");
+            applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test");
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw a too many arguments exception");
         } catch (JshException e) {
@@ -145,7 +145,7 @@ public class TailTest {
         try {
             applicationArguments.add("-n");
             applicationArguments.add("6");
-            applicationArguments.add("/tmp/Documents/Eng");
+            applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng");
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw a cannot read input exception");
         } catch (JshException e) {
@@ -155,7 +155,7 @@ public class TailTest {
 
     @Test
     public void testDefaultNumberOfLinesFromAbsolutePath() throws JshException {
-        applicationArguments.add("/tmp/Documents/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test");
         String expectedOutput = new String();
         for(int i = 10; i < 20; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
@@ -166,7 +166,7 @@ public class TailTest {
 
     @Test
     public void testDefaultNumberOfLinesFromRelativePath() throws JshException {
-        fileSystem.setWorkingDirectory("/tmp/Documents/Eng");
+        fileSystem.setWorkingDirectory(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng");
         applicationArguments.add("Test");
         String expectedOutput = new String();
         for(int i = 10; i < 20; ++ i) {
@@ -180,7 +180,7 @@ public class TailTest {
     public void testCustomNumberOfLinesLessThanInFile() throws JshException {
         applicationArguments.add("-n");
         applicationArguments.add("15");
-        applicationArguments.add("/tmp/Documents/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test");
         String expectedOutput = new String();
         for(int i = 5; i < 20; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
@@ -193,7 +193,7 @@ public class TailTest {
     public void testCustomNumberOfLinesMoreThanInFile() throws JshException {
         applicationArguments.add("-n");
         applicationArguments.add("55");
-        applicationArguments.add("/tmp/Documents/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test");
         String expectedOutput = new String();
         for(int i = 0; i < 20; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
@@ -204,7 +204,7 @@ public class TailTest {
 
     @Test
     public void testReadFromEmptyFile() throws JshException {
-        applicationArguments.add("/tmp/Documents/Proj.txt");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Proj.txt");
         tailApplication.execute(applicationArguments, null, outputStream);
         assertEquals("", outputStream.toString());
     }
@@ -243,7 +243,7 @@ public class TailTest {
 
     @Test
     public void testFromGlobbedPath() throws JshException {
-        applicationArguments.add("/tmp/Doc*ts/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Doc*ts" + fileSeparator + "Eng" + fileSeparator + "Test");
         String expectedOutput = new String();
         for(int i = 10; i < 20; ++ i) {
             expectedOutput += "Line number: " + Integer.toString(i) + lineSeparator;
