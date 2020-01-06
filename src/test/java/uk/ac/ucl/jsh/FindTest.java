@@ -73,7 +73,7 @@ public class FindTest {
     @Test 
     public void testMissingPattern() {
         try {
-            applicationArguments.add("/lib");
+            applicationArguments.add(fileSeparator + "lib");
             applicationArguments.add("-name");
             findApplication.execute(applicationArguments, null, outputStream);
             fail("find did not throw a wrong argument exception");

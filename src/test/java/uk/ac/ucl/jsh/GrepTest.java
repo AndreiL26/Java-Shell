@@ -27,6 +27,7 @@ public class GrepTest {
     private static ArrayList<String> applicationArguments;
 
     private String lineSeparator = Jsh.lineSeparator;
+    private String fileSeparator = Jsh.fileSeparator;
     private String initialWorkingDirectoryPath;
     
     @BeforeClass
@@ -83,7 +84,7 @@ public class GrepTest {
             grepApplication.execute(applicationArguments, null, outputStream);
             fail("grep did no throw a cannot open exception");
         } catch (JshException e) {
-            assertEquals("grep: /tmp/InvalidPath (No such file or directory)", e.getMessage());
+            assertEquals("grep: " + fileSeparator + "tmp" + fileSeparator + "InvalidPath (No such file or directory)", e.getMessage());
         }
     }
 
@@ -95,7 +96,7 @@ public class GrepTest {
             grepApplication.execute(applicationArguments, null, outputStream);
             fail("grep did not throw a cannot open exception");
         } catch (JshException e) {
-            assertEquals("grep: /tmp/Documents (Is a directory)", e.getMessage());
+            assertEquals("grep: " + fileSeparator + "tmp" + fileSeparator + "Documents (Is a directory)", e.getMessage());
         }
     }
 
@@ -104,7 +105,7 @@ public class GrepTest {
     @Test
     public void testReadFromEmptyFile() throws JshException {
         applicationArguments.add(".*");
-        applicationArguments.add("/tmp/Documents/Eng/Plan");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Plan");
         grepApplication.execute(applicationArguments, null, outputStream);
         assertEquals("", outputStream.toString());
     }   
@@ -142,7 +143,7 @@ public class GrepTest {
     @Test
     public void testReadFromFileAbsolutePath() throws JshException {
         applicationArguments.add("Lin.*");
-        applicationArguments.add("/tmp/Documents/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng" + fileSeparator + "Test");
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
         for(int i = 0; i < 20; ++ i) {
@@ -167,8 +168,8 @@ public class GrepTest {
     @Test
     public void testReadFromMultipleFiles() throws JshException {
         applicationArguments.add("test");
-        applicationArguments.add("/tmp/Soft");
-        applicationArguments.add("Documents/Ware");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Soft");
+        applicationArguments.add("Documents" + fileSeparator + "Ware");
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
@@ -181,7 +182,7 @@ public class GrepTest {
     @Test
     public void readFromFileWithInputStreamNotNull() throws IOException, JshException {
         applicationArguments.add("test");
-        applicationArguments.add("/tmp/Soft");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Soft");
         ByteArrayOutputStream aux = new ByteArrayOutputStream();
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(aux));
         String inputString = "Hello world" + lineSeparator + "Hello there" + lineSeparator + "Bye" + lineSeparator + lineSeparator;
@@ -200,7 +201,7 @@ public class GrepTest {
     @Test
     public void testReadFromGlobbedPath() throws JshException{
         applicationArguments.add("Line");
-        applicationArguments.add("/tmp/Docu*s/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Docu*s" + fileSeparator + "Eng" + fileSeparator + "Test");
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
         for(int i = 0; i < 20; ++ i) {
@@ -212,7 +213,7 @@ public class GrepTest {
     @Test
     public void testWithGlobbedArguments() throws JshException{
         applicationArguments.add("L*e");
-        applicationArguments.add("/tmp/Docu*s/Eng/Test");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Docu*s" + fileSeparator + "Eng" + fileSeparator + "Test");
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
         for(int i = 0; i < 20; ++ i) {
@@ -224,7 +225,7 @@ public class GrepTest {
     @Test
     public void testMultipleFIlesFromGlobbedArgument() throws JshException {
         applicationArguments.add("test");
-        applicationArguments.add("/tmp/Other/Oth*");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Other" + fileSeparator + "Oth*");
         grepApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;

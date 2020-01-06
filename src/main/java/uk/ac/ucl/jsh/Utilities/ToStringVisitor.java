@@ -68,6 +68,6 @@ public class ToStringVisitor implements TreeVisitor<String> {
      * @throws JshException The exception that may be thrown if the visitor runs an Applications
      */
     public String visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) throws JshException {
-        return shiftSB.toString() + "Call node: " + callNode.getCmdString() + Jsh.lineSeparator;
+        return shiftSB.toString() + "Call node: " + callNode.getApplicationString() + Jsh.lineSeparator;
     }
 }

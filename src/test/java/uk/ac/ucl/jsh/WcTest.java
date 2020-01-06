@@ -214,4 +214,12 @@ public class WcTest {
         wcApplication.execute(applicationArguments, testInput, outputStream);  
         assertEquals("2 5 23 " + lineSeparator, outputStream.toString());
     }
+
+    @Test
+    public void testOnlyOneLineFile() throws JshException {
+        applicationArguments.add("-m");
+        applicationArguments.add("Hello");
+        wcApplication.execute(applicationArguments, null, outputStream);
+        assertEquals("5 " + lineSeparator, outputStream.toString());
+    }
 }
