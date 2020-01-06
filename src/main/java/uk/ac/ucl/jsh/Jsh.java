@@ -73,7 +73,11 @@ public class Jsh {
                 return;
             }
             
-            eval(args[1], System.out);
+            try {
+                eval(args[1], System.out);
+            } catch (Exception e) {
+                System.err.println("jsh: " + e.getMessage());
+            }
         } else {
             System.out.println("Hello World!");
             Scanner input = new Scanner(System.in);
@@ -84,7 +88,11 @@ public class Jsh {
                     
                     String cmdline = input.nextLine();
                     history.add(cmdline);
-                    eval(cmdline, System.out);   
+                    try {
+                        eval(cmdline, System.out); 
+                    } catch (Exception e) {
+                        System.err.println("jsh: " + e.getMessage());
+                    }
                 }
             } finally {
                 input.close();
