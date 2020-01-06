@@ -24,6 +24,7 @@ public class LsTest {
     private static ArrayList<String> applicationArguments;
 
     private String lineSeparator = Jsh.lineSeparator;
+    private String fileSeparator = Jsh.fileSeparator;
     private String initialWorkingDirectoryPath;
     
     @BeforeClass
@@ -53,7 +54,7 @@ public class LsTest {
 
     @Test 
     public void testMoreArguments() {
-        applicationArguments.add("/");
+        applicationArguments.add(fileSeparator);
         applicationArguments.add("..");
         try {
             lsApplication.execute(applicationArguments, System.in, outputStream);
@@ -66,7 +67,7 @@ public class LsTest {
     @Test
     public void testCurrentDirectory() throws JshException {
         // The filesystem's current working directory will be /tmp/Documents
-        fileSystem.setWorkingDirectory("/tmp/Documents");
+        fileSystem.setWorkingDirectory(fileSeparator + "tmp" + fileSeparator + "Documents");
         lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Ware" + "\t" + "Proj.txt" + "\t" + "Eng" + lineSeparator;
         assertEqualStrings(expectedOutput, outputStream.toString());
@@ -83,7 +84,7 @@ public class LsTest {
 
     @Test
     public void testArgumentDirectoryAbsolutePath() throws JshException {
-        applicationArguments.add("/tmp/Documents/Eng");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng");
         lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Code" + "\t" + "Test" + "\t" + "Plan" + lineSeparator;
         assertEqualStrings(expectedOutput, outputStream.toString());
@@ -91,7 +92,7 @@ public class LsTest {
 
     @Test
     public void testIgnoreDotFiles() throws JshException {
-        applicationArguments.add("/tmp/Other");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Other");
         lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Oth1" + "\t" + "Empty" + "\t" + "Oth2" + lineSeparator;
         assertEqualStrings(expectedOutput, outputStream.toString());
@@ -99,14 +100,14 @@ public class LsTest {
 
     @Test
     public void testEmptyDirectory() throws JshException {
-        applicationArguments.add("/tmp/Other/Empty");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Other" + fileSeparator + "Empty");
         lsApplication.execute(applicationArguments, System.in, outputStream);
         assertEqualStrings("", outputStream.toString());
     }
 
     @Test
     public void testGlobbedPath() throws JshException {
-        applicationArguments.add("/tmp/D*s/E*g");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "D*s" + fileSeparator + "E*g");
         lsApplication.execute(applicationArguments, System.in, outputStream);
         String expectedOutput = "Code" + "\t" + "Test" + "\t" + "Plan" + lineSeparator;
         assertEqualStrings(expectedOutput, outputStream.toString());

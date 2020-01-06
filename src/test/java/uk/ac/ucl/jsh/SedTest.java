@@ -25,6 +25,7 @@ public class SedTest {
     private static ArrayList<String> applicationArguments;
 
     private String lineSeparator = Jsh.lineSeparator;
+    private String fileSeparator = Jsh.fileSeparator;
     private String initialWorkingDirectoryPath;
     
     @BeforeClass
@@ -201,7 +202,7 @@ public class SedTest {
             sedApplication.execute(applicationArguments, null, outputStream);
             fail("sed did not throw a cannot open file exception");
         } catch (JshException e) {
-            assertEquals("sed: /tmp/INVALID PATH (No such file or directory)", e.getMessage());
+            assertEquals("sed: " + fileSeparator + "tmp" + fileSeparator + "INVALID PATH (No such file or directory)", e.getMessage());
         }
     }
 
@@ -275,7 +276,7 @@ public class SedTest {
     @Test
     public void testReadingFromFileAbsolutePath() throws JshException {
         applicationArguments.add("s/test/repl/");
-        applicationArguments.add("/tmp/Documents/Ware");
+        applicationArguments.add(fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Ware");
         sedApplication.execute(applicationArguments, null, outputStream);
         String expectedOutput = new String();
         expectedOutput += "This is a repl" + lineSeparator;
