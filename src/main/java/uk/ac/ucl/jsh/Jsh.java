@@ -12,7 +12,6 @@ public class Jsh {
     public final static String fileSeparator = System.getProperty("file.separator");
     public final static String lineSeparator = System.getProperty("line.separator");
 
-    public static ApplicationManager applicationManager = new ApplicationManager();   // Might want to make this final as well if Outputstream will always remain System.out
     private static ArrayList<String> history = new ArrayList<>();
 
     public static ArrayList<String> getHistory() {
@@ -26,7 +25,7 @@ public class Jsh {
     public static void eval(String cmdline, OutputStream outputStream) {
         Node cmdTree = Parser.parserCmdLine(cmdline);
         try {
-            cmdTree.accept(new EvalVisitor(applicationManager), null, outputStream);
+            cmdTree.accept(new EvalVisitor(), null, outputStream);
         } catch (JshException e) {
             System.err.println(e.getMessage());
         }

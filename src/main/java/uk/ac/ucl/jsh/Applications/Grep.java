@@ -15,7 +15,19 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * The Grep application that implements the Application interface
+ */
 public class Grep implements Application {
+    /**
+     * The function that reads the input, tries to match the current read line to the pattern given as argument and writes the lines that match
+     * the given pattern to the output stream
+     * 
+     * @param scanner       The scanner object used to read input from file or from inputstream
+     * @param writer        The writer object used to write to the outputstream
+     * @param pattern       The pattern given as argument to the Grep Application
+     * @throws JshException The exception thrown if the writer fails to write to the outputstream
+     */
     private void readAndMatch(Scanner scanner, OutputStreamWriter writer, Pattern pattern) throws JshException {
         try {
             while (scanner.hasNextLine()) {
@@ -33,6 +45,14 @@ public class Grep implements Application {
         }
     }
 
+    /**
+     * The function that checks the arguments passed to the Grep application, throwing an exception if there is no pattern given
+     * or if there is no input 
+     * 
+     * @param applicationArguments The arguments of the Application
+     * @param inputStream          The stream that will be used as input if the applicationArguments does not contain a file
+     * @throws JshException        The exception thrown if there is no pattern given as argument or if there is no input
+     */
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
         if (applicationArguments.isEmpty()) {
             throw new JshException("grep: missing arguments");
@@ -43,6 +63,16 @@ public class Grep implements Application {
     }
 
     @Override
+    /**
+     * Executes the Grep application with the given arguments. Grep searches for lines containing a match to the specified pattern. The output 
+     * of the application is the list of the lines. Each line is printed followed by a newline.
+     * Exception thrown if the arguments are invalid or if the writer fails to write to the outputstream.
+     * 
+     * @param applicationArguments The arguments of the Application
+     * @param inputStream          The stream that some Applications will use as input if the applicationArguments does not contain a file
+     * @param outpustream          The stream to which the Application will write to
+     * @throws JshException        The custom Exception that all Applications throw if an error occurs
+     */
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, 0);
         checkArguments(applicationArguments, inputStream);

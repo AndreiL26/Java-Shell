@@ -1,7 +1,6 @@
 package uk.ac.ucl.jsh.Parser;
 import uk.ac.ucl.jsh.antlr.CmdLineParser.*;
 
-
 public class BuildCmdTree extends CmdLineParserBaseVisitor<Node> {
     @Override
     public Node visitCompileUnit(CmdLineParserParser.CompileUnitContext ctx) {

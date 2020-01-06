@@ -12,9 +12,23 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Head implements Application{
+
+/**
+ * The Head application that implements the Application interface
+ */
+public class Head implements Application {
+    /**
+     * The number of lines that Head will print
+     */
     private int headLines;
 
+    /**
+     * The function that reads the input and writes to the outputstream the first headLines number of lines.
+     * 
+     * @param scanner       The object that reads the input either from a file or from the inputstream
+     * @param writer        The object used to write to the outputstream
+     * @throws JshException The exception thrown if the writer failes to write to the ouptustream
+     */
     private void readAndWrite(Scanner scanner, OutputStreamWriter writer) throws JshException{
         try {
             int count = 0;
@@ -32,6 +46,13 @@ public class Head implements Application{
         }
     }
 
+    /**
+     * The function that checks the arguments passed to the Head application
+     * 
+     * @param applicationArguments The arguments of the Application
+     * @param inputStream          The stream that will be used as input if the applicationArguments does not contain a file
+     * @throws JshException        The exception thrown if the given arguments are invalid
+     */
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
         if (applicationArguments.isEmpty() && inputStream == null) {
             throw new JshException("head: missing input");
@@ -48,6 +69,17 @@ public class Head implements Application{
     }
 
     @Override
+    /**
+     * Executes the Head application with the given arguments. Head prints first headLines lines of the file (or input stream), where headLines is an
+     * argument received by the Head application. The default value for headLines is 10. If there are less than headLines lines then the application prints
+     * all the lines without raising an exception.
+     * Exception thrown if the arguments are invalid or if the writer fails to write to the outputstream.
+     * 
+     * @param applicationArguments The arguments of the Application
+     * @param inputStream          The stream that some Applications will use as input if the applicationArguments does not contain a file
+     * @param outpustream          The stream to which the Application will write to
+     * @throws JshException        The custom Exception that all Applications throw if an error occurs
+     */
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException{
         applicationArguments = Application.globArguments(applicationArguments, -1);
         checkArguments(applicationArguments, inputStream);

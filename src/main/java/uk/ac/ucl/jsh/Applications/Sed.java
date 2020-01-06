@@ -12,10 +12,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * The Sed application that implements the Application interface
+ */
 public class Sed implements Application {
+    /**
+     * The regex String given as argument
+     */
     private String regex;
+    /**
+     * The replacement String given as argument
+     */
     private String replacement;
 
+   /**
+    * The function that checks if the first argument of Sed is valid and splits it into its components(i.e. regex and replacement)
+    *
+    * @param argument The first argument of the Sed Application
+    * @return         A boolean representing if true if the first argument is valid and false otherwise
+    */
     private boolean isValid(String argument) { 
         if (argument.length() < 5) {
             return false;
@@ -57,6 +72,13 @@ public class Sed implements Application {
         return true;
     }
 
+    /**
+     * The function that checks the arguments passed to the Sed application
+     * 
+     * @param applicationArguments The arguments of the Application
+     * @param inputStream          The stream that will be used as input if the applicationArguments does not contain a file
+     * @throws JshException        The exception thrown if the given arguments are invalid
+     */
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
         int numberOfArguments = applicationArguments.size();
         if (numberOfArguments <= 0) {
@@ -77,6 +99,17 @@ public class Sed implements Application {
     }
 
     @Override
+    /**
+     * Executes the Sed application with the given arguments. Sed copies the content of a given file or inputstream and writes it to the outputstream 
+     * after performing string replacement of a sequence that matches the regex given as argument with the replacement argument. By default it only does 
+     * so once per line, but if the 'g' character is used, it replaces all the sequences that match the given regex.
+     * Exception thrown if the given arguments are invalid  or if the writer fails to write to the outputstream.
+     * 
+     * @param applicationArguments The arguments of the Application
+     * @param inputStream          The stream that some Applications will use as input if the applicationArguments does not contain a file
+     * @param outpustream          The stream to which the Application will write to
+     * @throws JshException        The custom Exception that all Applications throw if an error occurs
+     */
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, 0);
         checkArguments(applicationArguments, inputStream);

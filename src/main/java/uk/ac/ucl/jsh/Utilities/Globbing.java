@@ -8,10 +8,26 @@ import java.util.ArrayList;
 
 import uk.ac.ucl.jsh.Jsh;
 
+/**
+ * Globbing class that contains the logic required to perform argument globbing for Applications
+ */
 public class Globbing {
+   /**
+     * Utility string that ensures that the paths created by globbing are not system-dependent
+     */
     private static String fileSeparator = Jsh.fileSeparator;
+    /**
+     * ArrayList storing the globbing result
+     */
     private static ArrayList<String> globbedArguments;
 
+    /**
+     * Function that recursively performs globbing for one argument
+     * 
+     * @param currentGlobbedPath The current path that was expanded and does not contain any globbing character
+     * @param unglobbedPath      The current path that still contains globbing characters and still needs to be expanded
+     * @param startingPath       The path that the final globbed path is relative to
+     */
     private static void globArgument(String currentGlobbedPath, String unglobbedPath, String startingPath) {
         if(unglobbedPath != "") {
             String globbingPattern, remainingUnglobbedPath;
@@ -48,6 +64,15 @@ public class Globbing {
         }
     }
 
+    /**
+     * Function that performs Performs globbing of the applicationArguments. In some cases not all arguments should be globbed
+     * (eg for the Find Application the pattern argument should not be globbed), therefore there is a parameter
+     * called ignore index for which the argument at that index is not globbed, but added directly to the result
+     * 
+     * @param applicationArguments  The list of arguments before perfomming globbing
+     * @param ignoreIndex           The index of the argument in the applicationArguments that will not be globbed and will be added as it is
+     * @return                      An ArrayList of Strings containing the globbing result
+     */
     public static ArrayList<String> globArguments(ArrayList<String> applicationArguments, int ignoreIndex) {
         globbedArguments = new ArrayList<String>();
         if(applicationArguments.size() == 0) {

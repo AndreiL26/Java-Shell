@@ -69,13 +69,14 @@ public class Wc implements Application {
             String currentLine = reader.readLine();
             while (currentLine != null) {
                 lineCount++;
-                charCount += currentLine.length() + 1;    // +1 to account for the newline as being the newline
+                charCount += currentLine.length();
                 String[] words = currentLine.split(" ");
                 if(!words[0].equals("")) {
                     wordCount = wordCount + words.length;
                 }
                 currentLine = reader.readLine();
             }
+            charCount += lineCount - 1;
         } catch (IOException e) {
             throw new JshException("wc: cannot read input");
         }
