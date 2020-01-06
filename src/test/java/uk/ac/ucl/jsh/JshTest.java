@@ -10,6 +10,7 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,11 +25,18 @@ public class JshTest {
     private String lineSeparator = Jsh.lineSeparator;
     private String fileSeparator = Jsh.fileSeparator;
     private String initialWorkingDirectoryPath;
+
+    private static PrintStream stdout;
+    private static PrintStream stderr;
     
     @BeforeClass
     public static void setClass() throws IOException {
+        stdout = System.out;
+        stderr = System.err;
+
         fileSystem = FileSystem.getInstance();
         outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
         errStream = new ByteArrayOutputStream();
         System.setErr(new PrintStream(errStream));
     }
@@ -50,38 +58,44 @@ public class JshTest {
         outputStream.reset();
         fileSystem.setWorkingDirectory(initialWorkingDirectoryPath);
     }   
+
+    @AfterClass
+    public static void resetStd() {
+        System.setOut(stdout);
+        System.setErr(stderr);
+    }
  
     @Test
     public void testSimpleSequence() {
-        Jsh.eval("echo hello; echo world", outputStream);
+        Jsh.eval("echo hello; echo world", System.out);
         assertEquals("hello" + lineSeparator + "world" + lineSeparator, outputStream.toString());
         assertEquals("", errStream.toString());
     }
 
     @Test
     public void testSimpleFailedSequenceSafeApplicationFirst() throws IOException {
-        Jsh.eval("cat InvalidPath; echo hello", outputStream);
+        Jsh.eval("cat InvalidPath; echo hello", System.out);
         assertEquals("", outputStream.toString());
         assertEquals("cat: " + fileSeparator + "tmp" + fileSeparator + "InvalidPath (No such file or directory)" + lineSeparator, errStream.toString());
     }
 
     @Test
     public void testSimpleFailedSequenceUnsafeApplicationFirst() throws IOException {
-        Jsh.eval("_cat InvalidPath; echo hello", outputStream);
+        Jsh.eval("_cat InvalidPath; echo hello", System.out);
         assertEquals("hello" + lineSeparator, outputStream.toString());
         assertEquals("cat: " + fileSeparator + "tmp" + fileSeparator + "InvalidPath (No such file or directory)" + lineSeparator, errStream.toString());
     }
     
     @Test
     public void testSimpleFailedSequenceFailedSafeApplicationSecond() throws IOException {
-        Jsh.eval("echo hello; ls InvalidPath", outputStream);
+        Jsh.eval("echo hello; ls InvalidPath", System.out);
         assertEquals("hello" + lineSeparator, outputStream.toString());
         assertEquals("ls: null" + lineSeparator, errStream.toString());
     }
 
     @Test
     public void testSimpleFailedSequenceFailedUnsafeApplicationSecond() throws IOException {
-        Jsh.eval("echo hello; _ls InvalidPath", outputStream);
+        Jsh.eval("echo hello; _ls InvalidPath", System.out);
         assertEquals("hello" + lineSeparator, outputStream.toString());
         assertEquals("ls: null" + lineSeparator, errStream.toString());
     }
@@ -95,7 +109,7 @@ public class JshTest {
 
     @Test
     public void testMultipleErrorsInCallSequenceWithSafeApplications() throws IOException {
-        Jsh.eval("echo hello; ls InvalidPath; cd InvalidPath; echo world", outputStream);
+        Jsh.eval("echo hello; ls InvalidPath; cd InvalidPath; echo world", System.out);
         assertEquals("hello" + lineSeparator, outputStream.toString());
         String expectedErrorMessages = "";
         expectedErrorMessages += "ls: null" + lineSeparator;
@@ -104,7 +118,7 @@ public class JshTest {
 
     @Test
     public void testMultipleErrorsInCallSequenceWithUnsafeApplications() throws IOException {
-        Jsh.eval("echo hello; _ls InvalidPath; _cd InvalidPath; echo world", outputStream);
+        Jsh.eval("echo hello; _ls InvalidPath; _cd InvalidPath; echo world", System.out);
         assertEquals("hello" + lineSeparator + "world" + lineSeparator, outputStream.toString());
         String expectedErrorMessages = "";
         expectedErrorMessages += "ls: null" + lineSeparator;
@@ -114,14 +128,14 @@ public class JshTest {
 
     @Test
     public void testInterestingSequenceAndCommandSubstitution() {
-        Jsh.eval("echo a `echo a`; echo b`b`", outputStream);
+        Jsh.eval("echo a `echo a`; echo b`b`", System.out);
         assertEquals("a a" + lineSeparator + "b" + lineSeparator, outputStream.toString());
         assertEquals("b: unknown application" + lineSeparator, errStream.toString());
     }
 
     @Test
     public void testSimpleInputRedirection() {
-        Jsh.eval("cat < Soft", outputStream);
+        Jsh.eval("cat < Soft", System.out);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
         expectedOutput += "This is a test of another test" + lineSeparator;
@@ -132,21 +146,21 @@ public class JshTest {
 
     @Test
     public void testWrongInputRedirection() {
-        Jsh.eval("Soft < cat", outputStream);
+        Jsh.eval("Soft < cat", System.out);
         assertEquals("", outputStream.toString());
         assertEquals(fileSeparator + "tmp" + fileSeparator + "cat " + "(No such file or directory)" + lineSeparator, errStream.toString());
     }
 
     @Test
     public void testMultipleInputRedirectionFiles() {
-        Jsh.eval("cat < Soft < Documents" + fileSeparator + "Ware", outputStream);
+        Jsh.eval("cat < Soft < Documents" + fileSeparator + "Ware", System.out);
         assertEquals("", outputStream.toString());
         assertEquals("Too many files for input redirection" + lineSeparator, errStream.toString());
     }
 
     @Test
     public void testSimpleInputRedirectionInFrontNotation() {
-        Jsh.eval("< Soft cat", outputStream);
+        Jsh.eval("< Soft cat", System.out);
         String expectedOutput = new String();
         expectedOutput += "This is a test" + lineSeparator;
         expectedOutput += "This is a test of another test" + lineSeparator;
@@ -157,20 +171,20 @@ public class JshTest {
 
     @Test
     public void testSimpleInputRedirectionInFrontNotationWrong() {
-        Jsh.eval("< cat Soft", outputStream);
+        Jsh.eval("< cat Soft", System.out);
         assertEquals("", outputStream.toString());
         assertEquals(fileSeparator + "tmp" + fileSeparator + "cat " + "(No such file or directory)" + lineSeparator, errStream.toString());
     }
 
     @Test
     public void testInvalidInputRedirection() {
-        Jsh.eval("cat < ", outputStream);
+        Jsh.eval("cat < ", System.out);
         assertEquals("", outputStream.toString());
     }
 
     @Test
     public void testSimpleOutputRedirection() throws IOException {
-        Jsh.eval("echo Hello > output.txt", outputStream);
+        Jsh.eval("echo Hello > output.txt", System.out);
         try {
             File redirectionFile = fileSystem.getFile("output.txt");
             if(!redirectionFile.exists()) {
@@ -193,7 +207,7 @@ public class JshTest {
 
     @Test
     public void testMultipleOutputRedirectionFiles() {
-        Jsh.eval("echo Hello > output.txt > tooMany.txt", outputStream);
+        Jsh.eval("echo Hello > output.txt > tooMany.txt", System.out);
         assertEquals("", outputStream.toString());
         assertEquals("Too many files for output redirection" + lineSeparator, errStream.toString());
         try {
@@ -209,7 +223,7 @@ public class JshTest {
 
     @Test
     public void testInFrontRedirection() throws IOException {
-        Jsh.eval("> output.txt echo Hello", outputStream);
+        Jsh.eval("> output.txt echo Hello", System.out);
         try {
             File redirectionFile = fileSystem.getFile("output.txt");
             if(!redirectionFile.exists()) {
@@ -233,14 +247,14 @@ public class JshTest {
 
     @Test
     public void testInvalidOutputRedirection() {
-        Jsh.eval("cat > ", outputStream);
+        Jsh.eval("cat > ", System.out);
         assertEquals("", outputStream.toString());
     }
 
 
     @Test
     public void testInFrontRedirectionInvalid() {
-        Jsh.eval("> echo Hello output.txt", outputStream);
+        Jsh.eval("> echo Hello output.txt", System.out);
         try {
             File outputFile = fileSystem.getFile("output.txt");
             if(outputFile.exists()) {
@@ -254,7 +268,7 @@ public class JshTest {
 
     @Test
     public void testInputAndOutputRedirection() throws IOException {
-        Jsh.eval("sed s/test/repl/g < Soft > test.txt", outputStream);
+        Jsh.eval("sed s/test/repl/g < Soft > test.txt", System.out);
         try {
             File redirectionFile = fileSystem.getFile("test.txt");
             if(!redirectionFile.exists()) {
@@ -282,14 +296,38 @@ public class JshTest {
 
     @Test
     public void testInvalidApplicationName() {
-        Jsh.eval("invalidname", outputStream);
+        Jsh.eval("invalidname", System.out);
         assertEquals("", outputStream.toString());
         assertEquals("invalidname: unknown application" + lineSeparator, errStream.toString());
     }
 
     @Test
     public void testSimplePipe() throws IOException {
-        Jsh.eval("echo Hello | sed s/Hello/Bye/", outputStream);
+        Jsh.eval("echo Hello | sed s/Hello/Bye/", System.out);
         assertEquals("Bye" + lineSeparator, outputStream.toString());
+    }
+
+    @Test
+    public void testMainTwoArguments() {
+        String[] arg = new String[2];
+        arg[0] = "-c"; arg[1] = "echo abc";
+        Jsh.main(arg);
+        assertEquals("abc" + lineSeparator, outputStream.toString());
+    }
+
+    @Test
+    public void testMainOneArguments() {
+        String[] arg = new String[1];
+        arg[0] = "-c";
+        Jsh.main(arg);
+        assertEquals("jsh: wrong number of arguments" + lineSeparator, errStream.toString());
+    }
+
+    @Test
+    public void testMainTwoInvalidArguments() {
+        String[] arg = new String[2];
+        arg[0] = "-d"; arg[1] = "whatever";
+        Jsh.main(arg);
+        assertEquals("jsh: -d: unexpected argument" + lineSeparator, errStream.toString());
     }
 }

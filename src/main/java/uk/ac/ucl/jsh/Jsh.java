@@ -32,7 +32,7 @@ public class Jsh {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         if (args.length > 0) {
             if (args.length != 2) {
                 System.err.println("jsh: wrong number of arguments");
@@ -40,6 +40,7 @@ public class Jsh {
             }
             if (!args[0].equals("-c")) {
                 System.err.println("jsh: " + args[0] + ": unexpected argument");
+                return;
             }
             
             eval(args[1], System.out);
@@ -53,8 +54,7 @@ public class Jsh {
                     
                     String cmdline = input.nextLine();
                     history.add(cmdline);
-                    eval(cmdline, System.out);
-                    
+                    eval(cmdline, System.out);   
                 }
             } finally {
                 input.close();
