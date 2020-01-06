@@ -81,6 +81,7 @@ public final class FileSystem {
          Path documentsPath = Files.createDirectory(Paths.get(tmpPath + fileSeparator + "Documents"));
          Path otherPath = Files.createDirectory(Paths.get(tmpPath + fileSeparator + "Other"));
          Path softFilePath = Files.createFile(Paths.get(tmpPath + fileSeparator + "Soft"));
+         Path helloFilePath = Files.createFile(Paths.get(tmpPath + fileSeparator + "Hello"));
 
          // Create Documents's children
          Path engPath = Files.createDirectory(Paths.get(documentsPath + fileSeparator + "Eng"));
@@ -98,8 +99,10 @@ public final class FileSystem {
          Files.createFile(Paths.get(otherPath + fileSeparator + ".test"));
          Files.createDirectory(Paths.get(otherPath + fileSeparator + "Empty"));
 
+
          // Write to the created files
          Files.write(softFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
+         Files.write(helloFilePath, "hello".getBytes(),               StandardOpenOption.APPEND);
          Files.write(wareFilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
          Files.write(oth1FilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
          Files.write(oth2FilePath, generateFileText().getBytes(),     StandardOpenOption.APPEND);
@@ -113,6 +116,7 @@ public final class FileSystem {
         deleteDirectory(new File(tmpPath+Jsh.fileSeparator+"Documents"));
         deleteDirectory(new File(tmpPath+Jsh.fileSeparator+"Other"));
         Files.deleteIfExists(Paths.get(tmpPath + Jsh.fileSeparator + "Soft"));
+        Files.deleteIfExists(Paths.get(tmpPath + Jsh.fileSeparator + "Hello"));
     }
 
 

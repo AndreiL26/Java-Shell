@@ -1,6 +1,7 @@
 package uk.ac.ucl.jsh.Applications;
 
 import uk.ac.ucl.jsh.Utilities.FileSystem;
+import uk.ac.ucl.jsh.Jsh;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -66,16 +67,19 @@ public class Wc implements Application {
 
     private void solveForInput(BufferedReader reader) throws JshException {
         try {
-            String currentLine = reader.readLine();
-            while (currentLine != null) {
-                lineCount++;
-                charCount += currentLine.length() + 1;    // +1 to account for the newline as being the newline
-                String[] words = currentLine.split(" ");
-                if(!words[0].equals("")) {
-                    wordCount = wordCount + words.length;
-                }
-                currentLine = reader.readLine();
+            StringBuilder stringBuilder = new StringBuilder();
+            int currentInt = reader.read();
+            while (currentInt != -1) {
+                char currentChar = (char)currentInt;
+                stringBuilder.append(currentChar);
+                currentInt = reader.read();
             }
+
+            String str = stringBuilder.toString();
+            charCount += str.length();
+            String str_aux = str;
+            lineCount += str.length() - str_aux.replaceAll(Jsh.lineSeparator, "").length();
+            wordCount += str.split("\\s+").length;
         } catch (IOException e) {
             throw new JshException("wc: cannot read input");
         }
