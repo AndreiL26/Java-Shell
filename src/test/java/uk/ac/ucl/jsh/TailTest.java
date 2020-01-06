@@ -25,6 +25,7 @@ public class TailTest {
     private static ArrayList<String> applicationArguments;
 
     private String lineSeparator = Jsh.lineSeparator;
+    private String fileSeparator = Jsh.fileSeparator;
     private String initialWorkingDirectoryPath;
 
     @BeforeClass
@@ -122,7 +123,7 @@ public class TailTest {
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw a wrong argument exception");
         } catch (JshException e) {
-            assertEquals("tail: wrong argument " + "I'm not a number!", e.getMessage());
+            assertEquals("tail: For input string: \"I'm not a number!\"", e.getMessage());
         }
     }
 
@@ -135,7 +136,7 @@ public class TailTest {
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw an invalig argument exception");
         } catch (JshException e) {
-            assertEquals("tail: " + "InvalidPath" + " does not exist", e.getMessage());
+            assertEquals("tail: " + fileSeparator + "tmp" + fileSeparator + "InvalidPath (No such file or directory)", e.getMessage());
         }
     }
 
@@ -148,7 +149,7 @@ public class TailTest {
             tailApplication.execute(applicationArguments, null, outputStream);
             fail("tail did not throw a cannot read input exception");
         } catch (JshException e) {
-            assertEquals("tail: cannot read input", e.getMessage());
+            assertEquals("tail: " + fileSeparator + "tmp" + fileSeparator + "Documents" + fileSeparator + "Eng (Is a directory)", e.getMessage());
         }
     }
 
