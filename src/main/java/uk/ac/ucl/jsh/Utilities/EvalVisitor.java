@@ -114,7 +114,7 @@ public class EvalVisitor implements TreeVisitor<Void> {
      * @throws JshException The exception that may be thrown if the Application in the callNode throws a JshException
      */
     public Void visit(CallNode callNode, InputStream inputStream, OutputStream outputStream) throws JshException {
-        ArrayList<String> tokens = Parser.parseCallCommand(callNode.getCmdString());
+        ArrayList<String> tokens = Parser.parseCallCommand(callNode.getApplicationString());
         
         inputStream = getInputStream(tokens, inputStream);
         outputStream = getOutputStream(tokens, outputStream);
