@@ -4,27 +4,24 @@ import uk.ac.ucl.jsh.Jsh;
 import uk.ac.ucl.jsh.Utilities.FileSystem;
 import uk.ac.ucl.jsh.Utilities.JshException;
 
-import java.nio.charset.StandardCharsets;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.io.OutputStreamWriter;
 
 public class Tail implements Application {
-    private void readAndWriteLast(BufferedReader reader, OutputStreamWriter writer, int tailLines) throws JshException {
+    private int tailLines;
+
+    private void readAndWrite(Scanner scanner, OutputStreamWriter writer) throws JshException {
         ArrayList<String> storage = new ArrayList<>();
-        String line = null;
         try {
-            while ((line = reader.readLine()) != null) {
-                storage.add(line);
+            while (scanner.hasNextLine()) {
+                storage.add(scanner.nextLine());
             }
+
             int index = 0;
             if (tailLines > storage.size()) {
                 index = 0;
@@ -35,8 +32,10 @@ public class Tail implements Application {
                 writer.write(storage.get(i) + Jsh.lineSeparator);
                 writer.flush();
             }     
+            scanner.close();
         } catch (IOException e) {
-            throw new JshException("tail: cannot read input");
+            scanner.close();
+            throw new JshException("tail: " + e.getMessage());
         }       
     }
     
@@ -59,10 +58,9 @@ public class Tail implements Application {
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, -1);
         checkArguments(applicationArguments, inputStream);
-        int tailLines = 10;
-        String tailArg;
-        File tailFile;
         OutputStreamWriter writer = new OutputStreamWriter(outputStream);
+
+        tailLines = 10;
         if (applicationArguments.size() > 1) {
             try {
                 tailLines = Integer.parseInt(applicationArguments.get(1));
@@ -70,30 +68,25 @@ public class Tail implements Application {
                     throw new JshException("tail: illegal line count -- " + tailLines);
                 }
             } catch (NumberFormatException e) {
-                throw new JshException("tail: wrong argument " + applicationArguments.get(1));
+                throw new JshException("tail: " + e.getMessage());
             }
         }
 
 
         if(applicationArguments.size() == 1 || applicationArguments.size() == 3) {
-            tailArg = applicationArguments.get(applicationArguments.size() - 1);
-            tailFile = FileSystem.getInstance().getFile(tailArg);
-            
-            if(tailFile.exists()) {
-                Path filePath = Paths.get(tailFile.getAbsolutePath());
-                try (BufferedReader reader = Files.newBufferedReader(filePath, StandardCharsets.UTF_8)) {
-                    readAndWriteLast(reader, writer, tailLines);
-                }
-                catch (IOException e) {
-                    throw new JshException("tail: cannot open" + tailArg);
-                }
+            String filePath = applicationArguments.get(applicationArguments.size() - 1);
+                
+            Scanner scanner;
+            try {
+                scanner = new Scanner(FileSystem.getInstance().getFile(filePath));
+            } catch (FileNotFoundException e) {
+                throw new JshException("tail: " + e.getMessage());
             }
-            else {
-                throw new JshException("tail: " + tailArg + " does not exist");
-            }
+
+            readAndWrite(scanner, writer);
         }
         else {
-            readAndWriteLast(new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)), writer, tailLines);
+            readAndWrite(new Scanner(inputStream), writer);
         }
     }
     
