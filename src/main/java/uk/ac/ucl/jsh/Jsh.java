@@ -60,23 +60,20 @@ public class Jsh {
      *The main function which makes the appropriate calls for Jsh to operate
      * and that loops continually until exited.
      * 
-     * @param args       The arguments that are passed in after running the Jsh based on which the Jsh runs in interactive mode or not
+     * @param args The arguments that are passed in after running the Jsh based on which the Jsh runs in interactive mode or not
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         if (args.length > 0) {
             if (args.length != 2) {
-                System.out.println("jsh: wrong number of arguments");
+                System.err.println("jsh: wrong number of arguments");
                 return;
             }
             if (!args[0].equals("-c")) {
-                System.out.println("jsh: " + args[0] + ": unexpected argument");
+                System.err.println("jsh: " + args[0] + ": unexpected argument");
+                return;
             }
-            try {
-                eval(args[1], System.out);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            //eval(args[1], System.out);
+            
+            eval(args[1], System.out);
         } else {
             System.out.println("Hello World!");
             Scanner input = new Scanner(System.in);
@@ -84,13 +81,10 @@ public class Jsh {
                 while (true) {
                     String prompt = FileSystem.getInstance().getWorkingDirectoryPath() + "> ";
                     System.out.print(prompt);
-                    try {
-                        String cmdline = input.nextLine();
-                        history.add(cmdline);
-                        eval(cmdline, System.out);
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
+                    
+                    String cmdline = input.nextLine();
+                    history.add(cmdline);
+                    eval(cmdline, System.out);   
                 }
             } finally {
                 input.close();
