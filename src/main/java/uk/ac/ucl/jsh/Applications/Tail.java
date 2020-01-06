@@ -12,9 +12,22 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.OutputStreamWriter;
 
+/**
+ * The Tail application that implements the Application interface
+ */
 public class Tail implements Application {
+     /**
+     * The number of lines that Tail will print
+     */
     private int tailLines;
 
+     /**
+     * The function that reads the input and writes to the outputstream the first tailLines number of lines.
+     * 
+     * @param scanner       The object that reads the input either from a file or from the inputstream
+     * @param writer        The object used to write to the outputstream
+     * @throws JshException The exception thrown if the writer failes to write to the ouptustream
+     */
     private void readAndWrite(Scanner scanner, OutputStreamWriter writer) throws JshException {
         ArrayList<String> storage = new ArrayList<>();
         try {
@@ -39,6 +52,13 @@ public class Tail implements Application {
         }       
     }
     
+     /**
+     * The function that checks the arguments passed to the Tail application
+     * 
+     * @param applicationArguments The arguments of the Application
+     * @param inputStream          The stream that will be used as input if the applicationArguments does not contain a file
+     * @throws JshException        The exception thrown if the given arguments are invalid
+     */
     private void checkArguments(ArrayList<String> applicationArguments, InputStream inputStream) throws JshException {
         if (applicationArguments.isEmpty() && inputStream == null)  {
             throw new JshException("tail: missing input");
@@ -55,6 +75,17 @@ public class Tail implements Application {
     }
 
     @Override
+    /**
+     * Executes the Tail application with the given arguments. Tail prints the last tailLines lines of the file (or input stream), where tailLines is an
+     * argument received by the Tail application. The default value for tailLines is 10. If there are less than tailLines lines then the application prints
+     * all the lines without raising an exception.
+     * Exception thrown if the arguments are invalid or if the writer fails to write to the outputstream.
+     * 
+     * @param applicationArguments The arguments of the Application
+     * @param inputStream          The stream that some Applications will use as input if the applicationArguments does not contain a file
+     * @param outpustream          The stream to which the Application will write to
+     * @throws JshException        The custom Exception that all Applications throw if an error occurs
+     */
     public void execute(ArrayList<String> applicationArguments, InputStream inputStream, OutputStream outputStream) throws JshException {
         applicationArguments = Application.globArguments(applicationArguments, -1);
         checkArguments(applicationArguments, inputStream);
@@ -71,7 +102,6 @@ public class Tail implements Application {
                 throw new JshException("tail: " + e.getMessage());
             }
         }
-
 
         if(applicationArguments.size() == 1 || applicationArguments.size() == 3) {
             String filePath = applicationArguments.get(applicationArguments.size() - 1);

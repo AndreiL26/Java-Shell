@@ -6,17 +6,38 @@ import java.io.OutputStream;
 import uk.ac.ucl.jsh.Utilities.JshException;
 import uk.ac.ucl.jsh.Utilities.TreeVisitor;
 
+/**
+ * CallNode is a concrete type of Node, extending the Node abstract class.
+ * It contains one application name along with its arguments.
+ */
 public class CallNode extends Node {
-    private String cmdString;
+    /**
+     * The string representing the application name and its arguments
+     */
+    private String applicationString;
 
-    public CallNode(String cmdString) {
-        this.cmdString = cmdString;
+    /**
+     * Constructs an instance of a CallNode, encapsulating a String 
+     * 
+     * @param applicationString  String representing the application name and its arguments
+     */
+    public CallNode(String applicationString) {
+        this.applicationString = applicationString;
     }
 
-    public String getCmdString() {
-        return cmdString;
+    /**
+     * Getter function for the applicationString
+     * 
+     * @return  The applicationString
+     */
+    public String getApplicationString() {
+        return applicationString;
     }
 
+    /**
+     * Implementation of the accept function used for the Visitor Pattern
+     * 
+     */
     public <T> T accept(TreeVisitor<T> treeVisitor, InputStream inputStream, OutputStream outputStream) throws JshException {
         return treeVisitor.visit(this, inputStream, outputStream);
     }
