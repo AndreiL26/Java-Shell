@@ -35,18 +35,14 @@ public class Jsh {
     public static void main(String[] args) throws Exception {
         if (args.length > 0) {
             if (args.length != 2) {
-                System.out.println("jsh: wrong number of arguments");
+                System.err.println("jsh: wrong number of arguments");
                 return;
             }
             if (!args[0].equals("-c")) {
-                System.out.println("jsh: " + args[0] + ": unexpected argument");
+                System.err.println("jsh: " + args[0] + ": unexpected argument");
             }
-            try {
-                eval(args[1], System.out);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            //eval(args[1], System.out);
+            
+            eval(args[1], System.out);
         } else {
             System.out.println("Hello World!");
             Scanner input = new Scanner(System.in);
@@ -54,13 +50,11 @@ public class Jsh {
                 while (true) {
                     String prompt = FileSystem.getInstance().getWorkingDirectoryPath() + "> ";
                     System.out.print(prompt);
-                    try {
-                        String cmdline = input.nextLine();
-                        history.add(cmdline);
-                        eval(cmdline, System.out);
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
+                    
+                    String cmdline = input.nextLine();
+                    history.add(cmdline);
+                    eval(cmdline, System.out);
+                    
                 }
             } finally {
                 input.close();
