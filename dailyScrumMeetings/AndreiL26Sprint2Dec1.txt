@@ -1,0 +1,10 @@
+What did I do last time?
+- Created a model for adding tests that are independent of the machine that runs it
+- Gained access to the Reference Design by solving the Delta Debuggin Exercise
+
+What do I plan to do now?
+- Refactor the command classes to reflect to our new design that is influenced by the reference design
+- Add a number of Utility classes that prove to be necessary at the moment
+
+Am I blocked on anything?
+ - No

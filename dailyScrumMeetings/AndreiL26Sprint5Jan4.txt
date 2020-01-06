@@ -1,0 +1,13 @@
+What did I do last time?
+- Tested globbing and the whole JSH application 
+- Fixed issues revelead by PMD analysis
+- Managed to obtain more than 97% branch coverage
+- Performed small changes to the application after reviewing the existing code
+
+What do I plan to do now?
+- Have a final look over the code that will be submitted
+- Add documentation for the code base
+- Submit the project!
+
+Am I blocked on anything?
+- No

@@ -1,0 +1,10 @@
+What did I do last time?
+- N/A
+
+What do I plan to do now?
+- Brainstorm implementation ideas for the commands in general
+- Organize roles
+- Move each command in its separate class to make the commands logic more modular
+
+Am I blocked on anything?
+- No

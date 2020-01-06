@@ -1,0 +1,10 @@
+What did I do last time?
+- Added the Sed Command
+- Added JUnit Test for Cat, Ls, Echo, Cd, Pwd and Sed commands
+- Small chages to the implementation of the above commands based on the test results
+
+What do I plan to do now?
+- Refactor the existing classes to allow reading from standard input
+
+Am I blocked on anything?
+ - No

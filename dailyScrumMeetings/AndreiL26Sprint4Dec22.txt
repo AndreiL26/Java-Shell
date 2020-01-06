@@ -1,0 +1,10 @@
+What did I do last time?
+- Integrated the parser with the existing code
+- Refactored the commands to allow for IO redirection
+
+What do I plan to do now?
+- Add JUnit Tests that will offer 100% branch coverage for the Applications package
+- Fix any bugs revealed by the above tests
+
+Am I blocked on anything?
+- No

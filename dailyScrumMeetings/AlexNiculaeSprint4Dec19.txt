@@ -1,0 +1,11 @@
+What did I do last time?
+- Successfully integrated ANTLR with Docker using the right pom.xml configuration.
+- Parser quote bug fix.
+
+What do I plan to do now?
+- Add command substitution
+- Fix LsCommandTest bug.
+- Refactor parser.
+
+Am I blocked on anything?
+- No.

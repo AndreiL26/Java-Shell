@@ -1,0 +1,12 @@
+What did I do last time?
+- Refactored the parser and added command substitution.
+- Fixed LsCommandTest bugs
+- Fixed parser bugs.
+
+What do I plan to do now?
+- Add history command.
+- Refactor command line parser.
+- Add Input Output Redirection.
+
+Am I blocked on anything?
+- No.

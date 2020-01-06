@@ -1,0 +1,11 @@
+What did I do last time?
+- Abstracted FileSystem using Singleton pattern and changed application to adhere to the new FileSystem standard.
+- Fixed bugs in Parser, Applications and EvalVisitor.
+- Excluded ANTLR generated files from Jacoco report.
+
+What do I plan to do now?
+- Refactor applications
+- Update unsafe behaviour of applications.
+
+Am I blocked on anything?
+- No.
